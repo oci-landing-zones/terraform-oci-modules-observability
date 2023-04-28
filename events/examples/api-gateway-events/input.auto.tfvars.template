@@ -1,0 +1,66 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
+# 4. Replace <REPLACE-BY-COMPARTMENT-OCID-TO-FILTER-ON> placeholder by appropriate compartment OCID. 
+# 5. Replace email.address@example.com by actual email addresses.
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
+private_key_password = ""                           # This is the password that protects the private key, if any.
+home_region          = "<your tenancy home region>" # This is your tenancy home region, where IAM and Cloud Guard events are created.
+region               = "<your tenancy region>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+events_configuration = { 
+  
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+  
+  event_rules = {
+    APIGW-EVENTS-KEY = { 
+      is_enabled = true
+      event_display_name = "notify-on-api-gateway-deployments"
+      event_description = "Monitoring deployment changes in API Gateway"
+      supplied_events = ["com.oraclecloud.apigateway.createdeployment.end","com.oraclecloud.apigateway.deletedeployment.end","com.oraclecloud.apigateway.updatedeployment.end"]
+      attributes_filter = [{
+        attr = "compartmentId"
+        value = ["<REPLACE-BY-COMPARTMENT-OCID-TO-FILTER-ON>"]
+      }]
+      tags_filter = [
+        {
+          namespace = "OracleInternalReserved"
+          tags = [{name = "CostCenter", value = "1"}, {name = "OwnerEmail", value = "email.address@example.com"}]
+        }
+      ]
+      actions_topics = {
+        topic_keys = ["APIGW-TOPIC-KEY"]
+      }  
+    }
+  }
+    
+  topics = {
+    APIGW-TOPIC-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+      name = "apigw-topic" 
+      description = "Topic for API Gateway related notifications"
+      subscriptions = [
+        { protocol = "EMAIL"
+          values = ["email.address@example.com"]
+        }
+      ]
+    }
+  }
+}

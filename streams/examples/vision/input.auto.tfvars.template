@@ -1,0 +1,65 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
+# 4. Replace <REPLACE-BY-VAULT-KEY-OCID> placeholder by an appropriate vault key OCID.
+# 5. Replace <REPLACE-BY-SUBNET-OCID> placeholder by an appropriate subnet OCID.
+# 6. Replace <REPLACE-BY-NSG-OCID> placeholder by an appropriate network security group OCID.
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
+private_key_password = ""                           # This is the password that protects the private key, if any.
+region               = "<your tenancy region>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+streams_configuration = {
+  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  #default_defined_tags   = null
+  #default_freeform_tags  = null
+
+  streams : {
+    SIEM-INTEGRATION-STREAM-KEY = {
+      name = "vision-siem-integration-stream"
+      #compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      stream_pool_key = "SIEM-INTEGRATION-STREAM-POOL-KEY"
+      num_partitions = 2
+      log_retention_in_hours = 48
+      #defined_tags = null
+      #freeform_tags = null
+    }
+  }
+
+  stream_pools = {
+    SIEM-INTEGRATION-STREAM-POOL-KEY = {
+      name = "vision-siem-integration-stream-pool"
+      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      kms_key_ocid = "<REPLACE-BY-VAULT-KEY-OCID>"
+      private_endpoint_settings = {
+        subnet_ocid = "<REPLACE-BY-SUBNET-OCID>"
+        nsg_ocids = ["<REPLACE-BY-NSG-OCID>"]
+      #  private_endpoint_ip = null
+      }
+      #kafka_settings = {
+      #  auto_create_topics_enabled = true
+      #  bootstrap_servers = null
+      #  log_retention_in_hours = 24
+      #  num_partitions = 1
+      #}
+      #defined_tags = null
+      #freeform_tags = null
+    }
+  }
+}

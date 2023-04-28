@@ -1,0 +1,14 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+output "streams" {
+  value = module.vision_streams.streams
+}
+
+output "default_stream_pools" {
+  value = module.vision_streams.default_stream_pools
+}
+
+output "custom_stream_pools" {
+  value = module.vision_streams.stream_pools
+}
