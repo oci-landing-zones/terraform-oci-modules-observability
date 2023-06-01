@@ -52,3 +52,9 @@ variable module_name {
   type = string
   default = "streams"
 }
+
+variable dependencies {
+  description = "A JSON string containing the externally managed resources this module depends on."
+  type = string
+  default = null
+}

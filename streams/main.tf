@@ -45,7 +45,7 @@ resource "oci_streaming_stream_pool" "defaults" {
     create_before_destroy = true
   }
   for_each = var.streams_configuration["streams"] != null ? {for k, v in var.streams_configuration["streams"]: k => v if v.stream_pool_key == null} : {}
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.streams_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_ocid != null ? (length(regexall("^ocid1.*$", each.value.compartment_ocid)) > 0 ? each.value.compartment_ocid : jsondecode(var.dependencies)[each.value.compartment_ocid].id) : (length(regexall("^ocid1.*$", var.streams_configuration.default_compartment_ocid)) > 0 ? var.streams_configuration.default_compartment_ocid : jsondecode(var.dependencies)[var.streams_configuration.default_compartment_ocid].id)
     name           = "${each.value.name}-default-pool"
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.streams_configuration.default_defined_tags
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.streams_configuration.default_freeform_tags)
