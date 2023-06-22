@@ -27,7 +27,7 @@ region               = "<your tenancy region>"      # This is your region, where
 
 events_configuration = { 
   
-  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
   
   event_rules = {
     APIGW-EVENTS-KEY = { 
