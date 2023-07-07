@@ -3,8 +3,8 @@
 ## Introduction
 
 This example shows how to deploy notifications in OCI for a hypothetical Vision entity. It deploys two topics:
-- A topic subscribed by two email addresses.
-- A topic subscribed by a mobile phone number.
+- A topic for network related notifications subscribed by two email addresses.
+- A topic for security related notifications subscribed by a mobile phone number.
 
 ## Using this example
 1. Rename *input.auto.tfvars.template* to *\<project-name\>.auto.tfvars*, where *\<project-name\>* is any name of your choice.

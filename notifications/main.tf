@@ -8,7 +8,7 @@ locals {
       for subs in (topic["subscriptions"] != null ? topic["subscriptions"] : []) : [
         for value in subs["values"] : {
           key = "${topic_key}.${value}"
-          compartment_id = subs.compartment_ocid != null ? subs.compartment_ocid : topic.compartment_ocid != null ? topic.compartment_ocid : var.notifications_configuration.default_compartment_ocid
+          compartment_id = subs.compartment_id != null ? (length(regexall("^ocid1.*$", subs.compartment_id)) > 0 ? subs.compartment_id : var.compartments_dependency[subs.compartment_id].id) : (topic.compartment_id != null ? (length(regexall("^ocid1.*$", topic.compartment_id)) > 0 ? topic.compartment_id : var.compartments_dependency[topic.compartment_id].id) : (length(regexall("^ocid1.*$", var.notifications_configuration.default_compartment_id)) > 0 ? var.notifications_configuration.default_compartment_id : var.compartments_dependency[var.notifications_configuration.default_compartment_id].id))
           protocol = upper(subs.protocol)
           endpoint = value
           topic_id = oci_ons_notification_topic.these[topic_key].id
@@ -24,7 +24,7 @@ locals {
 
 resource "oci_ons_notification_topic" "these" {
   for_each = var.notifications_configuration["topics"] != null ? var.notifications_configuration["topics"] : {}
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.notifications_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.notifications_configuration.default_compartment_id)) > 0 ? var.notifications_configuration.default_compartment_id : var.compartments_dependency[var.notifications_configuration.default_compartment_id].id)
     name           = each.value.name
     description    = each.value.description != null ? each.value.description : each.value.name
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.notifications_configuration.default_defined_tags

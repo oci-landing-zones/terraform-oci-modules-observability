@@ -33,3 +33,11 @@ variable "notifications_configuration" {
   })
 }
 
+variable "oci_compartments_dependency" {
+  type = object({
+    bucket = string
+    object = string 
+  })
+  default = null
+}
+

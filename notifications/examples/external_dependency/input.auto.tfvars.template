@@ -1,13 +1,17 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-#--------------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
-# 4. Replace email.address@example.com by actual email addresses.
+# 3. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references, expected to be found in the 
+#    OCI Object Storage object named <REPLACE-BY-OBJECT-NAME> in oci_compartments_dependency. 
+# 4. Replace email.address_1@example.com and email.address_2@example.com by actual email addresses.
 # 5. Replace <REPLACE-BY-MOBILE-PHONE-NUMBER> placeholder with an actual mobile number for SMS notifications.
-#--------------------------------------------------------------------------------------------------------------------------------------
+# 6. Replace <REPLACE-BY-BUCKET-NAME> placeholders by the OCI Object Storage buckets that contain the object named <REPLACE-BY-OBJECT-NAME>.
+# 7. Replace <REPLACE-BY-OBJECT-NAME> placeholders by the OCI Object Storage objects with the compartments references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages compartments.
+#-------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
 # Tenancy Connectivity Variables
@@ -25,17 +29,16 @@ region               = "<your tenancy region>"      # This is your region, where
 #---------------------------------------
 
 notifications_configuration = {
-  default_compartment_ocid = null
+  default_compartment_id = null
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
       name = "vision-network-topic"
       subscriptions = [
         { protocol = "EMAIL"
-          #compartment_ocid = null
           values = ["email.address_1@example.com","email.address_2@example.com"]
           #defined_tags = null
           #freeform_tags = null 
@@ -45,7 +48,7 @@ notifications_configuration = {
       #freeform_tags = null
     }
     SECURITY-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
       name = "vision-security-topic"
       subscriptions = [
         { protocol = "SMS"
@@ -54,4 +57,9 @@ notifications_configuration = {
       ]
     }
   }
+}
+
+oci_compartments_dependency = {
+  bucket = "<REPLACE-BY-BUCKET-NAME>"
+  object = "<REPLACE-BY-OBJECT-NAME>"
 }
