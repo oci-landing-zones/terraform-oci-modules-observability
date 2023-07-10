@@ -32,11 +32,16 @@ variable "notifications_configuration" {
   })
 }
 
-variable "oci_compartments_dependency" {
-  type = object({
-    bucket = string
-    object = string 
-  })
+variable "oci_shared_config_bucket" {
+  type = string
+  default = null
+}
+variable "oci_compartments_object" {
+  type = string
+  default = null
+}
+variable "oci_topics_object" {
+  type = string
   default = null
 }
 
