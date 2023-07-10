@@ -90,6 +90,12 @@ The *topics* attribute supports the following attributes:
 - **defined_tags**: the topic defined_tags. *default_defined_tags* is used if undefined.
 - **freeform_tags**: the topic freeform_tags. *default_freeform_tags* is used if undefined.
 
+## External Dependencies
+
+External dependencies are resources managed elsewhere that resources managed by this module depend on. The following dependencies are supported:
+
+- **compartments_dependency** : A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the compartment OCID).
+
 ## An Example
 
 The following snippet defines two topics in different compartments defined by *compartment_id* values. The first topic (*NETWORK-TOPIC*) is for network related notifications. It is subscribed by two email addresses. The second topic (*SECURITY-TOPIC*) is for security related notifications. It is subscribed by one SMS number. 
