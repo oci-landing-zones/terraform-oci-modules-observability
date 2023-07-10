@@ -24,13 +24,13 @@ region               = "<your tenancy region>"      # This is your region, where
 #---------------------------------------
 
 alarms_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   alarms = {
     COMPUTE-ALARM-HIGH-CPU-KEY = {
-      #compartment_ocid = null
+      #compartment_id = null
       #is_enabled = true
       display_name = "vision-high-cpu-alarm"
       preconfigured_alarm_type = "high-cpu-alarm"
@@ -38,13 +38,13 @@ alarms_configuration = {
         #query = null
         #namespace = null
         #pending_duration = null
-        #metric_compartment_ocid = null
+        #metric_compartment_id = null
         #severity = null
         #message_format = null
       #}
       destination_topics = {
         topic_keys = ["COMPUTE-TOPIC-KEY"]
-        #existing_topic_ocids = null # Not using an existing topic
+        #existing_topic_ids = null # Not using an existing topic
       }
       #defined_tags = null
       #freeform_tags = null
@@ -108,11 +108,10 @@ alarms_configuration = {
   }
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-network-topic"
       subscriptions = [
         { protocol = "EMAIL"
-          #compartment_ocid = null
           values = ["email.address@example.com"]
           #defined_tags = null
           #freeform_tags = null 
@@ -122,7 +121,7 @@ alarms_configuration = {
       #freeform_tags = null
     }
     DATABASE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-database-topic"
       subscriptions = [
         { protocol = "EMAIL"
@@ -131,7 +130,7 @@ alarms_configuration = {
       ]
     }
     COMPUTE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-compute-topic"
       subscriptions = [
         { protocol = "EMAIL"
