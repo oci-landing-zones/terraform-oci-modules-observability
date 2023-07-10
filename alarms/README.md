@@ -82,7 +82,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, alarms are defined using the *alarms_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **alarms**: define the alarms to capture and where to send them. 
@@ -91,7 +91,7 @@ In this module, alarms are defined using the *alarms_configuration* object, that
 
 **Note**: Each alarm, topic and stream are defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
 
-## Defining the alarms to trigger
+## Defining the Alarms to Trigger
 
 Within the *alarms* attribute, the alarms to trigger can be specific in two ways: through pre-configured alarm types or by supplying specific alarms.
 - **pre-configured alarm types**: use the *preconfigured_alarm_type* attributes, assigning it a list of the following supported values: *high-cpu-alarm*, *instance-status-alarm*, *vm-maintenance-alarm*, *bare-metal-unhealthy-alarm*, *high-memory-alarm*, *adb-cpu-alarm*, *adb-storage-alarm*,*vpn-status-alarm* and *fast-connect-status-alarm*. For the list of metrics in each of these types, check [preconfigured_alarms.tf file](./preconfigured_alarms.tf).
@@ -110,26 +110,26 @@ Check [preconfigured_alarms.tf file](./preconfigured_alarms.tf) as examples on h
 
 Use *display_name* attribute to name alarms.
 
-### Defining where to send the triggered alarms
+### Defining Where to Send the Triggered Alarms
 
 Within the *alarms* attribute, use *destination_topics* and *destination_streams* attributes to define where to send triggered alarms. These attributes are similar, defining the topics, and streams, as target destinations for the alarms in question. *destination_topics* and *destination_streams* support referencing topics and streams managed by this module or externally managed.
 
-- **destination_topics**: use *topic_keys* attribute to refer to managed topics and *existing_topic_ocids* attribute to consume externally managed topics.
-- **destination_streams**: use *streams_keys* attribute to refer to managed streams and *existing_stream_ocids* attribute to consume externally managed streams.
+- **destination_topics**: use *topic_keys* attribute to refer to managed topics and *existing_topic_ids* attribute to consume externally managed topics.
+- **destination_streams**: use *streams_keys* attribute to refer to managed streams and *existing_stream_ids* attribute to consume externally managed streams.
 
 For referring to a topic or stream managed by this module, provide the topic or stream key as defined in the *topics* and *streams* attributes (see next subsection).
 
-For referring to an externally managed topic, stream, or function, provide its ocid (Oracle Cloud ID).
+For referring to an externally managed topic, stream, or function, provide its OCID or a reference (a key) to an OCID.
 
-The example below shows the two destination types. Note that you can provide multiple keys and existing ocids (they are lists) and both locally managed and externally managed resources can be used together. 
+The example below shows the two destination types. Note that you can provide multiple keys and existing OCIDs (they are lists) and both locally managed and externally managed resources can be used together. 
 ```
 destination_topics = {
   topic_keys = ["NETWORK-TOPIC-KEY"] # this key value refers to a topic managed by this module.
-  existing_topic_ocids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q"] # this ocid refers to a topic NOT managed by this module. It is a pre-existing topic that was created through some other means.
+  existing_topic_ids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q"] # this ocid refers to a topic NOT managed by this module. It is a pre-existing topic that was created through some other means.
 }
 destination_streams = {
   stream_keys = ["NETWORK-STREAM-KEY"] # this key value refers to a stream managed by this module.
-  existing_stream_ocids = ["ocid1.stream.oc1.iad.aaaaaa...ijk"] # this ocid refers to a stream NOT managed by this module. It is a pre-existing stream that was created through some other means.
+  existing_stream_ids = ["ocid1.stream.oc1.iad.aaaaaa...ijk"] # this ocid refers to a stream NOT managed by this module. It is a pre-existing stream that was created through some other means.
 }
 ```
 
@@ -145,7 +145,7 @@ A topic definition example is shown below. Multiple subscriptions and multiple p
 topics = {
   NETWORK-TOPIC-KEY = { # this key is referred by topic_keys within destination_topics attribute
     name = "vision-network-topic"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     subscriptions = [
       { protocol = "EMAIL", values = ["email.address@example.com"]}
     ]  
@@ -158,7 +158,7 @@ For managed streams, it is possible to specify the number of partitions and the 
 streams = {
   NETWORK-STREAM-KEY = { # this key is referred by stream_keys within actions_streams attribute
     name = "vision-network-stream"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     num_partitions = 2
     log_retention_in_hours = 48
   }
@@ -171,7 +171,7 @@ Here's a sample configuration for sending pre-configured alarms of type "vpn-sta
 
 ```
 alarms_configuration = {
-  default_compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+  default_compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
   
   alarms = {
     NETWORK-ALARM-VPN-STATUS-KEY : {
@@ -184,7 +184,7 @@ alarms_configuration = {
   }
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+      compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
       name = "network-topic"
       subscriptions = [
         { protocol = "EMAIL"

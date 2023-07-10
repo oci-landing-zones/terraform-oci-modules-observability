@@ -1,5 +1,12 @@
-# Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+variable "tenancy_ocid" {}
+variable "region" {description = "Your tenancy region"}
+variable "user_ocid" {default = ""}
+variable "fingerprint" {default = ""}
+variable "private_key_path" {default = ""}
+variable "private_key_password" {default = ""}
 
 variable "alarms_configuration" {
   description = "Alarms configuration settings, defining all aspects to manage alarms in OCI. Please see the comments within each attribute for details."
@@ -39,6 +46,7 @@ variable "alarms_configuration" {
       name             = string           # the topic name
       description      = optional(string) # the topic description
       subscriptions    = optional(list(object({
+        compartment_id = optional(string)      # the compartment where the subscription is created. Topic compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         protocol         = string                # valid values (case insensitive): EMAIL, CUSTOM_HTTPS, PAGERDUTY, SLACK, ORACLE_FUNCTIONS, SMS
         values           = list(string)          # list of endpoint values, specific to each protocol.
         defined_tags     = optional(map(string)) # subscription defined_tags. topic defined_tags is used if undefined.
@@ -59,32 +67,15 @@ variable "alarms_configuration" {
   })
 }
 
-variable compartments_dependency {
-  description = "A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the compartment OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable topics_dependency {
-  description = "A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the topic OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable streams_dependency {
-  description = "A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the stream OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable "enable_output" {
-  description = "Whether Terraform should enable the module output."
-  type        = bool
-  default     = true
-}
-
-variable module_name {
-  description = "The module name."
+variable "oci_shared_config_bucket" {
   type = string
-  default = "alarms"
+  default = null
+}
+variable "oci_compartments_object" {
+  type = string
+  default = null
+}
+variable "oci_topics_object" {
+  type = string
+  default = null
 }

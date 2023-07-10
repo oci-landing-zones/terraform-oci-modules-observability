@@ -69,7 +69,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, notifications are defined using the *notifications_configuration* object, that supports the following attributes:
-- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. See [External Dependencies](#ext_dep) for details.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **topics**: define the notification topics and associated subscriptions. 
@@ -79,11 +79,10 @@ In this module, notifications are defined using the *notifications_configuration
 Within *notifications_configuration*, use the *topics* attribute to define the topics and subscriptions managed by this module. Each topic is defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
 
 The *topics* attribute supports the following attributes:
-- **compartment_id**: the compartment where the topic is created. *default_compartment_id* is used if undefined. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. See [External Dependencies](#ext_dep) for details.
+- **compartment_id**: the compartment where the topic is created. *default_compartment_id* is used if undefined. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. 
 - **name**: the topic name.
 - **description**: the topic description. It defaults to topic *name*- if undefined.
 - **subscriptions**: the topic subscriptions, supporting the following attributes:
-  - **compartment_id**: the compartment where the subscription is created. The topic *compartment_id* is used if undefined. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. See [External Dependencies](#ext_dep) for details.
   - **protocol**: The subscription protocol. Valid values (case insensitive): EMAIL, CUSTOM_HTTPS, PAGERDUTY, SLACK, ORACLE_FUNCTIONS, SMS.
   - **values**: the list of endpoint values, specific to each protocol.
   - **defined_tags**: the subscription defined_tags. The topic *defined_tags* is used if undefined.
@@ -93,7 +92,7 @@ The *topics* attribute supports the following attributes:
 
 ## An Example
 
-The following snippet defines two topics in the same compartment defined by *default_compartment_id*. The first topic (*NETWORK-TOPIC*) is for network related notifications. It is subscribed by two email addresses. The second topic (*SECURITY-TOPIC*) is for security related notifications. It is subscribed by one SMS number. 
+The following snippet defines two topics in different compartments defined by *compartment_id* values. The first topic (*NETWORK-TOPIC*) is for network related notifications. It is subscribed by two email addresses. The second topic (*SECURITY-TOPIC*) is for security related notifications. It is subscribed by one SMS number. 
 
 Supported protocols are *EMAIL*, *CUSTOM_HTTPS*, *PAGERDUTY*, *SLACK*, *ORACLE_FUNCTIONS*, *SMS*. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
 
@@ -121,52 +120,6 @@ notifications_configuration = {
 }
     
 ```
-
-### <a name="ext_dep">External Dependencies</a>
-
-The example above has a dependency on compartments. Both topics require a *compartment_id*. These values need to be obtained somehow. In some cases, you can simply get them from the team that manages compartments and operate on a manual copy-and-paste fashion. However, in the automation world, copying and pasting can be slow and error prone. More sophisticated automation approaches would get these dependencies from their producing Terraform configurations. With this scenario in mind, **the module overloads the attributes ending in *_id*. They can be assigned a literal OCID (as in the example above, for those whom copying and pasting is an acceptable approach) or a reference (a key) to an OCID.
-
-Rewriting the example above with the external dependency:
-
-```
-notifications_configuration = {
-  default_compartment_id = null
-  topics = {
-    NETWORK-TOPIC = {
-      compartment_id = "NETWORK-CMP"
-      name = "cislz-network-topic"
-      subscriptions = [{ 
-        protocol = "EMAIL"
-        values = ["email.address_1@example.com","email.address_2@example.com"]
-      }]
-    }
-    SECURITY-TOPIC = {
-      compartment_id = "SECURITY-CMP"
-      name = "cislz-security-topic"
-      subscriptions = [{ 
-        protocol = "SMS"
-        values = ["+19999999999"]
-      }]
-    }
-  }
-}
-
-compartments_dependency = {
-  "NETWORK-CMP" : {
-    "id" : "ocid1.compartment.oc1..aaaaaa...tgr"
-  }
-  "SECURITY-CMP" : {
-    "id" : "ocid1.compartment.oc1..aaaaaa...xuq"
-  }
-}
-
-```
-
-The example now relies on references to compartments (*NETWORK-CMP*, *SECURITY-CMP* keys) rather than literal compartment OCIDs. These keys also need to be known somehow, but they are more readable than OCIDs and can have their naming standardized by DevOps, facilitating automation.
-
-The *compartments_dependency* map is typically the output of another Terraform configuration that gets published in a well-defined location for easy consumption. For instance, [this example](./examples/external_dependency/README.md) uses OCI Object Storage object for sharing dependencies across Terraform configurations. 
-
-The external dependency approach helps with the creation of loosely coupled Terraform configurations with clearly defined dependencies between them, avoiding OCIDs copying and pasting.
 
 ## <a name="related">Related Documentation</a>
 - [Overview of Notifications](https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm)
