@@ -14,7 +14,6 @@ variable "notifications_configuration" {
       name = string # topic name
       description = optional(string) # topic description. Defaults to topic name if undefined.
       subscriptions = optional(list(object({
-        compartment_id = optional(string) # the compartment where the subscription is created. The topic compartment_id is used if undefined. It can be either a compartment OCID or a reference (a key) to the compartment OCID.
         protocol = string # valid values (case insensitive): EMAIL, CUSTOM_HTTPS, PAGERDUTY, SLACK, ORACLE_FUNCTIONS, SMS
         values = list(string) # list of endpoint values, specific to each protocol.
         defined_tags = optional(map(string)) # subscription defined_tags. The topic defined_tags is used if undefined.
