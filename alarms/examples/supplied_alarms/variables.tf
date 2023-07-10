@@ -29,14 +29,8 @@ variable "alarms_configuration" {
         metric_compartment_id    = optional(string)   # the compartment containing the metric being evaluated by the alarm. compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         message_format           = optional(string) # format to use for notification messages sent from this alarm. Valid formats are: "RAW", "PRETTY_JSON", "ONS_OPTIMIZED". Default is "PRETTY_JSON".
       }))
-      destination_topics = optional(object({ # the topics where alarms are sent to.
-        existing_topic_ids = optional(list(string)) # for using existing topics NOT managed in this configuration. This attribute is overloaded: values can be either topic OCIDs or references (keys) to the topics OCIDs.
-        topic_keys = optional(list(string)) # references to topics managed in this configuration.
-      }))
-      destination_streams = optional(object({ # the streams where alarms are sent to.
-        existing_stream_ids = optional(list(string)) # for using existing streams NOT managed in this configuration. This attribute is overloaded: values can be either stream OCIDs or references (keys) to the streams OCIDs.
-        stream_keys = optional(list(string)) # references to streams managed in this configuration.
-      }))
+      destination_topic_ids = optional(list(string)) # List of topics to send alarms to. This attribute is overloaded: values can be either topic OCIDs or references (keys) to the topics OCIDs. The references are first looked up in the topics attribute and then in the topics_dependency object. 
+      destination_stream_ids = optional(list(string)) # List of streams to send alarms to. This attribute is overloaded: values can be either stream OCIDs or references (keys) to the streams OCIDs. The references are first looked up in the streams attribute and then in the streams_dependency object. 
       defined_tags             = optional(map(string))  # alarm defined_tags. default_defined_tags is used if undefined.
       freeform_tags            = optional(map(string))  # alarm freeform_tags. default_freeform_tags is used if undefined.
     }))
@@ -46,6 +40,7 @@ variable "alarms_configuration" {
       name             = string           # the topic name
       description      = optional(string) # the topic description
       subscriptions    = optional(list(object({
+        compartment_id = optional(string)      # the compartment where the subscription is created. Topic compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         protocol         = string                # valid values (case insensitive): EMAIL, CUSTOM_HTTPS, PAGERDUTY, SLACK, ORACLE_FUNCTIONS, SMS
         values           = list(string)          # list of endpoint values, specific to each protocol.
         defined_tags     = optional(map(string)) # subscription defined_tags. topic defined_tags is used if undefined.

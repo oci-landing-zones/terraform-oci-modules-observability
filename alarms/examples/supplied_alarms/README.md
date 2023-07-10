@@ -13,7 +13,6 @@ The picture below shows side by side how the various attributes in *alarms_confi
 
 2. Within *\<project-name\>.auto.tfvars*, provide tenancy connectivity information and adjust the *alarms_configuration* input variable, by making the appropriate substitutions:
    - Replace *\<REPLACE-BY-COMPARTMENT-OCID\>*, *\<REPLACE-BY-METRIC-COMPARTMENT-OCID\>*, *\<REPLACE-BY-TOPIC-OCID\>* placeholders by appropriate compartment and topic OCIDs. 
-   - Replace *email.address@example.com* by actual email addresses.
 
 Refer to [Alarms' module README.md](../../README.md) for overall attributes usage.
 
