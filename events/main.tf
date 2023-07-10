@@ -8,7 +8,7 @@ locals {
       for subs in (topic["subscriptions"] != null ? topic["subscriptions"] : []) : [
         for value in subs["values"] : {
           key = "${topic_key}.${value}"
-          compartment_id = subs.compartment_ocid != null ? subs.compartment_ocid : topic.compartment_ocid != null ? topic.compartment_ocid : var.events_configuration.default_compartment_ocid
+          compartment_id = topic.compartment_id != null ? (length(regexall("^ocid1.*$", topic.compartment_id)) > 0 ? topic.compartment_id : var.compartments_dependency[topic.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
           protocol = upper(subs.protocol)
           endpoint = value
           topic_id = oci_ons_notification_topic.these[topic_key].id
@@ -72,7 +72,7 @@ resource "oci_events_rule" "these" {
       }
     }
 
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.events_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
     display_name   = each.value.event_display_name
     description    = each.value.event_description != null ? each.value.event_description : each.value.event_display_name
     condition      = each.value.supplied_events != null ? jsonencode({"eventType":each.value.supplied_events,"data":local.filters[each.key]}) : jsonencode({"eventType":flatten(concat([for category in each.value.preconfigured_events_categories : local.preconfigured_events[lower(category)].conditions])),"data":local.filters[each.key]})
@@ -81,58 +81,36 @@ resource "oci_events_rule" "these" {
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.events_configuration.default_freeform_tags)
     actions {
       dynamic "actions" {
-        for_each = each.value.actions_topics != null ? (each.value.actions_topics.topic_keys != null ? each.value.actions_topics.topic_keys : []) : []
+        for_each = each.value.destination_topic_ids != null ? each.value.destination_topic_ids : []
         content {
           action_type = "ONS"
           is_enabled  = true
           description = "Events are published into a topic."
-          topic_id    = oci_ons_notification_topic.these[actions.value].id
+          topic_id    = length(regexall("^ocid1.*$", actions.value)) > 0 ? actions.value : contains(keys(oci_ons_notification_topic.these),actions.value) ? oci_ons_notification_topic.these[actions.value].id : var.topics_dependency[actions.value].id
           stream_id   = null
           function_id = null
         }  
       }
       dynamic "actions" {
-        for_each = each.value.actions_topics != null ? (each.value.actions_topics.existing_topic_ocids != null ? each.value.actions_topics.existing_topic_ocids : []) : []
-        content {
-          action_type = "ONS"
-          is_enabled  = true
-          description = "Events are published into a topic."
-          topic_id    = actions.value
-          stream_id   = null
-          function_id = null
-        }  
-      }
-      dynamic "actions" {
-        for_each = each.value.actions_streams != null ? (each.value.actions_streams.stream_keys != null ? each.value.actions_streams.stream_keys : []) : []
+        for_each = each.value.destination_stream_ids != null ? each.value.destination_stream_ids : []
         content {
           action_type = "OSS"
           is_enabled  = true
           description = "Events are sent to a stream."
           topic_id    = null
-          stream_id   = oci_streaming_stream.these[actions.value].id
+          stream_id   = length(regexall("^ocid1.*$", actions.value)) > 0 ? actions.value : contains(keys(oci_streaming_stream.these),actions.value) ? oci_streaminf_stream.these[actions.value].id : var.streams_dependency[actions.value].id
           function_id = null
         }  
       }
       dynamic "actions" {
-        for_each = each.value.actions_streams != null ? (each.value.actions_streams.existing_stream_ocids != null ? each.value.actions_streams.existing_stream_ocids : []) : []
-        content {
-          action_type = "OSS"
-          is_enabled  = true
-          description = "Events are sent to a stream."
-          topic_id    = null
-          stream_id   = actions.value
-          function_id = null
-        }  
-      }
-      dynamic "actions" {
-        for_each = each.value.actions_functions != null ? (each.value.actions_functions.existing_function_ocids != null ? each.value.actions_functions.existing_function_ocids : []) : []
+        for_each = each.value.destination_function_ids != null ? each.value.destination_function_ids : []
         content {
           action_type = "FAAS"
           is_enabled  = true
           description = "Events are sent to a function."
           topic_id    = null
           stream_id   = null
-          function_id = actions.value
+          function_id = length(regexall("^ocid1.*$", actions.value)) > 0 ? actions.value : var.functions_dependency[actions.value].id
         }  
       } 
     }
@@ -140,7 +118,7 @@ resource "oci_events_rule" "these" {
 
 resource "oci_ons_notification_topic" "these" {
   for_each = var.events_configuration["topics"] != null ? var.events_configuration["topics"] : {}
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.events_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
     name           = each.value.name
     description    = each.value.description != null ? each.value.description : each.value.name
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.events_configuration.default_defined_tags
@@ -170,7 +148,7 @@ resource "oci_ons_subscription" "these" {
 
 resource "oci_streaming_stream" "these" {
   for_each = var.events_configuration["streams"] != null ? var.events_configuration["streams"] : {}
-    compartment_id     = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.events_configuration.default_compartment_ocid
+    compartment_id     = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
     name               = each.value.name
     partitions         = each.value.num_partitions != null ? each.value.num_partitions : 1
     retention_in_hours = each.value.log_retention_in_hours != null ? each.value.log_retention_in_hours : 24

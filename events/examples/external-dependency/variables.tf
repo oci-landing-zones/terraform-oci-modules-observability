@@ -137,3 +137,16 @@ variable "home_region_events_configuration" {
     })))
   })
 }
+
+variable "oci_shared_config_bucket" {
+  type = string
+  default = null
+}
+variable "oci_compartments_object" {
+  type = string
+  default = null
+}
+variable "oci_topics_object" {
+  type = string
+  default = null
+}

@@ -86,14 +86,14 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, events are defined using the *events_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **event_rules**: define the event types to capture and where to send them. **Each event rule is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys.
 - **topics**: define the topics managed by this module that can be used as event destinations. **Each topic is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys.
 - **streams**: define the streams managed by this module that can be used as event destinations. **Each stream is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys.
 
- ## Defining the event types to capture
+ ## Defining the Event Types to Capture
 
 Within *event_rules*, the event types to capture can be specified in two ways: through pre-configured events categories or by supplying specific event types.
 
@@ -136,38 +136,26 @@ tags_filter = [
   }
 ]
 ```
-## Defining where to send captured events
+## Defining Where to Send Events
 
-Within *event_rules* attribute, use the *actions_topics*, *actions_streams* and *actions_functions* attributes to define where to send captured events. These attributes are similar, defining the topics, streams, and functions used as target destinations for the event types in question. *actions_topics* and *actions_streams* support referencing topics and streams managed by this module or externally managed. *actions_functions* supports functions that are externally managed only.
+Within *event_rules* attribute, use the *destination_topic_ids*, *destination_stream_ids* and *destination_function_ids* attributes to define where to send captured events. 
 
-- **actions_topics**: use *topic_keys* attribute to refer to managed topics and *existing_topic_ocids* attribute to consume externally managed topics.
-- **actions_streams**: use *streams_keys* attribute to refer to managed streams and *existing_stream_ocids* attribute to consume externally managed streams.
-- **actions_functions**: use *existing_function_ocids* attribute to consume externally managed functions.
+- **destination_topic_ids**: a list of topics to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *topics* attribute for internally managed topics. Then it looks up in the *topics_dependency* variable for externally managed topics.
+- **destination_stream_ids**: a list of streams to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *streams* attribute for internally managed streams. Then it looks up in the *stream_dependency* variable for externally managed streams.
+- **destination_function_ids**: a list of OCI functions to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *functions_dependency* variable for externally managed functions.
 
-For referring to a topic or stream managed by this module, provide the topic or stream key as defined in the *topics* and *streams* attributes (see next subsection).
-
-For referring to an externally managed topic, stream, or function, provide its ocid (Oracle Cloud ID).
-
-The example below shows the three action types. Note that you can provide multiple keys and existing ocids (they are lists) and both locally managed and externally managed resources can be used together, but OCI will allow a maximum of ten actions per event rule. 
+The example below shows the three destination types. Note that you can mix and match multiple OCIDs and references. 
 ```
-actions_topics = {
-  topic_keys = ["NETWORK-TOPIC-KEY"] # this key value refers to a topic managed by this module.
-  existing_topic_ocids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q"] # this ocid refers to a topic NOT managed by this module. It is a pre-existing topic that was created through some other means.
-}
-actions_streams = {
-  stream_keys = ["NETWORK-STREAM-KEY"] # this key value refers to a stream managed by this module.
-  existing_stream_ocids = ["ocid1.stream.oc1.iad.aaaaaa...ijk"] # this ocid refers to a stream NOT managed by this module. It is a pre-existing stream that was created through some other means.
-}
-actions_functions = {
-  existing_function_ocids = ["ocid1.fnfunc.oc1.iad.aaaaaa...3bq"] # this ocid refers to a function NOT managed by this module. It is a pre-existing function that was created through some other means.
-}
+destination_topic_ids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q", "NETWORK-TOPIC-KEY"] 
+destination_stream_ids = ["ocid1.stream.oc1.iad.aaaaaa...ijk", "NETWORK-STREAM-KEY"] 
+destination_function_ids = ["ocid1.fnfunc.oc1.iad.aaaaaa...3bq", "NETWORK-FUNCTION-KEY"]
 ```
 
-## Defining event destinations
+## Defining Event Destinations
 
 Within *events_configuration*, use the *topics* and *streams* attributes to define the topics and streams destinations managed by this module.
 
-**Each topic and stream is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys. These keys are referred in *topic_keys* and *stream_keys* attributes in *actions_topics* and *actions_streams*, respectively.
+**Each topic and stream is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys. 
 
 For each topic in the *topics* attribute, you can define their associated *subscriptions*, by specifying  respective *protocol* and *values*. Supported protocols are *EMAIL*, *CUSTOM_HTTPS*, *PAGERDUTY*, *SLACK*, *ORACLE_FUNCTIONS*, *SMS*. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
 
@@ -175,7 +163,7 @@ A topic definition example is shown below. Multiple subscriptions and multiple p
 ```
 topics = {
   NETWORK-TOPIC-KEY = { # this key is referred by topic_keys within actions_topics attribute
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     name = "vision-network-topic"
     subscriptions = [
       { protocol = "EMAIL", values = ["email.address@example.com"]}
@@ -194,6 +182,14 @@ streams = {
   }
 }
 ```
+## External Dependencies
+
+External dependencies are resources managed elsewhere that resources managed by this module depend on. The following dependencies are supported:
+
+- **compartments_dependency** : A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the compartment OCID).
+- **topics_dependency** : A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the topic OCID) of string type.
+- **streams_dependency** : A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the stream OCID) of string type.
+- **functions_dependency** : A map of objects containing the externally managed OCI functions this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the function OCID) of string type.
 
 ## An Example
 
