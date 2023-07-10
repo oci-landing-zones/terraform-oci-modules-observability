@@ -33,20 +33,11 @@ variable "events_configuration" {
           value = string # the tag value. Example: "99"
         }))
       })))
+      
       destination_topic_ids = optional(list(string)) # List of topics to send events to. This attribute is overloaded: values can be either topic OCIDs or references (keys) to the topics OCIDs. The references are first looked up in the topics attribute and then in the topics_dependency object. 
       destination_stream_ids = optional(list(string)) # List of streams to send events to. This attribute is overloaded: values can be either stream OCIDs or references (keys) to the streams OCIDs. The references are first looked up in the streams attribute and then in the streams_dependency object. 
       destination_function_ids = optional(list(string)) # List of OCI functions to send events to. This attribute is overloaded: values can be either stream OCIDs or references (keys) to the streams OCIDs. The references are looked up in the functions_dependency object. 
-      /* actions_topics = optional(object({ # the topics where events are sent to.
-        existing_topic_ocids = optional(list(string)) # for using existing topics NOT managed in this configuration.
-        topic_keys = optional(list(string)) # references to topics managed in this configuration.
-      }))
-      actions_streams = optional(object({ # the streams where events are sent to.
-        existing_stream_ocids = optional(list(string)) # for using existing streams NOT managed in this configuration.
-        stream_keys = optional(list(string)) # references to streams managed in this configuration.
-      }))
-      actions_functions = optional(object({ # the functions where events are sent to.
-        existing_function_ocids = optional(list(string)) # for using existing functions NOT managed in this configuration.
-      })) */
+      
       defined_tags = optional(map(string)) # events defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags = optional(map(string)) # events freeform_tags. default_freeform_tags is used if this is not defined.
     }))

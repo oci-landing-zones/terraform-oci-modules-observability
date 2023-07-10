@@ -142,7 +142,7 @@ Within *event_rules* attribute, use the *destination_topic_ids*, *destination_st
 
 - **destination_topic_ids**: a list of topics to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *topics* attribute for internally managed topics. Then it looks up in the *topics_dependency* variable for externally managed topics.
 - **destination_stream_ids**: a list of streams to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *streams* attribute for internally managed streams. Then it looks up in the *stream_dependency* variable for externally managed streams.
-- **destination_function_ids**: a list of OCI functions to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *functions_dependency* variable for externally managed functions.
+- **destination_function_ids**: a list of OCI functions to send events to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module looks up for the reference in the *functions_dependency* variable for externally managed functions.
 
 The example below shows the three destination types. Note that you can mix and match multiple OCIDs and references. 
 ```
