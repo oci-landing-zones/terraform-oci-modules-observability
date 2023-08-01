@@ -216,9 +216,7 @@ events_configuration = {
           tags = [{name = "CostCenter", value = "1"}, {name = "OwnerEmail", value = "email.address@example.com"}]
         }
       ]
-      actions_topics = {
-        topic_keys = ["APIGW-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["APIGW-TOPIC-KEY"]
     }
   }
     

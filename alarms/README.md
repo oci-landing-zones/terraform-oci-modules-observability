@@ -175,9 +175,7 @@ alarms_configuration = {
     NETWORK-ALARM-VPN-STATUS-KEY = {
       display_name = "vpn-status-alarm"
       preconfigured_alarm_type = "vpn-status-alarm"
-      destination_topics = {
-        topic_keys = ["NETWORK-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["NETWORK-TOPIC-KEY"]
     }
   }
   topics = {
