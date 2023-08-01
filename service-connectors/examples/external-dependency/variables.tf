@@ -57,7 +57,7 @@ variable "service_connectors_configuration" {
       })
 
       policy = optional(object({ # If you omit this block in the declaration, the policy compartment_id, name and description are derived from the target.
-        compartment_id = string, # the compartment where the policy is attached. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+        compartment_id = optional(string), # the compartment where the policy is attached. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         name = optional(string), # the policy name.
         description = optional(string) # the policy description.
       }))
@@ -96,4 +96,17 @@ variable "service_connectors_configuration" {
     })))
 
   })    
+}
+
+variable "oci_shared_config_bucket_name" {
+  type = string
+  default = null
+}
+variable "oci_compartments_object_name" {
+  type = string
+  default = null
+}
+variable "oci_streams_object_name" {
+  type = string
+  default = null
 }

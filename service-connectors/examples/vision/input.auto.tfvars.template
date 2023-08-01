@@ -27,50 +27,52 @@ region               = "<your tenancy region>"      # This is your tenancy regio
 #---------------------------------------
 
 service_connectors_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   service_connectors = {
     SERVICE-CONNECTOR-1 = {
       display_name = "vision-service-connector-1"
-      #compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the Service Connector resource is created.
+      #compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the Service Connector resource is created.
+      #activate = true # Service Connector is created inactive. Uncomment this line to make it active.
       source = {
         kind = "logging" # Other supported values: "streaming"
         audit_logs = [
-          {cmp_ocid = "ALL"} # "ALL" means all tenancy audit logs. Only applicable if kind = "logging".
+          {cmp_id = "ALL"} # "ALL" means all tenancy audit logs. Only applicable if kind = "logging".
         ] 
         non_audit_logs = [
-          {cmp_ocid = "<REPLACE-BY-COMPARTMENT-OCID>", log_group_ocid = "<REPLACE-BY-LOG-GROUP-OCID>"}, # Compartment where logs that are not of audit type are stored. Only applicable if kind = "logging".
-          #{cmp_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"} # Another compartment where logs that are not of audit type are stored. Only applicable if kind = "logging".
+          {cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>", log_group_id = "<REPLACE-BY-LOG-GROUP-OCID>"}, # Compartment where logs that are not of audit type are stored. Only applicable if kind = "logging".
+          #{cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>"} # Another compartment where logs that are not of audit type are stored. Only applicable if kind = "logging".
         ] 
-        #stream_ocid = null # Only applicable if kind = "streaming"
+        #stream_id = null # Only applicable if kind = "streaming"
       }
       #log_rule_filter = "data.vcnId='<REPLACE-BY-VCN-COMPARTMENT-OCID>' AND data.region='us_ashburn-1'"
       target = {
         kind = "objectstorage" # Other supported values= "streaming", "functions", "logginganalytics"
         #bucket_name = null # The name of an existing bucket.
-        bucket_key = "SERVICE-CONNECTOR-BUCKET-1" # Refers to the bucket key in buckets object below. Use this when you want to use a bucket managed by this module, instead of using an externally managed one (indicated by bucket_name).
         #bucket_batch_rollover_size_in_mbs = null,
         #bucket_batch_rollover_time_in_ms = null,
         bucket_object_name_prefix = "sch",
-        #stream_ocid = null,
-        #stream_key = null,
-        #function_ocid = null,
-        #log_group_ocid = null,
-        policy_name = "vision-service-connector-1-policy" # The policy name that is created allowing the service connector to push data to bucket.
-        #policy_description = null # The policy description.
-        #compartment_ocid = null # The compartment ocid of the target resource. This value is used when building the policy. In the future, we may auto discover this based on the resource id. 
+        #stream_id = null,
+        #function_id = null,
+        #log_group_id = null,
+        #compartment_id = null # The compartment ocid of the target resource. This value is used when building the policy. In the future, we may auto discover this based on the resource id. 
       }
+      #policy = {
+        #name = "vision-service-connector-policy"
+        #description = "IAM policy for letting Service Connector to push data to target resource."
+        #compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+      #}
     }
   }
 
   buckets = { # Managed buckets
     SERVICE-CONNECTOR-BUCKET-1 = { # Bucket key. Referred by bucket_key in "target" object above.
       name = "vision-service-connector-bucket-1" # Bucket name
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the bucket is created.
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the bucket is created.
       #cis_level = "1" # If cis_level = "2", buckets are versioned and encrypted with a customer managed key provided in "kms_key_ocid" below.
-      #kms_key_ocid = null # The ocid of an existing KMS key. Required if cis_level = "2". 
+      #kms_key_id = null # The ocid of an existing KMS key. Required if cis_level = "2". 
       #defined_tags = null
       #freeform_tags = null
     }

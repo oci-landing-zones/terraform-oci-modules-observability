@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This example shows how to deploy Notification resources in OCI using the [Notifications module](../..). It is functionally equivalent to [Vision example](../vision/), but it obtains its dependencies from an OCI Object Storage object, specified in *oci_compartments_dependency* variable settings. 
+This example shows how to deploy Notification resources in OCI using the [Notifications module](../..). It is functionally equivalent to [Vision example](../vision/), but it obtains its dependencies from an OCI Object Storage object, specified in *oci_compartments_object_name* variable. 
 
 It deploys two topics:
 - A topic for network related notifications subscribed by two email addresses.
 - A topic for security related notifications subscribed by a mobile phone number.
 
-This example consumes the output of Compartment module (see [main.tf](./main.tf)) and publishes the Notification module output for Topic consumers (see [outputs.tf](./outputs.tf)). As such, the following extra permissions are required for the executing user, in addition to the permissions required by the [Notifications module](../..) itself.
+This example reads the output of Compartment module (see [main.tf](./main.tf)) and publishes the Notification module output for Topic consumers (see [outputs.tf](./outputs.tf)) from/to OCI Object Storage bucket. As such, the following extra permissions are required for the executing user, in addition to the permissions required by the [Notifications module](../..) itself.
 
 ```
 allow group <group> to read objectstorage-namespaces in tenancy

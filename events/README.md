@@ -186,10 +186,10 @@ streams = {
 
 External dependencies are resources managed elsewhere that resources managed by this module depend on. The following dependencies are supported:
 
-- **compartments_dependency** : A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the compartment OCID).
-- **topics_dependency** : A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the topic OCID) of string type.
-- **streams_dependency** : A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the stream OCID) of string type.
-- **functions_dependency** : A map of objects containing the externally managed OCI functions this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the function OCID) of string type.
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+- **topics_dependency**: A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the topic OCID.
+- **streams_dependency**: A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the stream OCID.
+- **functions_dependency**: A map of objects containing the externally managed OCI functions this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the function OCID.
 
 ## An Example
 

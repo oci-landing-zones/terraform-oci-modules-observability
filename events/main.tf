@@ -98,7 +98,7 @@ resource "oci_events_rule" "these" {
           is_enabled  = true
           description = "Events are sent to a stream."
           topic_id    = null
-          stream_id   = length(regexall("^ocid1.*$", actions.value)) > 0 ? actions.value : contains(keys(oci_streaming_stream.these),actions.value) ? oci_streaminf_stream.these[actions.value].id : var.streams_dependency[actions.value].id
+          stream_id   = length(regexall("^ocid1.*$", actions.value)) > 0 ? actions.value : contains(keys(oci_streaming_stream.these),actions.value) ? oci_streaming_stream.these[actions.value].id : var.streams_dependency[actions.value].id
           function_id = null
         }  
       }

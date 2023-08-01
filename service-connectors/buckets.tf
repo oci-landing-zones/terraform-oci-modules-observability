@@ -23,20 +23,24 @@ resource "oci_objectstorage_bucket" "these" {
       }
     }  
     provider       = oci
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.service_connectors_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id)
     name           = each.value.name
     namespace      = data.oci_objectstorage_namespace.this[0].namespace
-    kms_key_id     = each.value.kms_key_ocid != null ? each.value.kms_key_ocid : null
+    kms_key_id     = each.value.kms_key_id != null ? (length(regexall("^ocid1.*$", each.value.kms_key_id)) > 0 ? each.value.kms_key_id : var.kms_dependency[each.value.kms_key_id].id) : null
     versioning     = coalesce(each.value.cis_level,"1") == "2" ? "Enabled" : "Disabled"
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_freeform_tags)
 }
 
+/* locals {
+  buckets_cis_level = [ for v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : coalesce(v.cis_level,"1") == "2" ]
+} */
 #-- Log group for bucket write access logs
 resource "oci_logging_log_group" "bucket" {
+  #count = anytrue(local.buckets_cis_level) ? 1 : 0
   for_each = { for k, v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : k => v if coalesce(v.cis_level,"1") == "2" }
     provider       = oci
-    compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.service_connectors_configuration.default_compartment_ocid
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id)
     display_name   = "${each.value.name}-log-group"
     description    = "Service Connector bucket log group."
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
@@ -58,7 +62,7 @@ resource "oci_logging_log" "bucket" {
         service     = "objectstorage"
         source_type = "OCISERVICE"
       }
-      compartment_id = each.value.compartment_ocid != null ? each.value.compartment_ocid : var.service_connectors_configuration.default_compartment_ocid
+      compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id)
     }
     is_enabled         = true
     retention_duration = 30

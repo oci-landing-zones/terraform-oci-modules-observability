@@ -98,8 +98,8 @@ alarms_configuration = {
   }
 }
 
-oci_shared_config_bucket = "<REPLACE-BY-BUCKET-NAME>"
+oci_shared_config_bucket_name = "<REPLACE-BY-BUCKET-NAME>"
 
-oci_compartments_object = "<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS>"
+oci_compartments_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS>"
 
-oci_topics_object = "<REPLACE-BY-OBJECT-NAME-FOR-TOPICS>"
+oci_topics_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-TOPICS>"

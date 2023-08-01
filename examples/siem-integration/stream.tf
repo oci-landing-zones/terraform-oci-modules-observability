@@ -3,9 +3,9 @@
 
 locals {
   streams_configuration = {
-    default_compartment_ocid : var.stream_compartment_ocid
+    default_compartment_id : var.stream_compartment_ocid
     streams : {
-      SIEM-INTEGRATION-STREAM-KEY : {
+      SIEM-INTEGRATION-STREAM : {
         name : "vision-siem-integration-stream"
       }
     }

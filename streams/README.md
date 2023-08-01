@@ -84,7 +84,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, streams are defined using the *streams_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **streams**: the streams.
@@ -96,32 +96,32 @@ Within *streams_configuration*, use the *streams* attribute to define the stream
 
 The *streams* attribute supports the following attributes:
 - **name**: the stream name.
-- **compartment_ocid**: the ocid of the compartment where the stream and its default stream pool is created.
-- **stream_pool_key**: the key referring to a custom stream pool in the *stream_pools* attribute. When this is defined, the stream is created in the same compartment as the referred custom stream pool. When this is not defined, a default stream pool is created and the stream is placed in the same compartment as the default stream pool.
+- **compartment_id**: the compartment where the stream is created. Use it when the stream belongs to Default stream pool. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+- **stream_pool_id**: the stream pool where the Stream belongs. It has precedence over *compartment_id*. Wen used, the stream is created in the same compartment as the stream pool. Use it when the stream belongs to a custom stream pool (defined in stream_pools). If set, this value must be set to a key in the stream_pools object.
 - **num_partitions**: the number of stream partitions. Default is "1" partition.
 - **log_retention_in_hours**: defines for how long log messages are kept. Default is "24" hours.
 - **defined_tags**: the stream defined tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the stream freeform tags. *default_freeform_tags* is used if this is not defined.
 
-The following example defines a stream with two partitions and a log retention time of fourty-eight hours. As *stream_pool_key* is not defined, the stream is associated with a default stream pool that is also created. Both the stream and the stream pool are created in the compartment defined by *compartment_ocid*.
+The following example defines a stream with two partitions and a log retention time of fourty-eight hours. As *stream_pool_id* is not defined, the stream is associated with the Default stream pool.
 ```
 streams = {
-  NETWORK-STREAM-KEY = {
+  NETWORK-STREAM = {
     name = "vision-network-stream"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     num_partitions = 2
     log_retention_in_hours = 48
   }
 }
 ```
 
-The following example defines a stream with one partitions and a log retention time of seventy-two hours. As *stream_pool_key* is defined, the stream is associated with the stream pool pointed by "MY-STREAM-POOL-KEY" key in *stream_pools* attribute. The *compartment_ocid* value is ignored, and the stream is created in the stream pool compartment.
+The following example defines a stream with one partitions and a log retention time of seventy-two hours. As *stream_pool_id* is defined, the stream is associated with the stream pool pointed by "MY-STREAM-POOL" key in *stream_pools* attribute. The *compartment_id* value is ignored, and the stream is created in the stream pool compartment.
 ```
 streams = {
-  NETWORK-STREAM-KEY = {
+  NETWORK-STREAM = {
     name = "vision-network-stream"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
-    stream_pool_key = "MY-STREAM-POOL-KEY"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
+    stream_pool_id = "MY-STREAM-POOL"
     num_partitions = 1
     log_retention_in_hours = 72
   }
@@ -132,16 +132,16 @@ streams = {
 
 Within *streams_configuration*, use the *stream_pools* attribute to define custom stream pools managed by this module. Each stream pool is defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys. 
 
-In OCI, every stream belongs to a stream pool, that defines common characteristics for all contained streams. If a stream is not explicitly assigned to a stream pool, a default stream pool is created and the stream is assigned to it.
+In OCI, every stream belongs to a stream pool, that defines common characteristics for all contained streams. A stream that is not explicitly assigned to a stream pool gets assigned to the Default stream pool.
 
 The *stream_pools* attribute supports the following attributes:
 - **name**: the stream pool name.
-- **compartment_ocid**: the ocid of the compartment where the stream pool and all its associated streams are created.
-- **kms_key_ocid**: the ocid of the customer managed key used to encrypt the streams in the stream pool.
+- **compartment_id**: the compartment where the stream pool is created. default_compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+- **kms_key_id**: the customer managed key used to encrypt streams in the Stream Pool. This attribute is overloaded: it can be either an encryption Key OCID or a reference (a key) to the encryption Key OCID.
 - **private_endpoint_settings**: settings for private endpoints. Use this to restrict traffic to streams in the stream pool to a private endpoint, thus avoiding that traffic traverse the Internet. The following attributes are supported:
-  - **subnet_ocid**: the ocid of the subnet where the stream pool is placed. This value cannot be changed once assigned.
-  - **private_endpoint_ip**: a private IP address that is explicitly assigned to the stream pool. It must be in the CIDR range of the subnet specified by *subnet_ocid*. If not specified, a randomly IP address taken from the subnet IP range is assigned. After the stream pool is created, a custom Fully Qualified Domaind Name (FQDN), pointing to this private IP, is created. The FQDN is then used to access the service instead of the private IP.
-  - **nsg_ocids**: a list of Network Security Group (NSG) ocids where the streams in the stream pool are placed. Access to the streams is only possible if allowed by the NSG security rules. This value cannot be changed once assigned.
+  - **subnet_id**: the subnet the stream pool is assigned. This value cannot be changed once assigned. This attribute is overloaded: it can be either a subnet OCID or a reference (a key) to the subnet OCID.
+  - **private_endpoint_ip**: the IP address for the Stream Pool. A random IP address from the subnet is assigned if undefined. It must be in the CIDR range of the subnet specified by *subnet_id*. If not specified, a randomly IP address taken from the subnet IP range is assigned. After the stream pool is created, a custom Fully Qualified Domaind Name (FQDN), pointing to this private IP, is created. The FQDN is then used to access the service instead of the private IP.
+  - **nsg_ids**: the network security groups the stream pool IP address is added to. Access to the streams is only possible if allowed by the NSG security rules. This value cannot be changed once assigned. This attribute is overloaded: it can be either NSGs OCIDs or references (keys) to the NSGs OCIDs.
 - **kafka_settings**: settings for the Kafka APIs compatibility layer. The following attributes are supported:
   - **auto_create_topics_enabled**: determines whether topics are automatically created on the server. This is the equivalent to the Kafka setting "auto.create.topics.enable" Default is false.
   - **bootstrap_servers**: the bootstrap servers to use with Kafka client.
@@ -150,17 +150,17 @@ The *stream_pools* attribute supports the following attributes:
 - **defined_tags**: the stream pool defined tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the stream pool freeform tags. *default_freeform_tags* is used if this is not defined.
 
-The following example defines a stream pool where streams are encrypted with a customer managed key (*kms_key_ocid*) and are only reachable by producers and consumers that can access the subnet (*subnet_ocid*) and are authorized by the security rules in the network security groups (*nsg_ocids*). The commented out attributes (preceded by #) are shown for awareness.
+The following example defines a stream pool where streams are encrypted with a customer managed key (*kms_key_id*) and are only reachable by producers and consumers that can access the subnet (*subnet_id*) and are authorized by the security rules in the network security groups (*nsg_ids*). The commented out attributes (preceded by #) are shown for awareness.
 ```
 stream_pools = {
-    MY-STREAM-POOL-KEY = {
+    MY-STREAM-POOL = {
       name = "vision-stream-pool"
-      compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
-      kms_key_ocid = "ocid1.key.oc1..bzqwnr...zsq"
+      compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
+      kms_key_id = "ocid1.key.oc1..bzqwnr...zsq"
       private_endpoint_settings = {
-        subnet_ocid = "ocid1.subnet.oc1..aaaaaa...e7a"
+        subnet_id = "ocid1.subnet.oc1..aaaaaa...e7a"
       # private_endpoint_ip = null
-        nsg_ocids = "ocid1.networksecuritygroup.oc1..aaaaaa...xlq"
+        nsg_ids = "ocid1.networksecuritygroup.oc1..aaaaaa...xlq"
       }
       #kafka_settings = {
       #  auto_create_topics_enabled = false
@@ -173,6 +173,14 @@ stream_pools = {
     }
   }
 ```
+
+## External Dependencies
+
+External dependencies are resources managed elsewhere that resources managed by this module depend on. The following dependencies are supported:
+
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+- **kms_dependency**: A map of objects containing the externally managed encryption keys this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the encryption key OCID.
+- **network_dependency**: A map of objects containing the externally managed subnets and NSGs this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the subnet OCID and NSG OCID.
 
 ## <a name="related">Related Documentation</a>
 - [Overview of Streaming](https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm)

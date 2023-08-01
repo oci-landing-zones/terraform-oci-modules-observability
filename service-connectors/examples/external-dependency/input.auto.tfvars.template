@@ -4,7 +4,15 @@
 #--------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
+# 3. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references, 
+#    expected to be found in the OCI Object Storage object specified in oci_compartments_dependency.
+# 4. Replace <REPLACE-BY-STREAM-REFERENCE> placeholder by the appropriate stream reference, 
+#    expected to be found in the OCI Object Storage object specified in oci_streams_dependency.
+# 5. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
+# 6. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages compartments.
+# 7. Replace <REPLACE-BY-OBJECT-NAME-FOR-TOPICS> placeholder by the OCI Object Storage object to with the topic references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages topics.
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -24,34 +32,30 @@ region               = "<your tenancy region>"      # This is your tenancy regio
 #---------------------------------------
 
 service_connectors_configuration = {
-  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
-  #default_defined_tags   = null
-  #default_freeform_tags  = null
-
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
+  
   service_connectors = {
-    SAMPLE-SERVICE-CONNECTOR = {
+    SERVICE-CONNECTOR = {
       display_name = "sample-service-connector"
-      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the Service Connector resource is created.
       source = {
         kind = "logging"
         audit_logs = [
           {cmp_id = "ALL"} # "ALL" means all tenancy audit logs.
         ] 
         non_audit_logs = [
-          {cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>"}, # Compartment where logs are stored. Add as manay as needed.
-          {cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>"} # Compartment where logs are stored, if different than the previous one above.
+          {cmp_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"} # Compartment where logs other than audit logs are stored.
         ] 
       }
       target = {
         kind = "streaming"
-        stream_id = "SAMPLE-STREAM", # a reference to the stream declared in streams attribute below.
+        stream_id = "<REPLACE-BY-STREAM-REFERENCE>",
       }
     }
   }
-
-  streams = { # Managed streams
-    SAMPLE-STREAM = { # Stream key, referred by stream_id in "target" object above.
-      name = "sample-stream"
-    }
-  }
 }
+
+oci_shared_config_bucket_name = "<REPLACE-BY-BUCKET-NAME>"
+
+oci_compartments_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS>"
+
+oci_streams_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-STREAMS>"

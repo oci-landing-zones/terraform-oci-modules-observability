@@ -13,16 +13,21 @@ data "oci_objectstorage_object" "compartments" {
     object    = var.oci_compartments_object_name
 }
 
-data "oci_objectstorage_object" "topics" {
-  count = var.oci_shared_config_bucket_name != null && var.oci_topics_object_name != null ? 1 : 0
+data "oci_objectstorage_object" "streams" {
+  count = var.oci_shared_config_bucket_name != null && var.oci_streams_object_name != null ? 1 : 0
     bucket    = var.oci_shared_config_bucket_name
     namespace = data.oci_objectstorage_namespace.this[0].namespace
-    object    = var.oci_topics_object_name
+    object    = var.oci_streams_object_name
 }
 
-module "vision_alarms" {
-  source               = "../../"
-  alarms_configuration = var.alarms_configuration
+module "vision_connector" {
+  source         = "../.."
+  providers = {
+    oci = oci
+    oci.home = oci.home
+  }
+  tenancy_ocid     = var.tenancy_ocid
+  service_connectors_configuration = var.service_connectors_configuration
   compartments_dependency = var.oci_compartments_object_name != null ? jsondecode(data.oci_objectstorage_object.compartments[0].content) : null
-  topics_dependency = var.oci_topics_object_name != null ? jsondecode(data.oci_objectstorage_object.topics[0].content) : null
+  streams_dependency = var.oci_streams_object_name != null ? jsondecode(data.oci_objectstorage_object.streams[0].content) : null
 }

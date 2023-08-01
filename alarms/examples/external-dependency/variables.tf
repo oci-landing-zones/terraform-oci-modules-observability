@@ -61,15 +61,15 @@ variable "alarms_configuration" {
   })
 }
 
-variable "oci_shared_config_bucket" {
+variable "oci_shared_config_bucket_name" {
   type = string
   default = null
 }
-variable "oci_compartments_object" {
+variable "oci_compartments_object_name" {
   type = string
   default = null
 }
-variable "oci_topics_object" {
+variable "oci_topics_object_name" {
   type = string
   default = null
 }

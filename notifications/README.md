@@ -94,7 +94,7 @@ The *topics* attribute supports the following attributes:
 
 External dependencies are resources managed elsewhere that resources managed by this module depend on. The following dependencies are supported:
 
-- **compartments_dependency** : A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute (representing the compartment OCID).
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
 
 ## An Example
 

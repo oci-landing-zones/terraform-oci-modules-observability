@@ -16,5 +16,12 @@ locals {
 
     sources = [local.SOURCE_LOGGING, local.SOURCE_STREAMING]
     targets = [local.TARGET_OBJECT_STORAGE, local.TARGET_STREAMING, local.TARGET_FUNCTIONS, local.TARGET_LOGGING_ANALYTICS, local.TARGET_NOTIFICATIONS]
+    target_resource_dependencies = {
+        (local.TARGET_OBJECT_STORAGE) : "bucket_name"
+        (local.TARGET_STREAMING) : "stream_id"
+        (local.TARGET_FUNCTIONS) : "function_id"
+        (local.TARGET_LOGGING_ANALYTICS) : "log_group_id"
+        (local.TARGET_NOTIFICATIONS) : "topic_id"
+    }
     subscription_protocols = ["EMAIL","CUSTOM_HTTPS","SLACK","PAGERDUTY","ORACLE_FUNCTIONS","SMS"]
 }

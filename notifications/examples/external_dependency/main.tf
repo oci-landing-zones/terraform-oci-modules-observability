@@ -6,14 +6,14 @@ data "oci_objectstorage_namespace" "this" {
 }
 
 data "oci_objectstorage_object" "compartments" {
-  count = var.oci_shared_config_bucket != null ? 1 : 0
-    bucket    = var.oci_shared_config_bucket
+  count = var.oci_shared_config_bucket_name != null ? 1 : 0
+    bucket    = var.oci_shared_config_bucket_name
     namespace = data.oci_objectstorage_namespace.this.namespace
-    object    = var.oci_compartments_object
+    object    = var.oci_compartments_object_name
 }
 
 module "cislz_notifications" {
   source               = "../../"
   notifications_configuration = var.notifications_configuration
-  compartments_dependency = var.oci_shared_config_bucket != null ? jsondecode(data.oci_objectstorage_object.compartments[0].content) : null
+  compartments_dependency = var.oci_shared_config_bucket_name != null ? jsondecode(data.oci_objectstorage_object.compartments[0].content) : null
 }
