@@ -1,0 +1,116 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-ROOT-COMPARTMENT-OCID> placeholders by your Root compartment OCID. 
+# 4. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references,
+#    expected to be found in the OCI Object Storage object specified in oci_compartments_dependency.
+# 5. Replace <REPLACE-BY-TOPIC-REFERENCE> placeholders by the appropriate topic references,
+#    expected to be found in the OCI Object Storage object specified in oci_topics_dependency.
+# 6. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
+# 7. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages compartments.
+# 8. Replace <REPLACE-BY-OBJECT-NAME-FOR-TOPICS> placeholder by the OCI Object Storage object to with the topic references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages topics.
+#-------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
+private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
+private_key_password = ""                           # This is the password that protects the private key, if any.
+home_region          = "<your tenancy home region>" # This is your tenancy home region, where IAM and Cloud Guard events are created.
+region               = "<your tenancy region>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+events_configuration = { 
+  
+  default_compartment_id = "<REPLACE-BY-ROOT-COMPARTMENT-OCID>" #Root compartment
+  #default_defined_tags   = null
+  #default_freeform_tags  = null
+
+  event_rules = {
+    NETWORK-EVENTS-KEY = { 
+      #compartment_id = null
+      #is_enabled = true
+      event_display_name = "vision-notify-on-network-changes-rule"
+      #event_description = null
+      preconfigured_events_categories = ["network"] # this defines the set of event rules that are configured
+      #supplied_events = null
+      #attributes_filter = null
+      #tags_filter = null
+      destination_topic_ids = ["NETWORK-TOPIC"]
+      #actions_streams = null
+      #actions_functions = null
+      #defined_tags = null
+      #freeform_tags = null
+    }
+    STORAGE-EVENTS-KEY = { 
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
+      event_display_name = "vision-notify-on-storage-changes-rule"
+      preconfigured_events_categories = ["storage"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+    DATABASE-EVENTS-KEY = { 
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
+      event_display_name = "vision-notify-on-database-changes-rule"
+      preconfigured_events_categories = ["database"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+    EXAINFRA-EVENTS-KEY = { 
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
+      event_display_name = "vision-notify-on-exainfra-changes-rule"
+      preconfigured_events_categories = ["exainfra"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+    BUDGET-EVENTS-KEY = { 
+      event_display_name = "vision-notify-on-budget-changes-rule"
+      preconfigured_events_categories = ["budget"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+    COMPUTE-EVENTS-KEY = { 
+      compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
+      event_display_name = "vision-notify-on-compute-changes-rule"
+      preconfigured_events_categories = ["compute"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+  }
+}
+
+home_region_events_configuration = { 
+  
+  default_compartment_id = "<REPLACE-BY-ROOT-COMPARTMENT-OCID>" #Root compartment
+  
+  event_rules = {
+    IAM-EVENTS-KEY = { 
+      event_display_name = "vision-notify-on-iam-changes-rule"
+      preconfigured_events_categories = ["iam"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+      }  
+    CLOUDGUARD-EVENTS-KEY = { 
+      event_display_name = "vision-notify-on-cloudguard-events-rule"
+      preconfigured_events_categories = ["cloudguard"] # this defines the set of event rules that are configured
+      attributes_filter = [{
+          attr = "riskLevel"
+          value = ["CRITICAL","HIGH"]
+      }]
+      destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
+    }
+  }
+}
+
+oci_shared_config_bucket_name = "<REPLACE-BY-BUCKET-NAME>"
+
+oci_compartments_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS>"
+
+oci_topics_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-TOPICS>"

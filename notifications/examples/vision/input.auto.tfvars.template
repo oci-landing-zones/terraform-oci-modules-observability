@@ -25,18 +25,17 @@ region               = "<your tenancy region>"      # This is your region, where
 #---------------------------------------
 
 notifications_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = null
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   topics = {
-    NETWORK-TOPIC-KEY = {
-      #compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+    NETWORK-TOPIC = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-network-topic"
       subscriptions = [
         { protocol = "EMAIL"
-          #compartment_ocid = null
-          values = ["email.address@example.com","email.address@example.com"]
+          values = ["email.address_1@example.com","email.address_2@example.com"]
           #defined_tags = null
           #freeform_tags = null 
         }
@@ -44,9 +43,9 @@ notifications_configuration = {
       #defined_tags = null
       #freeform_tags = null
     }
-    DATABASE-TOPIC-KEY = {
-      #compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
-      name = "vision-database-topic"
+    SECURITY-TOPIC = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+      name = "vision-security-topic"
       subscriptions = [
         { protocol = "SMS"
           values = ["<REPLACE-BY-MOBILE-PHONE-NUMBER>"]

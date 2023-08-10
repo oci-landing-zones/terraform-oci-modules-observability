@@ -15,7 +15,7 @@
 
 tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
 user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
-fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
 private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
 private_key_password = ""                           # This is the password that protects the private key, if any.
 home_region          = "<your tenancy home region>" # This is your tenancy home region, where IAM and Cloud Guard events are created.
@@ -27,7 +27,7 @@ region               = "<your tenancy region>"      # This is your region, where
 
 events_configuration = { 
   
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   
   event_rules = {
     APIGW-EVENTS-KEY = { 
@@ -45,9 +45,7 @@ events_configuration = {
           tags = [{name = "CostCenter", value = "1"}, {name = "OwnerEmail", value = "email.address@example.com"}]
         }
       ]
-      actions_topics = {
-        topic_keys = ["APIGW-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["APIGW-TOPIC-KEY"]
     }
   }
     

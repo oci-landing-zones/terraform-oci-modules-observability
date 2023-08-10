@@ -69,28 +69,62 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, notifications are defined using the *notifications_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **topics**: define the notification topics and associated subscriptions. 
 
-## Defining notification topics and subscriptions
+## Defining Notification Topics and Subscriptions
 
 Within *notifications_configuration*, use the *topics* attribute to define the topics and subscriptions managed by this module. Each topic is defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
 
-For each topic, you can define their associated *subscriptions*, by specifying a list of objects composed by *protocol* and *values*. Supported protocols are *EMAIL*, *CUSTOM_HTTPS*, *PAGERDUTY*, *SLACK*, *ORACLE_FUNCTIONS*, *SMS*. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
+The *topics* attribute supports the following attributes:
+- **compartment_id**: the compartment where the topic is created. *default_compartment_id* is used if undefined. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. 
+- **name**: the topic name.
+- **description**: the topic description. It defaults to topic *name*- if undefined.
+- **subscriptions**: the topic subscriptions, supporting the following attributes:
+  - **protocol**: The subscription protocol. Valid values (case insensitive): EMAIL, CUSTOM_HTTPS, PAGERDUTY, SLACK, ORACLE_FUNCTIONS, SMS.
+  - **values**: the list of endpoint values, specific to each protocol.
+  - **defined_tags**: the subscription defined_tags. The topic *defined_tags* is used if undefined.
+  - **freeform_tags**: the subscription freeform_tags. The topic *freeform_tags* is used if undefined.
+- **defined_tags**: the topic defined_tags. *default_defined_tags* is used if undefined.
+- **freeform_tags**: the topic freeform_tags. *default_freeform_tags* is used if undefined.
 
-A topic definition example is shown below. Multiple subscriptions and multiple protocols per subscription are supported.
+## External Dependencies
+
+An optional feature, external dependencies are resources managed elsewhere that resources managed by this module may depend on. The following dependencies are supported:
+
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+
+## An Example
+
+The following snippet defines two topics in different compartments defined by *compartment_id* values. The first topic (*NETWORK-TOPIC*) is for network related notifications. It is subscribed by two email addresses. The second topic (*SECURITY-TOPIC*) is for security related notifications. It is subscribed by one SMS number. 
+
+Supported protocols are *EMAIL*, *CUSTOM_HTTPS*, *PAGERDUTY*, *SLACK*, *ORACLE_FUNCTIONS*, *SMS*. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
+
 ```
-topics = {
-  NETWORK-TOPIC-KEY = {
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
-    name = "vision-network-topic"
-    subscriptions = [
-      { protocol = "EMAIL", values = ["email.address@example.com"]}
-    ]  
+notifications_configuration = {
+  default_compartment_id = null
+  topics = {
+    NETWORK-TOPIC = {
+      compartment_id = "ocid1.compartment.oc1..aaaaaa...tgr"
+      name = "cislz-network-topic"
+      subscriptions = [{ 
+        protocol = "EMAIL"
+        values = ["email.address_1@example.com","email.address_2@example.com"]
+      }]
+    }
+    SECURITY-TOPIC = {
+      compartment_id = "ocid1.compartment.oc1..aaaaaa...xuq"
+      name = "cislz-security-topic"
+      subscriptions = [{ 
+        protocol = "SMS"
+        values = ["+19999999999"]
+      }]
+    }
   }
-}    
+}
+    
 ```
 
 ## <a name="related">Related Documentation</a>

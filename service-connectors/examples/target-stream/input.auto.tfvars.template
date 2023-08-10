@@ -24,34 +24,33 @@ region               = "<your tenancy region>"      # This is your tenancy regio
 #---------------------------------------
 
 service_connectors_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   service_connectors = {
-    SAMPLE-SERVICE-CONNECTOR-KEY = {
+    SAMPLE-SERVICE-CONNECTOR = {
       display_name = "sample-service-connector"
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the Service Connector resource is created.
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Compartment where the Service Connector resource is created.
       source = {
         kind = "logging"
         audit_logs = [
-          {cmp_ocid = "ALL"} # "ALL" means all tenancy audit logs.
+          {cmp_id = "ALL"} # "ALL" means all tenancy audit logs.
         ] 
         non_audit_logs = [
-          {cmp_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"}, # Compartment where logs are stored. Add as manay as needed.
-          {cmp_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"} # Compartment where logs are stored, if different than the previous one above.
+          {cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>"}, # Compartment where logs are stored. Add as manay as needed.
+          {cmp_id = "<REPLACE-BY-COMPARTMENT-OCID>"} # Compartment where logs are stored, if different than the previous one above.
         ] 
       }
       target = {
         kind = "streaming"
-        stream_key = "SAMPLE-STREAM-KEY",
-        policy_name = "sample-service-connector-policy" # The policy name that is created allowing the service connector to push data to the stream.
+        stream_id = "SAMPLE-STREAM", # a reference to the stream declared in streams attribute below.
       }
     }
   }
 
   streams = { # Managed streams
-    SAMPLE-STREAM-KEY = { # Stream key, referred by stream_key in "target" object above.
+    SAMPLE-STREAM = { # Stream key, referred by stream_id in "target" object above.
       name = "sample-stream"
     }
   }
