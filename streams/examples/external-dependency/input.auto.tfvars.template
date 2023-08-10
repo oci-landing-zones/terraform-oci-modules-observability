@@ -1,0 +1,85 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references, 
+#    expected to be found in the OCI Object Storage object specified in oci_compartments_dependency.
+# 4. Replace <REPLACE-BY-ENCRYPTION-KEY-REFERENCE> placeholder by the appropriate encryption Key reference, 
+#    expected to be found in the OCI Object Storage object specified in oci_kms_dependency.
+# 5. Replace <REPLACE-BY-SUBNET-REFERENCE> placeholder by the appropriate subnet reference, 
+#    expected to be found in the OCI Object Storage object specified in oci_network_dependency.
+# 6. Replace <REPLACE-BY-NSG-REFERENCE> placeholder by the appropriate network security group reference, 
+#    expected to be found in the OCI Object Storage object specified in oci_network_dependency.
+# 7. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
+# 8. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages compartments.
+# 9. Replace <REPLACE-BY-OBJECT-NAME-FOR-ENCRYPTION-KEYS> placeholder by the OCI Object Storage object with the encryption keys references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages encryption keys.
+# 10.Replace <REPLACE-BY-OBJECT-NAME-FOR-NETWORK> placeholder by the OCI Object Storage object with the network resources (subnets and NSGs) references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages networking.
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
+private_key_password = ""                           # This is the password that protects the private key, if any.
+region               = "<your tenancy region>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+streams_configuration = {
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-REFERENCE>"
+  #default_defined_tags   = null
+  #default_freeform_tags  = null
+
+  streams = {
+    STREAM-IN-CUSTOM-POOL = {
+      name = "stream-in-custom-pool"
+      stream_pool_id = "CUSTOM-STREAM-POOL"
+      num_partitions = 2
+      log_retention_in_hours = 48
+      #defined_tags = null
+      #freeform_tags = null
+    }
+    STREAM-IN-DEFAULT-POOL = {
+      name = "stream-in-default-pool"
+    }
+  }
+
+  stream_pools = {
+    CUSTOM-STREAM-POOL = {
+      name = "custom-stream-pool"
+      kms_key_id = "<REPLACE-BY-ENCRYPTION-KEY-REFERENCE>"
+      private_endpoint_settings = {
+        subnet_id = "<REPLACE-BY-SUBNET-REFERENCE>"
+        nsg_ids = ["<REPLACE-BY-NSG-REFERENCE>"]
+      # private_endpoint_ip = null
+      }
+      #kafka_settings = {
+      #  auto_create_topics_enabled = true
+      #  bootstrap_servers = null
+      #  log_retention_in_hours = 24
+      #  num_partitions = 1
+      #}
+      #defined_tags = null
+      #freeform_tags = null
+    }
+  }
+}
+
+oci_shared_config_bucket_name = "<REPLACE-BY-BUCKET-NAME>"
+
+oci_compartments_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS>"
+
+oci_kms_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-ENCRYPTION-KEYS>"
+
+oci_network_object_name = "<REPLACE-BY-OBJECT-NAME-FOR-NETWORK>"

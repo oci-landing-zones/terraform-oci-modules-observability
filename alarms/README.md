@@ -82,7 +82,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, alarms are defined using the *alarms_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **alarms**: define the alarms to capture and where to send them. 
@@ -91,7 +91,7 @@ In this module, alarms are defined using the *alarms_configuration* object, that
 
 **Note**: Each alarm, topic and stream are defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
 
-## Defining the alarms to trigger
+## Defining the Alarms to Trigger
 
 Within the *alarms* attribute, the alarms to trigger can be specific in two ways: through pre-configured alarm types or by supplying specific alarms.
 - **pre-configured alarm types**: use the *preconfigured_alarm_type* attributes, assigning it a list of the following supported values: *high-cpu-alarm*, *instance-status-alarm*, *vm-maintenance-alarm*, *bare-metal-unhealthy-alarm*, *high-memory-alarm*, *adb-cpu-alarm*, *adb-storage-alarm*,*vpn-status-alarm* and *fast-connect-status-alarm*. For the list of metrics in each of these types, check [preconfigured_alarms.tf file](./preconfigured_alarms.tf).
@@ -110,42 +110,32 @@ Check [preconfigured_alarms.tf file](./preconfigured_alarms.tf) as examples on h
 
 Use *display_name* attribute to name alarms.
 
-### Defining where to send the triggered alarms
+### Defining Where to Send the Triggered Alarms
 
-Within the *alarms* attribute, use *destination_topics* and *destination_streams* attributes to define where to send triggered alarms. These attributes are similar, defining the topics, and streams, as target destinations for the alarms in question. *destination_topics* and *destination_streams* support referencing topics and streams managed by this module or externally managed.
+Within the *alarms* attribute, use *destination_topic_ids* and *destination_stream_ids* attributes to define where to send triggered alarms. 
 
-- **destination_topics**: use *topic_keys* attribute to refer to managed topics and *existing_topic_ocids* attribute to consume externally managed topics.
-- **destination_streams**: use *streams_keys* attribute to refer to managed streams and *existing_stream_ocids* attribute to consume externally managed streams.
+- **destination_topic_ids**: a list of topics to send alarms to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *topics* attribute for internally managed topics. Then it looks up in the *topics_dependency* variable for externally managed topics.
+- **destination_stream_ids**: a list of streams to send alarms to. This attribute is overloaded, i.e., it can be assigned a literal OCID or a reference (a key) to an OCID. When assigned a reference, the module first looks up for the reference in the *streams* attribute for internally managed streams. Then it looks up in the *stream_dependency* variable for externally managed streams.
 
-For referring to a topic or stream managed by this module, provide the topic or stream key as defined in the *topics* and *streams* attributes (see next subsection).
-
-For referring to an externally managed topic, stream, or function, provide its ocid (Oracle Cloud ID).
-
-The example below shows the two destination types. Note that you can provide multiple keys and existing ocids (they are lists) and both locally managed and externally managed resources can be used together. 
+The example below shows the two destination types. Note that you can mix and match multiple OCIDs and references. 
 ```
-destination_topics = {
-  topic_keys = ["NETWORK-TOPIC-KEY"] # this key value refers to a topic managed by this module.
-  existing_topic_ocids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q"] # this ocid refers to a topic NOT managed by this module. It is a pre-existing topic that was created through some other means.
-}
-destination_streams = {
-  stream_keys = ["NETWORK-STREAM-KEY"] # this key value refers to a stream managed by this module.
-  existing_stream_ocids = ["ocid1.stream.oc1.iad.aaaaaa...ijk"] # this ocid refers to a stream NOT managed by this module. It is a pre-existing stream that was created through some other means.
-}
+destination_topic_ids = ["ocid1.onstopic.oc1.iad.aaaaaa...j5q","NETWORK-TOPIC-KEY"] 
+destination_stream_ids = ["ocid1.stream.oc1.iad.aaaaaa...ijk","NETWORK-STREAM-KEY"] 
 ```
 
-## Defining alarm destinations
+## Defining Alarm Destinations
 Within *alarms_configuration*, use the *topics* and *streams* attributes to define the topics and streams destinations managed by this module.
 
-**Each topic and stream is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys. These keys are referred in *topic_keys* and *stream_keys* attributes in *destination_topics* and *destination_streams*, respectively.
+**Each topic and stream is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys. 
 
 For each topic in the *topics* attribute, you can define their associated *subscriptions*, by specifying  respective *protocol* and *values*. Supported protocols are *EMAIL*, *CUSTOM_HTTPS*, *PAGERDUTY*, *SLACK*, *ORACLE_FUNCTIONS*, *SMS*. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
 
 A topic definition example is shown below. Multiple subscriptions and multiple protocols within a subscription are supported.
 ```
 topics = {
-  NETWORK-TOPIC-KEY = { # this key is referred by topic_keys within destination_topics attribute
+  NETWORK-TOPIC-KEY = { # this key is referred by destination_topic_ids attribute
     name = "vision-network-topic"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     subscriptions = [
       { protocol = "EMAIL", values = ["email.address@example.com"]}
     ]  
@@ -156,14 +146,22 @@ topics = {
 For managed streams, it is possible to specify the number of partitions and the retention (in hours), Their default values are 1 partition and 24 hours, respectively.
 ```
 streams = {
-  NETWORK-STREAM-KEY = { # this key is referred by stream_keys within actions_streams attribute
+  NETWORK-STREAM-KEY = { # this key is referred by destination_stream_ids attribute
     name = "vision-network-stream"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     num_partitions = 2
     log_retention_in_hours = 48
   }
 }
 ```
+
+## External Dependencies
+
+An optional feature, external dependencies are resources managed elsewhere that resources managed by this module may depend on. The following dependencies are supported:
+
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+- **topics_dependency** : A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the topic OCID.
+- **streams_dependency** : A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the stream OCID.
 
 ## An Example
 
@@ -171,20 +169,18 @@ Here's a sample configuration for sending pre-configured alarms of type "vpn-sta
 
 ```
 alarms_configuration = {
-  default_compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+  default_compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
   
   alarms = {
-    NETWORK-ALARM-VPN-STATUS-KEY : {
+    NETWORK-ALARM-VPN-STATUS-KEY = {
       display_name = "vpn-status-alarm"
       preconfigured_alarm_type = "vpn-status-alarm"
-      destination_topics = {
-        topic_keys = ["NETWORK-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["NETWORK-TOPIC-KEY"]
     }
   }
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+      compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
       name = "network-topic"
       subscriptions = [
         { protocol = "EMAIL"

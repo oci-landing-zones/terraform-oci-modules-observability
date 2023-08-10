@@ -14,7 +14,7 @@
 
 tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
 user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
-fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
 private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
 private_key_password = ""                           # This is the password that protects the private key, if any.
 region               = "<your tenancy region>"      # This is your region, where all other events are created. It can be the same as home_region.
@@ -24,13 +24,13 @@ region               = "<your tenancy region>"      # This is your region, where
 #---------------------------------------
 
 alarms_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   alarms = {
     COMPUTE-ALARM-HIGH-CPU-KEY = {
-      #compartment_ocid = null
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       #is_enabled = true
       display_name = "vision-high-cpu-alarm"
       preconfigured_alarm_type = "high-cpu-alarm"
@@ -38,81 +38,69 @@ alarms_configuration = {
         #query = null
         #namespace = null
         #pending_duration = null
-        #metric_compartment_ocid = null
+        #metric_compartment_id = null
         #severity = null
         #message_format = null
       #}
-      destination_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-        #existing_topic_ocids = null # Not using an existing topic
-      }
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
       #defined_tags = null
       #freeform_tags = null
     }
     COMPUTE-ALARM-INSTANCE-STATUS-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-instance-status-alarm"
       preconfigured_alarm_type = "instance-status-alarm"
-      destination_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
     }
     COMPUTE-ALARM-VM-MAINTENANCE-STATUS-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-vm-maintenance-alarm"
       preconfigured_alarm_type = "vm-maintenance-alarm"
-      destination_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
     }
     COMPUTE-ALARM-BARE-METAL-HEALTH-STATUS-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-bare-metal-unhealthy-alarm"
       preconfigured_alarm_type = "bare-metal-unhealthy-alarm"
-      destination_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
     }
     COMPUTE-ALARM-HIGH-MEMORY-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-high-memory-alarm"
       preconfigured_alarm_type = "high-memory-alarm"
-      destination_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
     }
     DATABASE-ALARM-ADB-HIGH-CPU-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-adb-cpu-alarm"
       preconfigured_alarm_type = "adb-cpu-alarm"
-      destination_topics = {
-        topic_keys = ["DATABASE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["DATABASE-TOPIC-KEY"]
     }
     DATABASE-ALARM-ADB-STORAGE-UTILIZATION-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-adb-storage-alarm"
       preconfigured_alarm_type = "adb-storage-alarm"
-      destination_topics = {
-        topic_keys = ["DATABASE-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["DATABASE-TOPIC-KEY"]
     }
     NETWORK-ALARM-VPN-STATUS-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-vpn-status-alarm"
       preconfigured_alarm_type = "vpn-status-alarm"
-      destination_topics = {
-        topic_keys = ["NETWORK-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["NETWORK-TOPIC-KEY"]
     }
     NETWORK-ALARM-FAST-CONNECT-STATUS-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       display_name = "vision-fast-connect-status-alarm"
       preconfigured_alarm_type = "fast-connect-status-alarm"
-      destination_topics = {
-        topic_keys = ["NETWORK-TOPIC-KEY"]
-      }
+      destination_topic_ids = ["NETWORK-TOPIC-KEY"]
     }
   }
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-network-topic"
       subscriptions = [
         { protocol = "EMAIL"
-          #compartment_ocid = null
           values = ["email.address@example.com"]
           #defined_tags = null
           #freeform_tags = null 
@@ -122,7 +110,7 @@ alarms_configuration = {
       #freeform_tags = null
     }
     DATABASE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-database-topic"
       subscriptions = [
         { protocol = "EMAIL"
@@ -131,7 +119,7 @@ alarms_configuration = {
       ]
     }
     COMPUTE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-compute-topic"
       subscriptions = [
         { protocol = "EMAIL"

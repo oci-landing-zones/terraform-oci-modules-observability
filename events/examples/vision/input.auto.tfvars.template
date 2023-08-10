@@ -14,7 +14,7 @@
 
 tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
 user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
-fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
 private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
 private_key_password = ""                           # This is the password that protects the private key, if any.
 home_region          = "<your tenancy home region>" # This is your tenancy home region, where IAM and Cloud Guard events are created.
@@ -27,13 +27,13 @@ region               = "<your tenancy region>"      # This is your region, where
 
 events_configuration = { 
   
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   event_rules = {
     NETWORK-EVENTS-KEY = { 
-      #compartment_ocid = null
+      #compartment_id = null
       #is_enabled = true
       event_display_name = "vision-notify-on-network-changes-rule"
       #event_description = null
@@ -41,64 +41,50 @@ events_configuration = {
       #supplied_events = null
       #attributes_filter = null
       #tags_filter = null
-      actions_topics = {
-        #existing_topic_ocids = null # Not using an existing topic
-        topic_keys = ["NETWORK-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["NETWORK-TOPIC-KEY"]
       #actions_streams = null
       #actions_functions = null
       #defined_tags = null
       #freeform_tags = null
     }
     STORAGE-EVENTS-KEY = { 
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       event_display_name = "vision-notify-on-storage-changes-rule"
       preconfigured_events_categories = ["storage"] # this defines the set of event rules that are configured
-      actions_topics = {
-        topic_keys = ["STORAGE-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["STORAGE-TOPIC-KEY"]
     }
     DATABASE-EVENTS-KEY = { 
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       event_display_name = "vision-notify-on-database-changes-rule"
       preconfigured_events_categories = ["database"] # this defines the set of event rules that are configured
-      actions_topics = {
-        topic_keys = ["DATABASE-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["DATABASE-TOPIC-KEY"]
     }
     EXAINFRA-EVENTS-KEY = { 
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       event_display_name = "vision-notify-on-exainfra-changes-rule"
       preconfigured_events_categories = ["exainfra"] # this defines the set of event rules that are configured
-      actions_topics = {
-        topic_keys = ["EXAINFRA-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["EXAINFRA-TOPIC-KEY"]
     }
     BUDGET-EVENTS-KEY = { 
       event_display_name = "vision-notify-on-budget-changes-rule"
       preconfigured_events_categories = ["budget"] # this defines the set of event rules that are configured
-      actions_topics = {
-        topic_keys = ["BUDGET-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["BUDGET-TOPIC-KEY"]
     }
     COMPUTE-EVENTS-KEY = { 
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       event_display_name = "vision-notify-on-compute-changes-rule"
       preconfigured_events_categories = ["compute"] # this defines the set of event rules that are configured
-      actions_topics = {
-        topic_keys = ["COMPUTE-TOPIC-KEY"]
-      }  
+      destination_topic_ids = ["COMPUTE-TOPIC-KEY"]
     }
   }
     
   topics = {
     NETWORK-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-network-topic"
       description = "Topic for network related notifications."
       subscriptions = [
         { protocol = "EMAIL"
-          #compartment_ocid = null
           values = ["email.address@example.com"]
           #defined_tags = null
           #freeform_tags = null 
@@ -108,7 +94,7 @@ events_configuration = {
       #freeform_tags = null
     }
     STORAGE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-storage-topic"
       description = "Topic for storage related notifications."
       subscriptions = [
@@ -118,7 +104,7 @@ events_configuration = {
       ]
     }
     DATABASE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-database-topic"
       description = "Topic for database related notifications."
       subscriptions = [
@@ -128,7 +114,7 @@ events_configuration = {
       ]
     }
     EXAINFRA-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-exainfra-topic"
       description = "Topic for Exadata Cloud Service infrastructure notifications."
       subscriptions = [
@@ -147,7 +133,7 @@ events_configuration = {
       ]
     }
     COMPUTE-TOPIC-KEY = {
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-compute-topic"
       description = "Topic for compute related notifications."
       subscriptions = [
@@ -161,42 +147,38 @@ events_configuration = {
 
 home_region_events_configuration = { 
   
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
 
-  event_rules : {
-    IAM-EVENTS-KEY : { 
+  event_rules = {
+    IAM-EVENTS-KEY = { 
       event_display_name = "vision-notify-on-iam-changes-rule"
-      preconfigured_events_categories : ["iam"] # this defines the set of event rules that are configured
-      actions_topics : {
-        topic_keys : ["IAM-TOPIC-KEY"]
-      }  
+      preconfigured_events_categories = ["iam"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["IAM-TOPIC-KEY"]
     }
-    CLOUDGUARD-EVENTS-KEY : { 
+    CLOUDGUARD-EVENTS-KEY = { 
       event_display_name = "vision-notify-on-cloudguard-events-rule"
-      preconfigured_events_categories : ["cloudguard"] # this defines the set of event rules that are configured
-      actions_topics : {
-        topic_keys : ["CLOUDGUARD-TOPIC-KEY"]
-      }  
+      preconfigured_events_categories = ["cloudguard"] # this defines the set of event rules that are configured
+      destination_topic_ids = ["CLOUDGUARD-TOPIC-KEY"]
     }
   }
     
-  topics : {
-    IAM-TOPIC-KEY : {
-      compartment_ocid : "<REPLACE-BY-COMPARTMENT-OCID>"
-      name : "vision-iam-topic"
-      description : "Topic for security related notifications."
-      subscriptions : [
-        { protocol : "EMAIL"
-          values : ["email.address@example.com"] # CHANGE ME
+  topics = {
+    IAM-TOPIC-KEY = {
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+      name = "vision-iam-topic"
+      description = "Topic for security related notifications."
+      subscriptions = [
+        { protocol = "EMAIL"
+          values = ["email.address@example.com"] # CHANGE ME
         }
       ]
     }
-    CLOUDGUARD-TOPIC-KEY : {
-      name : "vision-cloudguard-topic"
-      description : "Topic for Cloud Guard related notifications."
-      subscriptions : [
-        { protocol : "EMAIL"
-          values : ["email.address@example.com"] # CHANGE ME
+    CLOUDGUARD-TOPIC-KEY = {
+      name = "vision-cloudguard-topic"
+      description = "Topic for Cloud Guard related notifications."
+      subscriptions = [
+        { protocol = "EMAIL"
+          values = ["email.address@example.com"] # CHANGE ME
         }
       ]
     }

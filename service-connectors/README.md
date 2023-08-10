@@ -84,48 +84,49 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, service connectors are defined using the *service_connectors_configuration* object, that supports the following attributes:
-- **default_compartment_ocid**: the default compartment for all resources managed by this module. It can be overriden by *compartment_ocid* attribute in each resource.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **service_connectors**: define the service connectors, their source and target. 
 - **buckets**: define the buckets managed by this module that can be used as targets. 
 - **streams**: define the streams managed by this module that can be used as targets.
+- **topics**: define the topics managed by this module that can be used as targets.
 
-**Note**: Each service connector, bucket and stream are defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
+**Note**: Each service connector, bucket, stream, or topic are defined as an object whose key must be unique and must not be changed once defined. As a convention, use uppercase strings for the keys.
 
-## Defining the Service Connectors
+### Defining the Service Connectors
 
-### Naming Service Connectors
+#### Naming Service Connectors
 Within the *service_connectors* attribute, use *display_name* attribute to name service connectors and *description* for a text description. 
 
-### Activating Service Connectors
-Service connectors are created in "INACTIVE" state by default. Within the *service_connectors* attribute, use *activate* attribute to activate service connectors.
+#### Activating Service Connectors
+Service connectors are created in "INACTIVE" state by default. Within the *service_connectors* attribute, set the *activate* attribute to true for activating service connectors.
 
-### Defining the Source
+#### Defining the Source
 Within the *service_connectors* attribute, use the *source* attribute to define the service connector source resources. Within *source*, the following attributes are supported.
 - **kind**: the type of source. Supported values are "logging" and "streaming".
-- **audit_logs**: a list of objects where audit logs are expected to be found. Multiple audit log locations can be specified using the *cmp_ocid* attribute. Only applicable if *kind* is "logging".
-    - **cmp_ocid**: the ocid of the compartment where audit logs are expected to be found. For referring to all audit logs in the tenancy, provide the value "ALL".
-- **non_audit_logs**: a list of objects where any logs other than audit logs are expected to be found. Multiple logs can be specified using *cmp_ocid*, *log_group_ocid* and *log_ocid* attributes. Only applicable if *kind* is "logging".
-    - **cmp_ocid**: the ocid of the compartment where logs are expected to be found.
-    - **log_group_ocid**: the ocid of the log group where logs are expected to be found. It is an optional attribute. If not provided, all logs in *cmp_ocid* are included.
-    - **log_ocid**: the ocid of the log. It is an optional attribute. If not provided, all logs in *log_group_ocid* are included.
-- **stream_ocid**: the ocid of a stream. Only applicable if *kind* is "streaming".
+- **audit_logs**: a list of objects where audit logs are expected to be found. Multiple audit log locations can be specified using the *cmp_id* attribute. Only applicable if *kind* is "logging".
+    - **cmp_id**: the compartment where audit logs are expected to be found. For referring to all audit logs in the tenancy, provide the value "ALL". This attribute is overloaded: it can be either a compartment OCID, a reference (a key) to the compartment OCID, or the "ALL" value.
+- **non_audit_logs**: a list of objects where any logs other than audit logs are expected to be found. Multiple logs can be specified using *cmp_id*, *log_group_id* and *log_id* attributes. Only applicable if *kind* is "logging".
+    - **cmp_id**: the compartment where logs are expected to be found. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+    - **log_group_id**: the log group where logs are expected to be found. It is an optional attribute. If not provided, all logs in *cmp_id* are included. This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
+    - **log_id**: the log. It is an optional attribute. If not provided, all logs in *log_group_id* are included. This attribute is overloaded: it can be either a log OCID or a reference (a key) to the log OCID.
+- **stream_id**: the source stream. Only applicable if *kind* is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
 
-The following example defines a source that includes tenancy wide audit logs and logs other than audit logs from an specific compartment and log group:
+The following example defines a source that includes tenancy wide audit logs and logs other than audit logs from specific compartment and log group:
 ```
 source = {
   kind = "logging"
   audit_logs = [
-    {cmp_ocid = "ALL"}
+    {cmp_id = "ALL"}
   ]
   non_audit_logs = [
-    {cmp_ocid = "ocid1.compartment.oc1..aaaaaa...epa", log_group_ocid : "ocid1.loggroup.oc1.iad.amaaaaa...sga"}
+    {cmp_id = "ocid1.compartment.oc1..aaaaaa...epa", log_group_id : "ocid1.loggroup.oc1.iad.amaaaaa...sga"}
   ]
 }
 ```
 
-### Filtering Logging Data
+#### Filtering Logging Data
 Captured logging data can be filtered before before sent to the target. Within the *service_connectors* attribute, use the *log_rule_filter* attribute to specify a filter. In Service Connector terminology, a log rule filter is known as a Log Filter Task, that only applies to sources of the "logging" kind. It is essentially a boolean expression that filters the data that match the criteria.
 
 The following example defines a rule that filters logging data by VCN ocid and region: 
@@ -133,58 +134,60 @@ The following example defines a rule that filters logging data by VCN ocid and r
 log_rule_filter = "data.vcnId='ocid1.vcn.oc1..amaaaa...mwq' AND data.region='us_ashburn-1'"
 ```
 
-### Defining the Target
+#### Defining the Target
 Within the *service_connectors* attribute, use the *target* attribute to define the service connector target resource, i.e., where all source data gets aggregated into. Within *target*, the following attributes are supported:
 - **kind**: the type of target. Supported values are "objectstorage", "streaming", "functions", "logginganalytics", and "notifications".
-- **bucket_name**: the existing bucket name. Only applicable if kind is "objectstorage".
-- **bucket_key** the corresponding bucket key as defined in the *buckets* object map. *bucket_name* has precedence. Only applicable if kind is "objectstorage". 
+- **bucket_name**: the existing bucket name. Only applicable if kind is "objectstorage". This attribute is overloaded: it can be either a literal bucket name or a reference (a key) to the bucket name.
 - **bucket_batch_rollover_size_in_mbs**: the bucket batch rollover size in megabytes. Only applicable if kind is "objectstorage". 
 - **bucket_batch_rollover_time_in_ms** : the bucket batch rollover time in milliseconds. Only applicable if kind is "objectstorage". 
 - **bucket_object_name_prefix**: the prefix of objects eventually created in the bucket. Only applicable if kind is "objectstorage".
-- **stream_ocid**: the existing stream ocid. Only applicable if kind is "streaming".
-- **stream_key**: the corresponding stream key as defined in the *streams* object map. *stream_ocid* has precedence. Only applicable if kind is "streaming". 
-- **topic_ocid**: the existing topic ocid. Only applicable if kind is "notifications".
-- **topic_key**: the corresponding topic key as defined in the *topics* object map. *topic_ocid* has precedence. Only applicable if kind is "notifications".
-- **function_ocid**: the existing function ocid. Only applicable if kind is "functions".
-- **log_group_ocid**: the existing log group ocid. Only applicable if kind is "logginganalytics".
-- **compartment_ocid**: the target resource compartment ocid. Required when using an existing target resource (bucket_name, stream_ocid, function_ocid, or log_group_ocid).
+- **stream_id**: the target stream. Only applicable if kind is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
+- **topic_id**: the target topic. Only applicable if kind is "notifications". This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
+- **function_id**: the target function. Only applicable if kind is "functions". This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
+- **log_group_id**: the target log group. Only applicable if kind is "logginganalytics". This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
+- **compartment_id**: the target resource compartment. Required if using a literal name for bucket_name or a literal OCID for stream_id, topic_id, function_id, or log_group_id. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **policy_name**: the policy name that is created for allowing service connector to push data to target.
 - **policy_description**: the policy description.
 
-The following example defines a managed bucket as a target and names the policy that enables Service Connector service to push data to the bucket:
+The following example defines a bucket as a target:
 ```
 target = {
   kind = "objectstorage"
-  bucket_key = "SERVICE-CONNECTOR-BUCKET-KEY"
-  policy_name = "vision-service-connector-policy"
+  bucket_name = "SERVICE-CONNECTOR-BUCKET-KEY"
 }
 ```
 
-## Defining Target Buckets
+#### Defining IAM Policy for Service Connector
+Service Connector service needs to authorized by IAM for pushing data to targets. The policy grants are automatically derived from target and service connector information. The policy name and description are derived from the target by default. The policy compartment is first attempted to be obtained from the target, then from the service connector as lastly from the *default_compartment_id*. For providing your own name, description and compartment for the policy, use the policy attribute, that supports the following attributes:
+- **name**: the policy name.
+- **description**: the policy description.
+- **compartment_id**: the policy compartment. You should use this attribute in cases where the target resource compartment is a parent of the service connector compartment in the compartment hierarchy. When that happens, set this attribute with a compartment id that includes both the service connector compartment and the target resource compartment. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+
+### Defining Target Buckets
 Within *service_connectors_configuration*, use the *buckets* attribute to define the buckets managed by this module. Within *buckets*, the following attributes are supported:
 - **name**: the bucket name
-- **compartment_ocid**: the compartment ocid where the bucket is created. *default_compartment_ocid* is used if this is not defined.
+- **compartment_id**: the compartment where the bucket is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **cis_level**: the CIS level, driving bucket versioning and encryption. Supported values: "1" and "2". cis_level = "1": no versioning, encryption with Oracle managed key. cis_level = 2": versioning enabled, encryption with customer managed key.
-- **kms_key_ocid**: the customer managed key ocid. Required if cis_level = "2".
+- **kms_key_id**: the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a Key OCID or a reference (a key) to the Key OCID.
 - **defined_tags**: the bucket defined_tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the bucket freeform_tags. *default_freeform_tags* is used if this is not defined.
 
 The following example defines a bucket that is versioned and encrypted with a customer managed key:
 ```
 buckets = {
-  SERVICE-CONNECTOR-BUCKET-KEY = { # this key is referred by bucket_key within target attribute
+  SERVICE-CONNECTOR-BUCKET-KEY = { # this referring key can be referred by bucket_name in target attribute
     name = "vision-service-connector-bucket"
-    compartment_ocid = "ocid1.compartment.oc1..bbbbb...epa"
+    compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
     cis_level = "2"
-    kms_key_ocid = "ocid1.key.oc1..kkkkk..uir"
+    kms_key_id = "ocid1.key.oc1..kkkkk..uir"
   }
 } 
 ```
 
-## Defining Target Streams
+### Defining Target Streams
 Within *service_connectors_configuration*, use the *streams* attribute to define the streams managed by this module. Within *streams*, the following attributes are supported:
 - **name**: the stream name
-- **compartment_ocid**: the compartment where the stream is created. *default_compartment_ocid* is used if this is not defined.
+- **compartment_id**: the compartment where the stream is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **partitions**: the number of stream partitions. Default is "1".  
 - **retention_in_hours**: for how long to keep messages in the stream. Default is "24" hours.
 - **defined_tags**: the stream defined_tags. *default_defined_tags* is used if this is not defined.
@@ -193,20 +196,20 @@ Within *service_connectors_configuration*, use the *streams* attribute to define
 The following example defines a stream with two partitions and a twelve hour retention period:
 ```
 streams = {
-  SERVICE-CONNECTOR-STREAM-KEY = { # this key is referred by stream_key within target attribute
+  SERVICE-CONNECTOR-STREAM-KEY = { # this referring key can be referred by stream_id in target attribute
     name = "vision-service-connector-stream"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     partitions = "2"
     retention_in_hours = "12"
   }
 }
 ```
 
-## Defining Target Topics
+### Defining Target Topics
 Within *service_connectors_configuration*, use the *topics* attribute to define the topics managed by this module. Within *topics*, the following attributes are supported:
 - **name**: the topic name.
 - **description**: the topic description. *name* is used if this is not defined. 
-- **compartment_ocid**: the compartment where the topic is created. *default_compartment_ocid* is used if this is not defined.
+- **compartment_id**: the compartment where the topic is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **subscriptions**: a list of objects describing the parties that receive topic notifications. Each object is defined by a *protocol* and a list of values for that protocol:
     - **protocol** : one of the following supported values: "EMAIL", "CUSTOM_HTTPS", "PAGERDUTY", "SLACK", "ORACLE_FUNCTIONS", "SMS".
     - **values**: a list of values that are applicable to the chosen protocol. Look at https://docs.oracle.com/en-us/iaas/Content/Notification/Tasks/create-subscription.htm for details on protocol requirements.
@@ -218,7 +221,7 @@ The following example defines a topic that is subscribed by the e-mail address "
 topics = {
   SERVICE-CONNECTOR-TOPIC-KEY : {
     name = "vision-service-connector-topic"
-    compartment_ocid = "ocid1.compartment.oc1..aaaaaa...4ja"
+    compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     subscriptions = [
       { protocol = "EMAIL", values : ["email.address@example.com"]}
     ]  
@@ -226,40 +229,50 @@ topics = {
 }    
 ```
 
+## External Dependencies
+
+An optional feature, external dependencies are resources managed elsewhere that resources managed by this module may depend on. The following dependencies are supported:
+
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+- **topics_dependency**: A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the topic OCID.
+- **streams_dependency**: A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the stream OCID.
+- **functions_dependency**: A map of objects containing the externally managed OCI functions this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the function OCID.
+- **logs_dependency**: A map of objects containing the externally managed log groups and logs this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the log group/log OCID.
+- **kms_dependency**: A map of objects containing the externally managed encryption keys this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the encryption key OCID.
+
 ## An Example
 
 Here's a sample setting that joins together the snippet examples used above in this document. The service connector aggregates audit and non audit logs in a bucket that is managed by this module.
-The audit logs are all audit logs in the tenancy (as denoted by "ALL" in *cmp_ocid*) and logs in the specified *log_group_ocid* within the *source* attribute. The capture logs are filtered by vcn ocid and region. The bucket is defined in the *buckets* attribute and it is a CIS level "2" bucket, meaning it is versioned and encrypted with a customer managed key, specified by *kms_key_ocid* attribute.
+The audit logs are all audit logs in the tenancy (as denoted by "ALL" in *cmp_id*) and logs in the specified *log_group_id* within the *source* attribute. The capture logs are filtered by VCN ocid and region. The bucket is defined in the *buckets* attribute and it is a CIS level "2" bucket, meaning it is versioned and encrypted with a customer managed key, specified by *kms_key_id* attribute.
 
 ```
 service_connectors_configuration = {
-  default_compartment_ocid = "ocid1.compartment.oc1..aaaaaa...epa"
+  default_compartment_id = "ocid1.compartment.oc1..aaaaaa...epa"
   service_connectors = {
     SERVICE-CONNECTOR-KEY = {
       display_name = "vision-service-connector"
       source = {
         kind = "logging"
         audit_logs = [
-          {cmp_ocid = "ALL"}
+          {cmp_id = "ALL"}
         ]
         non_audit_logs = [
-          {cmp_ocid = "ocid1.compartment.oc1..aaaaaa...epa", log_group_ocid : "ocid1.loggroup.oc1.iad.amaaaaa...sga"}
+          {cmp_id = "ocid1.compartment.oc1..aaaaaa...epa", log_group_id : "ocid1.loggroup.oc1.iad.amaaaaa...sga"}
         ]
       }
       log_rule_filter = "data.vcnId='ocid1.vcn.oc1..amaaaa...mwq' AND data.region='us_ashburn-1'"
       target = {
         kind = "objectstorage"
-        bucket_key = "SERVICE-CONNECTOR-BUCKET-KEY"
-        policy_name = "vision-service-connector-policy"
+        bucket_name = "SERVICE-CONNECTOR-BUCKET-KEY"
       }
     }  
   }
   buckets = {
-    SERVICE-CONNECTOR-BUCKET-KEY = { # this key is referred by bucket_key within target attribute
+    SERVICE-CONNECTOR-BUCKET-KEY = { # this key is referred by bucket_name within target attribute
       name = "vision-service-connector-bucket"
-      compartment_ocid = "ocid1.compartment.oc1..bbbbb...epa"
+      compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
       cis_level = "2"
-      kms_key_ocid = "ocid1.key.oc1..kkkkk..uir"
+      kms_key_id = "ocid1.key.oc1..kkkkk..uir"
     }
   } 
 } 

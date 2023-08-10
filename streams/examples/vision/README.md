@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This example shows how to deploy streams in OCI for a hypothetical Vision entity. It deploys one stream in one custom stream pool. The stream is created in the same compartment as the stream pool. The streams in the stream pool are encrypted with a customer managed key (*kms_key_ocid*) and are only reachable by producers and consumers that can access the subnet (*subnet_ocid*) and are authorized by the security rules in the network security groups (*nsg_ocids*).
+This example shows how to deploy streams in OCI for a hypothetical Vision entity. It deploys one stream in one custom stream pool. The stream is created in the same compartment as the stream pool. The streams in the stream pool are encrypted with a customer managed key (*kms_key_id*) and are only reachable by producers and consumers that can access the subnet (*subnet_id*) and are authorized by the security rules in the network security groups (*nsg_ids*).
 
 ## Using this example
 1. Rename *input.auto.tfvars.template* to *\<project-name\>.auto.tfvars*, where *\<project-name\>* is any name of your choice.

@@ -26,15 +26,14 @@ region               = "<your tenancy region>"      # This is your region, where
 #---------------------------------------
 
 streams_configuration = {
-  default_compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
   streams : {
-    SIEM-INTEGRATION-STREAM-KEY = {
+    SIEM-INTEGRATION-STREAM = {
       name = "vision-siem-integration-stream"
-      #compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
-      stream_pool_key = "SIEM-INTEGRATION-STREAM-POOL-KEY"
+      stream_pool_id = "SIEM-INTEGRATION-STREAM-POOL"
       num_partitions = 2
       log_retention_in_hours = 48
       #defined_tags = null
@@ -43,14 +42,14 @@ streams_configuration = {
   }
 
   stream_pools = {
-    SIEM-INTEGRATION-STREAM-POOL-KEY = {
+    SIEM-INTEGRATION-STREAM-POOL = {
       name = "vision-siem-integration-stream-pool"
-      compartment_ocid = "<REPLACE-BY-COMPARTMENT-OCID>"
-      kms_key_ocid = "<REPLACE-BY-VAULT-KEY-OCID>"
+      compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+      kms_key_id = "<REPLACE-BY-VAULT-KEY-OCID>"
       private_endpoint_settings = {
-        subnet_ocid = "<REPLACE-BY-SUBNET-OCID>"
-        nsg_ocids = ["<REPLACE-BY-NSG-OCID>"]
-      #  private_endpoint_ip = null
+        subnet_id = "<REPLACE-BY-SUBNET-OCID>"
+        nsg_ids = ["<REPLACE-BY-NSG-OCID>"]
+      # private_endpoint_ip = null
       }
       #kafka_settings = {
       #  auto_create_topics_enabled = true

@@ -3,24 +3,24 @@
 
 locals {
   service_connectors_configuration = {
-    default_compartment_ocid : var.service_connector_compartment_ocid
+    default_compartment_id : var.service_connector_compartment_ocid
     service_connectors : {
-      SIEM-INTEGRATION-SERVICE-CONNECTOR-KEY : {
+      SIEM-INTEGRATION-SERVICE-CONNECTOR : {
         display_name : "vision-siem-integration-service-connector"
         source : {
           kind : "logging"
           audit_logs : [
-            {cmp_ocid : "ALL"} # "ALL" means all tenancy audit logs. Only applicable if kind = "logging".
+            {cmp_id : "ALL"} # "ALL" means all tenancy audit logs. Only applicable if kind = "logging".
           ]   
           non_audit_logs : [for ocid in var.logs_compartment_ocids : 
-            {cmp_ocid = ocid} # Bucket logs, flow logs compartment - 
+            {cmp_id = ocid} # Bucket logs, flow logs compartment - 
           ] 
         }
         target : {
           kind : "streaming"
-          stream_ocid : module.vision_streams.streams["SIEM-INTEGRATION-STREAM-KEY"].id,
+          stream_id : module.vision_streams.streams["SIEM-INTEGRATION-STREAM"].id,
           policy_name : "vision-siem-integration-service-connector-policy" # The policy name that is created allowing the service connector to push data to bucket.
-          compartment_ocid = module.vision_streams.streams["SIEM-INTEGRATION-STREAM-KEY"].compartment_id
+          compartment_id = module.vision_streams.streams["SIEM-INTEGRATION-STREAM"].compartment_id
         }
       }
     }
