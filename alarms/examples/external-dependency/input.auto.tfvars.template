@@ -44,6 +44,7 @@ alarms_configuration = {
         metric_compartment_id = "APP-CMP"
         severity = "CRITICAL"
         message_format = "PRETTY_JSON"
+        repeat_frequency_for_critical_alarms = "PT4H" # 4 hours
       }
       destination_topic_ids = ["<REPLACE-BY-TOPIC-REFERENCE>"]
     }

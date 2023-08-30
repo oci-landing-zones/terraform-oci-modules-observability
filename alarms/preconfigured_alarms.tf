@@ -9,6 +9,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     instance-status-alarm = {
       namespace        = "oci_compute_infrastructure_health"
@@ -16,6 +17,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     vm-maintenance-alarm = {
       namespace        = "oci_compute_infrastructure_health"
@@ -23,6 +25,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     bare-metal-unhealthy-alarm = {
       namespace        = "oci_compute_infrastructure_health"
@@ -30,6 +33,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     high-memory-alarm = {
       namespace        = "oci_computeagent"
@@ -37,6 +41,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     adb-cpu-alarm = {
       namespace        = "oci_autonomous_database"
@@ -44,6 +49,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     adb-storage-alarm = {
       namespace        = "oci_autonomous_database"
@@ -51,6 +57,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     vpn-status-alarm = {
       namespace        = "oci_vpn"
@@ -58,6 +65,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
     fast-connect-status-alarm = {
       namespace        = "oci_fastconnect"
@@ -65,6 +73,7 @@ locals {
       severity         = "CRITICAL"
       message_format   = "PRETTY_JSON"
       pending_duration = "PT5M"
+      repeat_frequency_for_critical_alarms = "PT4H"
     }
   }
 
