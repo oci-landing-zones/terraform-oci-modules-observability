@@ -28,7 +28,7 @@ variable "alarms_configuration" {
         pending_duration         = optional(string) # the period of time the condition must persist before the alarm is fired. Default is 5 minutes: "PT5M"
         metric_compartment_id    = optional(string)   # the compartment containing the metric being evaluated by the alarm. compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         message_format           = optional(string) # format to use for notification messages sent from this alarm. Valid formats are: "RAW", "PRETTY_JSON", "ONS_OPTIMIZED". Default is "PRETTY_JSON".
-        repeat_frequency_for_critical_alarms = optional(string) #option to repeat critical alarms
+        repeat_notification_critical_alarms = optional(string) #option to repeat critical alarms
       }))
       destination_topic_ids  = optional(list(string)) # List of topics to send alarms to. This attribute is overloaded: values can be either topic OCIDs or references (keys) to the topics OCIDs. The references are first looked up in the topics attribute and then in the topics_dependency object. 
       destination_stream_ids = optional(list(string)) # List of streams to send alarms to. This attribute is overloaded: values can be either stream OCIDs or references (keys) to the streams OCIDs. The references are first looked up in the streams attribute and then in the streams_dependency object. 
