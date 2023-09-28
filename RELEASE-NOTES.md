@@ -1,3 +1,11 @@
+# September 28, 2023 Release Notes - 0.1.2
+
+## Updates
+1. [Notification Frequency for Critical Alarms](#0-1-2-alarms)
+
+### <a name="0-1-2-alarms">Notification Frequency for Critical Alarms</a>
+Default notification frequency for critical alarms set to every 4 hours ("PT4H").
+
 # August 04, 2023 Release Notes - 0.1.1
 
 ## Updates
