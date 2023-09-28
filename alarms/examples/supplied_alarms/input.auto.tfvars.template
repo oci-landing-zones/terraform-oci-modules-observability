@@ -40,6 +40,7 @@ alarms_configuration = {
         metric_compartment_ocid = "<REPLACE-BY-METRIC-COMPARTMENT-OCID>"
         severity = "CRITICAL"
         message_format = "ONS_OPTIMIZED"
+        repeat_frequency_for_critical_alarms = "PT4H" # 4 hours
       }
       destination_topic_ids = ["<REPLACE-BY-TOPIC-OCID>"]
       #defined_tags = null
