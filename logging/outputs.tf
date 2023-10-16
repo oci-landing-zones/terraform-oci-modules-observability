@@ -18,5 +18,5 @@ output "custom_logs" {
 
 output "custom_logs_agent_config" {
   description = "The agent configurations for custom logs."
-  value = var.enable_output ? oci_logging_unified_agent_configuration.these_custom : null
+  value = var.enable_output ? oci_logging_unified_agent_configuration.these : null
 }

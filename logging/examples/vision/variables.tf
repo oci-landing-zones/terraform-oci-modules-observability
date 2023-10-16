@@ -1,5 +1,11 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+variable "tenancy_ocid" {}
+variable "region" {description = "Your tenancy region"}
+variable "user_ocid" {default = ""}
+variable "fingerprint" {default = ""}
+variable "private_key_path" {default = ""}
+variable "private_key_password" {default = ""}
 
 variable "logging_configuration" {
   description = "Logging configuration settings, defining all aspects to manage logging in OCI. Please see the comments within each attribute for details."
@@ -7,6 +13,7 @@ variable "logging_configuration" {
     default_compartment_id   = string,                # the default compartment where all resources are defined. It's overriden by the compartment_id attribute within each object.
     default_defined_tags     = optional(map(string)), # the default defined tags. It's overriden by the defined_tags attribute within each object.
     default_freeform_tags    = optional(map(string)), # the default freeform tags. It's overriden by the frreform_tags attribute within each object.
+    
     log_group = optional(map(object({
       compartment_id   = optional(string)
       name             = string
@@ -14,6 +21,7 @@ variable "logging_configuration" {
       freeform_tags    = optional(map(string))
       defined_tags     = optional(map(string))
     })))
+   
     service_logs = optional(map(object({    # the OCI service logs to manage in this configuration.
       compartment_id = optional(string)     # the compartment where the log is created. default_compartment_id is used if undefined.
       name               = string           # log name
