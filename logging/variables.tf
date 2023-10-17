@@ -7,7 +7,7 @@ variable "logging_configuration" {
     default_compartment_id   = string,                # the default compartment where all resources are defined. It's overriden by the compartment_id attribute within each object.
     default_defined_tags     = optional(map(string)), # the default defined tags. It's overriden by the defined_tags attribute within each object.
     default_freeform_tags    = optional(map(string)), # the default freeform tags. It's overriden by the frreform_tags attribute within each object.
-    log_group = optional(map(object({
+    log_groups = optional(map(object({
       compartment_id   = optional(string)
       name             = string
       description      = optional(string)
@@ -22,6 +22,17 @@ variable "logging_configuration" {
       service            = string
       category           = string
       resource_id        = string
+      is_enabled         = optional(bool)
+      retention_duration = optional(number)
+      defined_tags       = optional(map(string)) # log defined_tags. default_defined_tags is used if undefined.
+      freeform_tags      = optional(map(string)) # log freeform_tags. default_freeform_tags is used if undefined.
+    })))
+    flow_logs = optional(map(object({
+      compartment_id = optional(string) # the compartment where the log is created. default_compartment_id is used if undefined.
+      name_prefix    = optional(string)
+      log_group_id   = string
+      target_resource_type = string # Valid values: "VCN", "SUBNET", "VNIC"
+      target_compartment_ids = list(string)
       is_enabled         = optional(bool)
       retention_duration = optional(number)
       defined_tags       = optional(map(string)) # log defined_tags. default_defined_tags is used if undefined.

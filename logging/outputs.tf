@@ -8,7 +8,7 @@ output "log_groups" {
 
 output "service_logs" {
   description = "The logs."
-  value = var.enable_output ? oci_logging_log.these : null
+  value = var.enable_output ? merge(oci_logging_log.these,oci_logging_log.flow_logs) : null
 }
 
 output "custom_logs" {
