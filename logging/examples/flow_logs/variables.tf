@@ -61,20 +61,9 @@ variable "logging_configuration" {
   })
 }
 
-variable "enable_output" {
-  description = "Whether Terraform should enable module output."
-  type        = bool
-  default     = true
-}
-
-variable "module_name" {
-  description = "The module name."
-  type        = string
-  default     = "logging"
-}
-
-variable compartments_dependency {
-  description = "A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the compartment OCID) of string type." 
-  type = map(any)
-  default = null
+variable "automation_config" {
+  type = object({
+    bucket_name = string
+    cmp_dependency = list(string)
+  })
 }

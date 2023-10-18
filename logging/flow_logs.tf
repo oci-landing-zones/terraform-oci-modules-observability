@@ -7,14 +7,14 @@ locals {
 
   flow_logs_compartment_ids = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
-      for cmp_id in fl_value.target_compartment_ids : [cmp_id]
+      for cmp_id in fl_value.target_compartment_ids : [(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)]
     ]
   ]) 
 
   subnets_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for subnet in data.oci_core_subnets.these[cmp_id].subnets : {
+        for subnet in data.oci_core_subnets.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].subnets : {
           key = upper("${fl_key}-${subnet.display_name}-${substr(subnet.id,-10,-1)}")
           category = "subnet"
           resource_id = subnet.id
@@ -34,7 +34,7 @@ locals {
   vcns_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for vcn in data.oci_core_vcns.these[cmp_id].virtual_networks : {
+        for vcn in data.oci_core_vcns.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].virtual_networks : {
           key = upper("${fl_key}-${vcn.display_name}-${substr(vcn.id,-10,-1)}")
           category = "vcn"
           resource_id = vcn.id
@@ -54,7 +54,7 @@ locals {
   vnics_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for attach in data.oci_core_vnic_attachments.these[cmp_id].vnic_attachments : {
+        for attach in data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments : {
           key = upper("${fl_key}-${data.oci_core_vnic.these[attach.vnic_id].display_name}")
           category = "vnic"
           resource_id = attach.vnic_id
@@ -74,7 +74,7 @@ locals {
   vnics_ids = flatten([
       for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
         for cmp_id in fl_value.target_compartment_ids : [
-          for attach in data.oci_core_vnic_attachments.these[cmp_id].vnic_attachments : [attach.vnic_id]
+          for attach in data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments : [attach.vnic_id]
         ] 
       ] 
   ])   
@@ -111,8 +111,25 @@ locals {
   ])
 } 
 
+data "oci_identity_compartment" "these" {
+  for_each = toset(local.flow_logs_compartment_ids)
+    lifecycle {
+      postcondition {
+        condition = (self.id == each.key)
+        error_message = "VALIDATION FAILURE: compartment id \"${each.key}\" not found."
+      }
+    }
+      id = each.key
+}
+
 data "oci_core_subnets" "these" {
   for_each = toset(local.flow_logs_compartment_ids)
+  lifecycle {
+    precondition {
+      condition = contains(keys(data.oci_identity_compartment.these),each.key)
+      error_message = "VALIDATION FAILURE: compartment id \"${each.key}\" not found."
+    }
+  }
     compartment_id = each.key
 }
 
@@ -123,6 +140,12 @@ data "oci_core_vcns" "these" {
 
 data "oci_core_vnic_attachments" "these" {
   for_each = toset(local.flow_logs_compartment_ids)
+  lifecycle {
+    precondition {
+      condition = contains(keys(data.oci_identity_compartment.these),each.key)
+      error_message = "VALIDATION FAILURE: compartment id \"${each.key}\" not found."
+    }
+  }
     compartment_id = each.key
 }
 
@@ -133,6 +156,12 @@ data "oci_core_vnic" "these" {
 
 data "oci_network_load_balancer_network_load_balancers" "these" {
   for_each = toset(local.flow_logs_compartment_ids)
+  lifecycle {
+    precondition {
+      condition = contains(keys(data.oci_identity_compartment.these),each.key)
+      error_message = "VALIDATION FAILURE: compartment id \"${each.key}\" not found."
+    }
+  }
     compartment_id = each.key
 }
 
