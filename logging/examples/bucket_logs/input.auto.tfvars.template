@@ -26,28 +26,22 @@ logging_configuration = {
   default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   
   log_groups = {
-    VCN-FLOW-LOG-GROUP = {
-      name = "vcn-flow-log-group"
+    BUCKET-LOG-GROUP = {
+      name = "bucket-log-group"
     }
   }
 
-  flow_logs = {
-    SUBNET-FLOW-LOGS = {
-      log_group_id = "VCN-FLOW-LOG-GROUP"
-      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-SUBNETS-ARE-LOCATED>"]
-      target_resource_type = "subnet"
+  bucket_logs = {
+    NETWORK-LOGGING-BUCKETS-READ = {
+      log_group_id = "BUCKET-LOG-GROUP"
+      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
+      category = "read"
     }
-    /* VCN-FLOW-LOGS = {
-      log_group_id = "VCN-FLOW-LOG-GROUP"
-      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-VCNS-ARE-LOCATED>"]
-      target_resource_type = "vcn"
-    } */
-    /* VNIC-FLOW-LOGS = {
-      log_group_id = "VCN-FLOW-LOG-GROUP"
-      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-VNICS-ARE-LOCATED>"]
-      target_resource_type = "vnic"
-      is_enabled = true
-    } */
+    NETWORK-LOGGING-BUCKETS-WRITE = {
+      log_group_id = "BUCKET-LOG-GROUP"
+      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
+      category = "write"
+    }
   }
 }
   
