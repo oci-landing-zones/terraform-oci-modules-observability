@@ -28,17 +28,18 @@ logging_configuration = {
   default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
   
   log_groups = {
+    
     VCN-FLOW-LOG-GROUP = {
       name = "vision-vcn-flow-log-group"
     }
     OBJECT-STORAGE-LOG_GROUP = {
       name = "vision-objstr-log-group"
     }
-
+   
   }
 
   service_logs = {
-   
+   /*
     SUBNET-FLOW-LOGS = {
       compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
       name = "vision-subnet-flow-logs"
@@ -50,16 +51,14 @@ logging_configuration = {
     
     OBJSTR-ACCESS-LOGS = {
       compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
-      name = "vision-objstr-access-logs"
+      name = "vision-objstr-write-logs"
       log_group_id = "<REPLACE-BY-LOG-GROUP-OCID>"
       service = "objectstorage"
       category = "write"
       resource_id = "<REPLACE-BY-RESOURCE-OCID>"
-    }
+    }*/
 
 }
 
     
 }
-    
-  
