@@ -13,13 +13,13 @@ variable "logging_configuration" {
     default_compartment_id   = string,                
     default_defined_tags     = optional(map(string)), 
     default_freeform_tags    = optional(map(string)), 
-    log_groups = optional(map(object({
+    log_groups = map(object({
       compartment_id   = optional(string)
       name             = string
       description      = optional(string)
       freeform_tags    = optional(map(string))
       defined_tags     = optional(map(string))
-    })))
+    }))
     service_logs = optional(map(object({    
       name               = string           
       log_group_id       = string

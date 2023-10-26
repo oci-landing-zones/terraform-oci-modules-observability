@@ -101,13 +101,13 @@ The top level object *logging_configuration* supports the following attributes:
 - **default_compartment_id**: (Optional) The default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep).
 - **default_defined_tags**: (Optional) The default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: (Optional) The default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
-- **log_groups**: (Optional) The log groups. In OCI, every log must be belong to a log group.
+- **log_groups**: A map of log groups. In OCI, every log must be belong to a log group.
   - **compartment_id**: (Optional) The compartment where the log group is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep).
   - **name**: The log group name.             
   - **description**: (Optional) The log group description. It defaults to log group name if undefined.      
   - **defined_tags**: (Optional) The log group defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log group freeform tags. *default_freeform_tags* is used if undefined.
-- **service_logs**: (Optional) The service logs to manage. **Use this when defining service logs for single resources**. Logs are created in the same compartment as the enclosing log group.
+- **service_logs**: (Optional) A map of service logs. **Use this when defining service logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **name**: The log name.
   - **log_group_id**: The log group. The value should be one of the reference keys defined in *log_groups*.
   - **service**: The resource service name for which the log is being created. Sample valid values: "flowlogs", "objectstorage". Supported services may change over time. See [Services Integrated with the Logging Services and their Categories](#services).
@@ -117,7 +117,7 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
-- **flow_logs**: (Optional) The flow logs to manage. **Use this when defining flow logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing flow log group.
+- **flow_logs**: A map of flow logs. **Use this when defining flow logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing flow log group.
   - **name_prefix**: (Optional) a prefix to flow log names.
   - **log_group_id** The flow log group. The value should be one of the reference keys defined in *log_groups*.
   - **target_resource_type** The target resource type for flow logs. Valid values: "vcn", "subnet", "vnic".
@@ -126,7 +126,7 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The flow log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The flow log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The flow log freeform tags. *default_freeform_tags* is used if undefined.
-- **bucket_logs**: (Optional) The bucket logs to manage. **Use this when defining bucket logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing bucket log group.
+- **bucket_logs**: A map of bucket logs. **Use this when defining bucket logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing bucket log group.
   - **name_prefix**: (Optional) a prefix to bucket log names.
   - **log_group_id**: The bucket log group. The value should be one of the reference keys defined in *log_groups*.
   - **target_compartment_ids**: The list of compartments containing the buckets to create logs for. The module seaeches for all buckets in these compartments.
@@ -135,7 +135,7 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The bucket log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The bucket log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The bucket log freeform tags. *default_freeform_tags* is used if undefined.
-- **custom_logs**: (Optional) The custom logs. **Use this when defining custom logs for single resources**. Logs are created in the same compartment as the enclosing log group.
+- **custom_logs**: A map of custom logs. **Use this when defining custom logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **compartment_id**: (Optional) The compartment where log is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
   - **name**: The log name.
   - **log_group_id**: The log group. The value should be one of the reference keys defined in *log_groups*.
@@ -146,6 +146,8 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
+
+**Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs* and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
 
 ### <a name="services">Services Integrated with the Logging Services and their Categories</a>
 

@@ -7,6 +7,7 @@ This repository contains Terraform OCI (Oracle Cloud Infrastructure) modules for
 The following modules are available:
 - [Events](./events/)
 - [Alarms](./alarms/)
+- [Logging](./logging/)
 - [Notifications](./notifications/)
 - [Streams](./streams/)
 - [Service Connectors](./service-connectors/)
