@@ -3,7 +3,7 @@
 
 locals {
 
-  flow_logs_target_types = ["VCN","SUBNET","VNIC"]
+  flow_logs_target_types = ["vcn","subnet","vnic"]
 
   flow_logs_compartment_ids = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
@@ -28,7 +28,7 @@ locals {
           target_resource_type = fl_value.target_resource_type
         }  
       ]
-    ] if upper(fl_value.target_resource_type) == "SUBNET"
+    ] if lower(fl_value.target_resource_type) == "subnet"
   ])  
 
   vcns_flow_logs = flatten([
@@ -48,7 +48,7 @@ locals {
           target_resource_type = fl_value.target_resource_type
         }  
       ]
-    ] if upper(fl_value.target_resource_type) == "VCN"
+    ] if lower(fl_value.target_resource_type) == "vcn"
   ]) 
 
   vnics_flow_logs = flatten([
@@ -68,7 +68,7 @@ locals {
           target_resource_type = fl_value.target_resource_type
         }  
       ]
-    ] if upper(fl_value.target_resource_type) == "VNIC"
+    ] if lower(fl_value.target_resource_type) == "vnic"
   ]) 
 
   vnics_ids = flatten([
@@ -96,7 +96,7 @@ locals {
           target_resource_type = fl_value.target_resource_type
         }  
       ] 
-    ] if upper(fl_value.target_resource_type) == "VNIC"
+    ] if lower(fl_value.target_resource_type) == "vnic"
   ])
 
   nlbs_info = flatten([
@@ -185,7 +185,7 @@ resource "oci_logging_log" "flow_logs" {
                 target_resource_type = v.target_resource_type }}
     lifecycle {
       precondition {
-        condition = contains(local.flow_logs_target_types, upper(each.value.target_resource_type))
+        condition = contains(local.flow_logs_target_types, lower(each.value.target_resource_type))
         error_message = "VALIDATION FAILURE: \"${each.value.target_resource_type}\" value is invalid for \"target_resource_type\" attribute. Valid values are: ${join(",",local.flow_logs_target_types)} (case insensitive)."
       }
     }

@@ -35,7 +35,7 @@ resource "oci_logging_log" "these_custom" {
     display_name = each.value.name
     log_group_id = oci_logging_log_group.these[each.value.log_group_id].id
     log_type     = "CUSTOM"
-    is_enabled         = each.value.is_enabled
+    is_enabled   = each.value.is_enabled
     retention_duration = each.value.retention_duration
     defined_tags  = each.value.defined_tags != null ? each.value.defined_tags : var.logging_configuration.default_defined_tags
     freeform_tags = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.logging_configuration.default_freeform_tags)
@@ -56,13 +56,13 @@ resource "oci_logging_unified_agent_configuration" "these" {
         source_type = "LOG_TAIL"
         paths       = each.value.path
         dynamic "parser" {
-          for_each = each.value.parser == "NONE" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "NONE" ? [1] : []
           content {
             parser_type = "NONE"
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "SYSLOG" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "SYSLOG" ? [1] : []
           content {
             parser_type        = "SYSLOG"
             rfc5424time_format = ""
@@ -70,7 +70,7 @@ resource "oci_logging_unified_agent_configuration" "these" {
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "CSV" || each.value.parser == "TSV" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "CSV" || coalesce(each.value.parser_type,"NONE") == "TSV" ? [1] : []
           content {
             parser_type = lookup(each.value, "parser", "CSV")
             keys        = []
@@ -78,7 +78,7 @@ resource "oci_logging_unified_agent_configuration" "these" {
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "REGEXP" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "REGEXP" ? [1] : []
           content {
             parser_type = "REGEXP"
             expression  = ".*"
@@ -86,7 +86,7 @@ resource "oci_logging_unified_agent_configuration" "these" {
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "MULTILINE" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "MULTILINE" ? [1] : []
           content {
             parser_type      = "MULTILINE"
             format           = ""
@@ -94,32 +94,32 @@ resource "oci_logging_unified_agent_configuration" "these" {
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "APACHE_ERROR" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "APACHE_ERROR" ? [1] : []
           content {
             parser_type = "APACHE_ERROR"
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "APACHE2" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "APACHE2" ? [1] : []
           content {
             parser_type = "APACHE2"
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "AUDITD" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "AUDITD" ? [1] : []
           content {
             parser_type = "AUDITD"
            }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "JSON" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "JSON" ? [1] : []
           content {
             parser_type = "JSON"
             time_type   = "UNIXTIME"
           }
         }
         dynamic "parser" {
-          for_each = each.value.parser == "CRI" ? [1] : []
+          for_each = coalesce(each.value.parser_type,"NONE") == "CRI" ? [1] : []
           content {
             parser_type = "CRI"
             nested_parser {
