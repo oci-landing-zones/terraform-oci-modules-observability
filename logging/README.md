@@ -95,18 +95,25 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ```
 ## <a name="functioning">Module Functioning</a>
 
-In this module, log groups and logs are defined using the *logging_configuration* object. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes.
+In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overriden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes.
 
-The top level object *logging_configuration* supports the following attributes:
-- **default_compartment_id**: (Optional) The default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep).
+**Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs* and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
+
+The *default_* attributes are the following:
+
+- **default_compartment_id**: (Optional) The default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep) section.
 - **default_defined_tags**: (Optional) The default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: (Optional) The default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
+
+### Defining Log Groups
 - **log_groups**: A map of log groups. In OCI, every log must be belong to a log group.
-  - **compartment_id**: (Optional) The compartment where the log group is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep).
+  - **compartment_id**: (Optional) The compartment where the log group is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep) section.
   - **name**: The log group name.             
   - **description**: (Optional) The log group description. It defaults to log group name if undefined.      
   - **defined_tags**: (Optional) The log group defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log group freeform tags. *default_freeform_tags* is used if undefined.
+
+### Defining Service Logs  
 - **service_logs**: (Optional) A map of service logs. **Use this when defining service logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **name**: The log name.
   - **log_group_id**: The log group. The value should be one of the reference keys defined in *log_groups*.
@@ -117,6 +124,8 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
+
+### Defining Flow Logs
 - **flow_logs**: A map of flow logs. **Use this when defining flow logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing flow log group.
   - **name_prefix**: (Optional) a prefix to flow log names.
   - **log_group_id** The flow log group. The value should be one of the reference keys defined in *log_groups*.
@@ -126,6 +135,8 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The flow log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The flow log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The flow log freeform tags. *default_freeform_tags* is used if undefined.
+
+### Defining Bucket Logs  
 - **bucket_logs**: A map of bucket logs. **Use this when defining bucket logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing bucket log group.
   - **name_prefix**: (Optional) a prefix to bucket log names.
   - **log_group_id**: The bucket log group. The value should be one of the reference keys defined in *log_groups*.
@@ -135,6 +146,8 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The bucket log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The bucket log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The bucket log freeform tags. *default_freeform_tags* is used if undefined.
+
+### Defining Custom Logs  
 - **custom_logs**: A map of custom logs. **Use this when defining custom logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **compartment_id**: (Optional) The compartment where log is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
   - **name**: The log name.
@@ -146,8 +159,6 @@ The top level object *logging_configuration* supports the following attributes:
   - **retention_duration**: (Optional) The log retention duration in 30-day increments. Valida values are 30, 60, 90, 120, 150, 180. Default is 30. 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
-
-**Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs* and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
 
 ### <a name="services">Services Integrated with the Logging Services and their Categories</a>
 
@@ -187,7 +198,7 @@ WAF Service | "waf" | "all"
 
 An optional feature, external dependencies are resources managed elsewhere that resources managed by this module may depend on. The following dependencies are supported:
 
-- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID.
+- **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID. This mechanism allows for the usage of referring keys (instead of OCIDs) in *default_compartment_id* and *compartment_id* attributes. The module replaces the keys by the OCIDs provided within *compartments_dependency* map. Contents of *compartments_dependency is typically the output of a [Compartments module](../compartments/) client.
 
 ## <a name="related">Related Documentation</a>
 - [OCI Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/home.htm)
