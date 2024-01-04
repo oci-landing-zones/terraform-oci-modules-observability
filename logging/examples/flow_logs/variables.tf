@@ -65,7 +65,7 @@ variable "logging_configuration" {
   })
 }
 
-variable "automation_config" {
+variable "external_dependency" {
   type = object({
     bucket_name = string
     cmp_dependency = list(string)

@@ -1,14 +1,11 @@
-# CIS OCI Logging Module Example - Custom Logs
+# CIS OCI Logging Module Example - Bucket Logs in Bulk
 
 ## Introduction
 
-This example shows how to deploy custom logs using the [CIS Landing Zone Logging module](../../). It deploys the following resources:
-- One log group forall custom logs.
-- One simple custom log 
-- One custom log using SYSLOG parser. 
-- One custom log using APACHE_ERROR parser
+This example shows how to deploy bucket logs in bulk using the [CIS Landing Zone Logging module](../../). The target buckets are dynamically retrieved based on the specified target compartments (*target_compartment_ids* attribute). Distinct logs are created for bucket read and bucket write operations.
 
-For deploying service logs, refer to [Flow Logs example](../flow_logs/), [Bucket Logs example](../bucket_logs/) or [Vision Service Logs example](../vision/).
+For deploying bucket logs for individual buckets, refer to [vision Service Logs example](../vision/).
+For deploying custom logs, refer to [Custom Logs example](../custom_logs/).
 
 ## External Dependency (Optional)
 
@@ -47,15 +44,12 @@ allow group <group> to read objects in compartment <bucket-compartment-name> whe
 
 Note: *\<bucket-name\>* is the bucket specified by *external_dependency's* *bucket_name* attribute. *\<bucket-compartment-name\>* is *\<bucket-name\>*'s compartment name.
 
-
 ## Running This Example
+
 1. Rename *input.auto.tfvars.template* to *\<project-name\>.auto.tfvars*, where *\<project-name\>* is any name of your choice.
 
 2. Within *\<project-name\>.auto.tfvars*, provide tenancy connectivity information and adjust the *logging_configuration* input variable, by making the appropriate substitutions:
-  - Replace *\<REPLACE-BY-COMPARTMENT-OCID\>* placeholder with appropriate compartment OCID or key (if enabling external dependency).
-  - Replace *\<REPLACE-BY-DYNAMIC-GROUP-OCID\>* placeholder with appropriate dynamic group OCID.
-  - Replace *\<REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM\>* placeholder with path value from the instance from where logs are to be collected. Ex: "/var/log/"
-  - *parser_type* valid values are: "NONE", "SYSLOG", "JSON", "CSV", "TSV", "REGEX", "APACHE_ERROR", "MULTILINE", "APACHE2", "AUDITD", "JSON", "CRI".
+   - Replace *\<REPLACE-BY-COMPARTMENT-\*\>*, placeholders by appropriate compartment OCIDs or keys (if enabling external dependency).
 
 Refer to [Logging module README.md](../../README.md) for overall attributes usage.
 

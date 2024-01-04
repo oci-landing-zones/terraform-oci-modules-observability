@@ -64,3 +64,11 @@ variable "logging_configuration" {
     })))
   })
 }
+
+variable "external_dependency" {
+  type = object({
+    bucket_name = string
+    cmp_dependency = list(string)
+  })
+  default = null
+}

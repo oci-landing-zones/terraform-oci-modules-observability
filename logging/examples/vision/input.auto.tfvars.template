@@ -4,7 +4,9 @@
 #--------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-OCID>, <REPLACE-BY-LOG-GROUP-OCID>, <REPLACE-BY-RESOURCE-OCID> placeholders by appropriate values.
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholder with appropriate compartment OCID or key (if enabling external dependency).
+# 4. Replace <REPLACE-BY-SUBNET-OCID-TO-ENABLE-LOG-FOR> placeholder with the appropriate subnet OCID.
+# 5. Replace <REPLACE-BY-BUCKET-NAME-TO-ENABLE-LOG-FOR> placeholder with the appropriate bucket name.
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -30,25 +32,32 @@ logging_configuration = {
     VCN-FLOW-LOG-GROUP = {
       name = "vision-vcn-flow-log-group"
     }
-    OBJECT-STORAGE-LOG_GROUP = {
-      name = "vision-objstr-log-group"
+   BUCKET-LOG-GROUP = {
+      name = "vision-bucket-log-group"
     }
   }
 
   service_logs = {
-    SUBNET-FLOW-LOGS = {
+    SUBNET-FLOW-LOG = {
       name = "vision-subnet-flow-logs"
-      log_group_id = "<REPLACE-BY-LOG-GROUP-OCID>"
+      log_group_id = "VCN-FLOW-LOG-GROUP"
       service = "flowlogs"
       category = "all"
-      resource_id = "<REPLACE-BY-RESOURCE-OCID>"
+      resource_id = "<REPLACE-BY-SUBNET-OCID-TO-ENABLE-LOG-FOR>"
     }
-    OBJSTR-ACCESS-LOGS = {
-      name = "vision-objstr-write-logs"
-      log_group_id = "<REPLACE-BY-LOG-GROUP-OCID>"
+    BUCKET-LOG = {
+      name = "vision-bucket-write-logs"
+      log_group_id = "BUCKET-LOG-GROUP"
       service = "objectstorage"
       category = "write"
-      resource_id = "<REPLACE-BY-RESOURCE-OCID>"
+      resource_id = "<REPLACE-BY-BUCKET-NAME-TO-ENABLE-LOG-FOR>"
     }
   }
 }
+
+/*
+external_dependency = {
+  bucket_name      = "<REPLACE-BY-BUCKET-NAME>"
+  cmp_dependency   = ["<REPLACE-BY-OBJECT-NAME>"]
+}
+*/

@@ -4,7 +4,7 @@
 #--------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-*> placeholders with appropriate compartment OCIDs.
+# 3. Replace <REPLACE-BY-COMPARTMENT-*> placeholders with appropriate compartment OCIDs or keys (if using external dependency).
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -23,7 +23,7 @@ region               = "<REPLACE-BY-YOUR-TENANCY-REGION>"      # This is your re
 #---------------------------------------
 
 logging_configuration = {
-  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+  default_compartment_id = "<REPLACE-WITH-COMPARTMENT-OCID>"
   
   log_groups = {
     BUCKET-LOG-GROUP = {
@@ -32,16 +32,23 @@ logging_configuration = {
   }
 
   bucket_logs = {
-    NETWORK-LOGGING-BUCKETS-READ = {
+    BUCKET-LOG-READ = {
       log_group_id = "BUCKET-LOG-GROUP"
-      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
+      target_compartment_ids = ["<REPLACE-WITH-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
       category = "read"
     }
-    NETWORK-LOGGING-BUCKETS-WRITE = {
+    BUCKET-LOG-WRITE = {
       log_group_id = "BUCKET-LOG-GROUP"
-      target_compartment_ids = ["<REPLACE-BY-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
+      target_compartment_ids = ["<REPLACE-WITH-COMPARTMENT-OCID-WHERE-BUCKETS-ARE-LOCATED>"]
       category = "write"
     }
   }
 }
+
+/*
+external_dependency = {
+  bucket_name      = "<REPLACE-BY-BUCKET-NAME>"
+  cmp_dependency   = ["<REPLACE-BY-OBJECT-NAME>"]
+}
+*/
   

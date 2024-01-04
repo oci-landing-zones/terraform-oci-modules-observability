@@ -4,10 +4,10 @@
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders with appropriate compartment OCID.
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders with appropriate compartment OCID or key (if enabling external dependency).
 # 4. Replace <REPLACE-BY-DYNAMIC-GROUP-OCID> placeholder with appropriate dynamic group OCID.
 # 5. Replace <REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM> placeholder with path value from the instance from where logs are to be collected. Ex: "/var/log/"
-# 6. parser_type valid values are: NONE, SYSLOG, JSON, CSV, TSV, REGEX, APACHE_ERROR, MULTILINE, APACHE2, AUDITD, JSON, CRI.
+# 6. parser_type valid values are: "NONE", "SYSLOG", "JSON", "CSV", "TSV", "REGEX", "APACHE_ERROR", "MULTILINE", "APACHE2", "AUDITD", "JSON", "CRI".
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -63,5 +63,11 @@ logging_configuration = {
   }
 }
 
+/*
+external_dependency = {
+  bucket_name      = "<REPLACE-BY-BUCKET-NAME>"
+  cmp_dependency   = ["<REPLACE-BY-OBJECT-NAME>"]
+}
+*/
 
 

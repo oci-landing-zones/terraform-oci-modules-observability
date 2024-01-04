@@ -4,5 +4,5 @@
 module "flow_logging" {
   source               = "../../"
   logging_configuration = var.logging_configuration
-  compartments_dependency = var.automation_config != null ? merge([for o in data.oci_objectstorage_object.compartments : jsondecode(o.content)]...) : null
+  compartments_dependency = var.external_dependency != null ? merge([for o in data.oci_objectstorage_object.compartments : jsondecode(o.content)]...) : null
 }
