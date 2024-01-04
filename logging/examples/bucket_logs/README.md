@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This example shows how to deploy bucket logs in bulk using the [CIS Landing Zone Logging module](../../). The target buckets are dynamically retrieved based on the specified target compartments (*target_compartment_ids* attribute). Distinct logs are created for bucket read and bucket write operations.
+This example shows how to deploy bucket logs in bulk using the [CIS OCI Logging module](../../). The target buckets are dynamically retrieved based on the specified target compartments (*target_compartment_ids* attribute). Distinct logs are created for bucket read and bucket write operations.
 
 For deploying bucket logs for individual buckets, refer to [vision Service Logs example](../vision/).
 For deploying custom logs, refer to [Custom Logs example](../custom_logs/).

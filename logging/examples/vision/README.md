@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This example shows how to deploy flow logs for subnets and write operation logs for object storage buckets using the [CIS Landing Zone Logging module](../../). It deploys the following resources:
-- One log group for flow logs
-- One log group for bucket logs
+This example shows how to deploy flow logs for subnets and write operation logs for object storage buckets using the [CIS OCI Logging module](../../). It deploys the following resources:
+- One log group for flow logs.
+- One log group for bucket logs.
 - One flow log in flow log group for a specific subnet resource.
 - One bucket log for write operations in bucket log group for a specific bucket resource.
 

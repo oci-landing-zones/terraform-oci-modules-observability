@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This example shows how to deploy custom logs using the [CIS Landing Zone Logging module](../../). It deploys the following resources:
-- One log group forall custom logs.
-- One simple custom log 
+This example shows how to deploy custom logs using the [CIS OCI Logging module](../../). It deploys the following resources:
+- One log group for all custom logs.
+- One simple custom log. 
 - One custom log using SYSLOG parser. 
 - One custom log using APACHE_ERROR parser
 
