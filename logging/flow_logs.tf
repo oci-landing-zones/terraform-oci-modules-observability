@@ -14,7 +14,7 @@ locals {
   subnets_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for subnet in data.oci_core_subnets.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].subnets : {
+        for subnet in coalesce(data.oci_core_subnets.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].subnets, []) : {
           key = upper("${fl_key}-${subnet.display_name}-${substr(subnet.id,-10,-1)}")
           category = "subnet"
           resource_id = subnet.id
@@ -34,7 +34,7 @@ locals {
   vcns_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for vcn in data.oci_core_vcns.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].virtual_networks : {
+        for vcn in coalesce(data.oci_core_vcns.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].virtual_networks, []) : {
           key = upper("${fl_key}-${vcn.display_name}-${substr(vcn.id,-10,-1)}")
           category = "vcn"
           resource_id = vcn.id
@@ -54,7 +54,7 @@ locals {
   vnics_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
-        for attach in data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments : {
+        for attach in coalesce(data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments, []) : {
           key = upper("${fl_key}-${data.oci_core_vnic.these[attach.vnic_id].display_name}")
           category = "vnic"
           resource_id = attach.vnic_id
@@ -74,15 +74,15 @@ locals {
   vnics_ids = flatten([
       for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
         for cmp_id in fl_value.target_compartment_ids : [
-          for attach in data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments : [attach.vnic_id]
+          for attach in coalesce(data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments, []) : [attach.vnic_id]
         ] 
       ] 
   ])   
 
   nlbs_flow_logs = flatten([
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
-      for k, v in data.oci_core_private_ips.nlbs : [
-        for ip in v.private_ips : {
+      for k, v in coalesce(data.oci_core_private_ips.nlbs, {}) : [
+        for ip in coalesce(v.private_ips, []) : {
           key = upper("${fl_key}-${ip.display_name}")
           category = "vnic"
           resource_id = ip.vnic_id
@@ -100,10 +100,10 @@ locals {
   ])
 
   nlbs_info = flatten([
-    for k,v in data.oci_network_load_balancer_network_load_balancers.these : [
-      for col_elem in v.network_load_balancer_collection : [
-        for nlb in col_elem.items : [
-          for i in nlb.ip_addresses : 
+    for k,v in coalesce(data.oci_network_load_balancer_network_load_balancers.these,{}) : [
+      for col_elem in coalesce(v.network_load_balancer_collection,[]) : [
+        for nlb in coalesce(col_elem.items, []) : [
+          for i in coalesce(nlb.ip_addresses, []) : 
             {"ip_address" : i.ip_address, "subnet_id": nlb.subnet_id}
         ]
       ]
