@@ -58,13 +58,13 @@ module "notifications" {
 For invoking the module remotely, set the module *source* attribute to the notifications module folder in this repository, as shown:
 ```
 module "notifications" {
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//notifications"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/notifications"
   notifications_configuration = var.notifications_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//notifications?ref=v0.1.0"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//notifications?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 

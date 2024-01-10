@@ -73,13 +73,13 @@ module "streams" {
 For invoking the module remotely, set the module *source* attribute to the streams module folder in this repository, as shown:
 ```
 module "streams" {
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//streams"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/streams"
   streams_configuration = var.streams_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//streams?ref=v0.1.0"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//streams?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 

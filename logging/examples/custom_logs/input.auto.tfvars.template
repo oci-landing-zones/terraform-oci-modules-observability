@@ -1,0 +1,73 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders with appropriate compartment OCID or key (if enabling external dependency).
+# 4. Replace <REPLACE-BY-DYNAMIC-GROUP-OCID> placeholder with appropriate dynamic group OCID.
+# 5. Replace <REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM> placeholder with path value from the instance from where logs are to be collected. Ex: "/var/log/"
+# 6. parser_type valid values are: "NONE", "SYSLOG", "JSON", "CSV", "TSV", "REGEX", "APACHE_ERROR", "MULTILINE", "APACHE2", "AUDITD", "JSON", "CRI".
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<REPLACE-BY-TENANCY-OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<REPLACE-BY-USER-OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<REPLACE-BY-USER-FINGERPRINT>"         # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
+private_key_path     = "<REPLACE-BY-PRIVATE-KEY-PATH>"         # This is the full path on your local system to the API signing private key.
+private_key_password = ""                                      # This is the password that protects the private key, if any.
+region               = "<REPLACE-BY-YOUR-TENANCY-REGION>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+logging_configuration = {
+
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+  
+  log_groups = {
+    CUSTOM-LOG-GROUP = {
+      name = "custom-log-group"
+    }
+  }
+
+  custom_logs = {
+    CUSTOM-LOGS-LINUX = {
+      name           = "custom-logs-linux"
+      log_group_id   = "CUSTOM-LOG-GROUP"
+      dynamic_groups = ["<REPLACE-BY-DYNAMIC-GROUP-OCID>"]
+      path           = ["<REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM>"]
+      is_enabled     = true
+      parser_type    = "NONE"
+    }
+    CUSTOM-SYSLOGS-LINUX = {
+      name           = "custom-syslogs-linux"
+      log_group_id   = "CUSTOM-LOG-GROUP"
+      dynamic_groups = ["<REPLACE-BY-DYNAMIC-GROUP-OCID>"]
+      path           = ["<REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM>"]
+      is_enabled     = true
+      parser_type    = "SYSLOG"
+    }
+    CUSTOM-APACHE-ERROR-LINUX = {
+      name           = "custom-apache-errorlogs-linux"
+      log_group_id   = "CUSTOM-LOG-GROUP"
+      dynamic_groups = ["<REPLACE-BY-DYNAMIC-GROUP-OCID>"]
+      path           = ["<REPLACE-BY-PATH-FROM-INSTANCE-TO-GET-LOGS-FROM>"]
+      is_enabled     = true
+      parser_type    = "APACHE_ERROR"
+    }
+  }
+}
+
+/*
+external_dependency = {
+  bucket_name      = "<REPLACE-BY-BUCKET-NAME>"
+  cmp_dependency   = ["<REPLACE-BY-OBJECT-NAME>"]
+}
+*/
+
+
