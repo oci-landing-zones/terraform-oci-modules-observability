@@ -73,13 +73,13 @@ module "service_connectors" {
 For invoking the module remotely, set the module *source* attribute to the service connectors module folder in this repository, as shown:
 ```
 module "service_connectors" {
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//service_connectors"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/service_connectors"
   service_connectors_configuration = var.service_connectors_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//service_connectors?ref=v0.1.0"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//service_connectors?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 

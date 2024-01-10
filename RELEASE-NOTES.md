@@ -1,3 +1,8 @@
+# January 10, 2024 Release Notes - 0.1.3
+
+## Added
+1. Logging module, supporting service logs and custom logs, with the additional ability for bulk provisioning bucket logs and flow logs.
+
 # September 28, 2023 Release Notes - 0.1.2
 
 ## Updates

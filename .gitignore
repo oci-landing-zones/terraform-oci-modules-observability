@@ -9,3 +9,5 @@
 **/terraform.tfvars
 **/input.auto.tfvars
 **/*.pptx
+**/private
+**/creds

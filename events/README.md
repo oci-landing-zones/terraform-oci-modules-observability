@@ -75,13 +75,13 @@ module "events" {
 For invoking the module remotely, set the module *source* attribute to the events module folder in this repository, as shown:
 ```
 module "events" {
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//events"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/events"
   events_configuration = var.events_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//events?ref=v0.1.0"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//events?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 
