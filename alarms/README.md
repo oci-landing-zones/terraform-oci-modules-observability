@@ -71,13 +71,13 @@ module "alarms" {
 For invoking the module remotely, set the module *source* attribute to the alarms module folder in this repository, as shown:
 ```
 module "alarms" {
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//alarms"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/alarms"
   alarms_configuration = var.alarms_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "git@github.com:oracle-quickstart/terraform-oci-cis-landing-zone-observability.git//alarms?ref=v0.1.0"
+  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//alarms?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 
