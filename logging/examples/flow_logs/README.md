@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This example shows how to deploy flow logs for subnets, VCNs and VNICs in bulk using the [CIS OCI Logging module](../../). The target resources are dynamically retrieved based on the specified target compartments (*target_compartment_ids* attribute) and target resource type (*target_resource_type* attribute). 
+This example shows how to deploy flow logs for subnets, VCNs and VNICs in bulk using the [CIS OCI Logging module](../../). The target resources are dynamically retrieved based on the specified target compartments (*target_compartment_ids* attribute) and target resource type (*target_resource_type* attribute). It deploys the following resources:
+- One log group.
+- One flow log for each retrieved subnet. 
 
 Valid values for *target_resource_type* are "vcn", "subnet", or "vnic":
 - **vcn**: flow logs are created for all VCNs under the compartments specified by *target_compartment_ids* attribute.

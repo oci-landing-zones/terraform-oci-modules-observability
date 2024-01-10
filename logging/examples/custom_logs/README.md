@@ -6,7 +6,8 @@ This example shows how to deploy custom logs using the [CIS OCI Logging module](
 - One log group for all custom logs.
 - One simple custom log. 
 - One custom log using SYSLOG parser. 
-- One custom log using APACHE_ERROR parser
+- One custom log using APACHE_ERROR parser.
+- One agent configuration to each custom log.
 
 For deploying service logs, refer to [Flow Logs example](../flow_logs/), [Bucket Logs example](../bucket_logs/) or [Vision Service Logs example](../vision/).
 
