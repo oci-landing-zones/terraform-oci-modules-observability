@@ -86,7 +86,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, events are defined using the *events_configuration* object, that supports the following attributes:
-- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. The reserved key "TENANCY-ROOT" references the root compartment OCID. When "TENANCY-ROOT" is utilized, variable *tenancy_ocid* is required.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **event_rules**: define the event types to capture and where to send them. **Each event rule is defined as an object whose key must be unique and must not be changed once defined**. As a convention, use uppercase strings for the keys.

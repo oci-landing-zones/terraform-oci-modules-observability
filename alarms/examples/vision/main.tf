@@ -4,4 +4,5 @@
 module "vision_alarms" {
   source               = "../../"
   alarms_configuration = var.alarms_configuration
+  tenancy_ocid         = var.tenancy_ocid
 }

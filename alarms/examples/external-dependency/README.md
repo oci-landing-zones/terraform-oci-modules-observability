@@ -18,11 +18,11 @@ Note: *<bucket-name>* is the bucket specified by *oci_shared_config_bucket* vari
 1. Rename *input.auto.tfvars.template* to *\<project-name\>.auto.tfvars*, where *\<project-name\>* is any name of your choice.
 
 2. Within *\<project-name\>.auto.tfvars*, provide tenancy connectivity information and adjust the *alarms_configuration* input variable, by making the appropriate substitutions:
-   - Replace *\<REPLACE-BY-COMPARTMENT-REFERENCE\>* placeholders by the appropriate compartment references, expected to be found in the OCI Object Storage object specified by *oci_compartments_object*.
+   - Replace *\<REPLACE-BY-COMPARTMENT-REFERENCE\>* placeholders by the appropriate compartment references, expected to be found in the OCI Object Storage object specified by *oci_compartments_object*. Or utilize the reserved key "TENANCY-ROOT" for the root compartment OCID.
    - Replace *\<REPLACE-BY-TOPIC-REFERENCE\>* placeholders by the appropriate topic references, expected to be found in the OCI Object Storage object specified by *oci_topics_object*.
    - Replace *\<REPLACE-BY-BUCKET-NAME\>* placeholder by the OCI Object Storage bucket for configuration sharing across modules.
-   - Replace *\<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS\>* placeholder by the OCI Object Storage object with the compartments references. This object is tipically stored in OCI Object Storage by the module that manages compartments.
-   - Replace *\<REPLACE-BY-OBJECT-NAME-FOR-TOPICS\>* placeholder by the OCI Object Storage object to hold topic references. This object is tipically stored in OCI Object Storage by the module that manages topics.
+   - Replace *\<REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS\>* placeholder by the OCI Object Storage object with the compartments references. This object is typically stored in OCI Object Storage by the module that manages compartments.
+   - Replace *\<REPLACE-BY-OBJECT-NAME-FOR-TOPICS\>* placeholder by the OCI Object Storage object to hold topic references. This object is typically stored in OCI Object Storage by the module that manages topics.
 
 Refer to [Alarms' module README.md](../../README.md) for overall attributes usage.
 
