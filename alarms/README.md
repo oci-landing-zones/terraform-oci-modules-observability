@@ -82,7 +82,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ## <a name="functioning">Module Functioning</a>
 
 In this module, alarms are defined using the *alarms_configuration* object, that supports the following attributes:
-- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID.
+- **default_compartment_id**: the default compartment for all resources managed by this module. It can be overriden by *compartment_id* attribute in each resource. This attribute is overloaded. It can be assigned either a literal OCID or a reference (a key) to an OCID. The reserved key "TENANCY-ROOT" references the root compartment OCID. When "TENANCY-ROOT" is utilized, variable *tenancy_ocid* is required.
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **alarms**: define the alarms to capture and where to send them. 

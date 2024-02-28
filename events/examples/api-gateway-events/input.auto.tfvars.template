@@ -1,13 +1,13 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-#--------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. Or utilize the reserved key "TENANCY-ROOT" for the root compartment OCID.
 # 4. Replace <REPLACE-BY-COMPARTMENT-OCID-TO-FILTER-ON> placeholder by appropriate compartment OCID. 
 # 5. Replace email.address@example.com by actual email addresses.
-#--------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
 # Tenancy Connectivity Variables

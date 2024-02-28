@@ -3,12 +3,15 @@
 
 locals {
 
+  tenancy_root_key = "TENANCY-ROOT"
+
   subscriptions = flatten([
     for topic_key, topic in (var.events_configuration["topics"] != null ? var.events_configuration["topics"] : {}) : [
       for subs in (topic["subscriptions"] != null ? topic["subscriptions"] : []) : [
         for value in subs["values"] : {
           key = "${topic_key}.${value}"
-          compartment_id = topic.compartment_id != null ? (length(regexall("^ocid1.*$", topic.compartment_id)) > 0 ? topic.compartment_id : var.compartments_dependency[topic.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+          #compartment_id = topic.compartment_id != null ? (length(regexall("^ocid1.*$", topic.compartment_id)) > 0 ? topic.compartment_id : var.compartments_dependency[topic.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+          compartment_id = topic.compartment_id != null ? topic.compartment_id : var.events_configuration.default_compartment_id
           protocol = upper(subs.protocol)
           endpoint = value
           topic_id = oci_ons_notification_topic.these[topic_key].id
@@ -68,11 +71,19 @@ resource "oci_events_rule" "these" {
       precondition {
         #-- This precondition checks if values in preconfigured_events_categories attributes are valid.
         condition = each.value.preconfigured_events_categories != null ? length(setintersection(keys(local.preconfigured_events),[for category in each.value.preconfigured_events_categories : lower(category)])) == length([for category in each.value.preconfigured_events_categories : lower(category)]) : true
-        error_message = "VALIDATION FAILURE : \"${each.value.preconfigured_events_categories != null ? join(",",setsubtract([for category in each.value.preconfigured_events_categories : lower(category)],keys(local.preconfigured_events))) : ""}\" value is invalid for \"preconfigured_events_categories\" attribute. Valid values are ${join(", ",keys(local.preconfigured_events))} (case insensitive)."
+        error_message = "VALIDATION FAILURE in event \"${each.key}\": \"${each.value.preconfigured_events_categories != null ? join(",",setsubtract([for category in each.value.preconfigured_events_categories : lower(category)],keys(local.preconfigured_events))) : ""}\" value is invalid for \"preconfigured_events_categories\" attribute. Valid values are ${join(", ",keys(local.preconfigured_events))} (case insensitive)."
+      }
+      precondition {
+        condition     = var.tenancy_ocid == null && each.value.compartment_id != null && upper(coalesce(each.value.compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+        error_message = "VALIDATION FAILURE in event \"${each.key}\": variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in attribute \"compartment_id\"."
+      }
+      precondition {
+        condition     = var.tenancy_ocid == null && each.value.compartment_id == null && upper(coalesce(var.events_configuration.default_compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+        error_message = "VALIDATION FAILURE in event \"${each.key}\": as attribute \"compartment_id\" is absent, variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in \"events_configuration's\" \"default_compartment_id\" attribute."
       }
     }
 
-    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == "TENANCY-ROOT" ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : (upper(var.events_configuration.default_compartment_id) == "TENANCY-ROOT" ? var.tenancy_ocid : var.compartments_dependency[var.events_configuration.default_compartment_id].id))
     display_name   = each.value.event_display_name
     description    = each.value.event_description != null ? each.value.event_description : each.value.event_display_name
     condition      = each.value.supplied_events != null ? jsonencode({"eventType":each.value.supplied_events,"data":local.filters[each.key]}) : jsonencode({"eventType":flatten(concat([for category in each.value.preconfigured_events_categories : local.preconfigured_events[lower(category)].conditions])),"data":local.filters[each.key]})
@@ -118,7 +129,18 @@ resource "oci_events_rule" "these" {
 
 resource "oci_ons_notification_topic" "these" {
   for_each = var.events_configuration["topics"] != null ? var.events_configuration["topics"] : {}
-    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+  lifecycle {
+    precondition {
+      condition     = var.tenancy_ocid == null && each.value.compartment_id != null && upper(coalesce(each.value.compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+      error_message = "VALIDATION FAILURE in topic \"${each.key}\": variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in attribute \"compartment_id\"."
+    }
+    precondition {
+      condition     = var.tenancy_ocid == null && each.value.compartment_id == null && upper(coalesce(var.events_configuration.default_compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+      error_message = "VALIDATION FAILURE in topic \"${each.key}\": as attribute \"compartment_id\" is absent, variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in \"events_configuration's\" \"default_compartment_id\" attribute."
+    }
+  }  
+    #compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+    compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : (upper(var.events_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.events_configuration.default_compartment_id].id))
     name           = each.value.name
     description    = each.value.description != null ? each.value.description : each.value.name
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.events_configuration.default_defined_tags
@@ -135,10 +157,19 @@ resource "oci_ons_subscription" "these" {
     lifecycle {
       precondition {
         condition = contains(local.subscription_protocols,upper(each.value.protocol))
-        error_message = "VALIDATION FAILURE : \"${each.value.protocol}\" value is invalid for \"protocol\" attribute. Valid values are ${join(", ",local.subscription_protocols)} (case insensitive)."
+        error_message = "VALIDATION FAILURE in topic subscription \"${each.key}\": \"${each.value.protocol}\" value is invalid for \"protocol\" attribute. Valid values are ${join(", ",local.subscription_protocols)} (case insensitive)."
+      }
+      precondition {
+        condition     = var.tenancy_ocid == null && each.value.compartment_id != null && upper(coalesce(each.value.compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+        error_message = "VALIDATION FAILURE in topic subscription \"${each.key}\": variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in attribute \"compartment_id\"."
+      }
+      precondition {
+        condition     = var.tenancy_ocid == null && each.value.compartment_id == null && upper(coalesce(var.events_configuration.default_compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+        error_message = "VALIDATION FAILURE in topic subscription \"${each.key}\": as attribute \"compartment_id\" is absent, variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in \"events_configuration's\" \"default_compartment_id\" attribute."
       }
     }                                                                  
-    compartment_id = each.value.compartment_id
+    #compartment_id = each.value.compartment_id
+    compartment_id = length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)
     topic_id       = each.value.topic_id
     endpoint       = each.value.endpoint
     protocol       = each.value.protocol
@@ -148,7 +179,18 @@ resource "oci_ons_subscription" "these" {
 
 resource "oci_streaming_stream" "these" {
   for_each = var.events_configuration["streams"] != null ? var.events_configuration["streams"] : {}
-    compartment_id     = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+  lifecycle {
+    precondition {
+      condition     = var.tenancy_ocid == null && each.value.compartment_id != null && upper(coalesce(each.value.compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+      error_message = "VALIDATION FAILURE in stream \"${each.key}\": variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in attribute \"compartment_id\"."
+    }
+    precondition {
+      condition     = var.tenancy_ocid == null && each.value.compartment_id == null && upper(coalesce(var.events_configuration.default_compartment_id,"__void__")) == local.tenancy_root_key ? false : true
+      error_message = "VALIDATION FAILURE in stream \"${each.key}\": as attribute \"compartment_id\" is absent, variable \"tenancy_ocid\" is required when the \"${local.tenancy_root_key}\" key word is used to reference the root compartment in \"events_configuration's\" \"default_compartment_id\" attribute."
+    }
+  }
+    #compartment_id     = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : var.compartments_dependency[var.events_configuration.default_compartment_id].id)
+    compartment_id     = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : (upper(var.events_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.events_configuration.default_compartment_id].id))
     name               = each.value.name
     partitions         = each.value.num_partitions != null ? each.value.num_partitions : 1
     retention_in_hours = each.value.log_retention_in_hours != null ? each.value.log_retention_in_hours : 24

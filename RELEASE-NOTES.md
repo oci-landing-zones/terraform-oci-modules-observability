@@ -1,3 +1,16 @@
+# February 28, 2024 Release Notes - 0.1.4
+
+## Updates
+
+### Events Module
+1. Networking events updated:
+    - Delete event for Local Peering Gateway renamed to *com.oraclecloud.virtualnetwork.deletelocalpeeringgateway.end*.
+    - Event *com.oraclecloud.servicegateway.deleteservicegateway.begin* removed.
+2. The reserved key "TENANCY-ROOT" has been introduced. It is used for referring to the root compartment OCID and can be assigned to *default_compartment_id* and *compartment_id* and *metric_compartment_id* attributes.
+
+### Alarms Module
+1. The reserved key "TENANCY-ROOT" has been introduced. It is used for referring to the root compartment OCID and can be assigned to *default_compartment_id* and *compartment_id* attributes.
+
 # January 10, 2024 Release Notes - 0.1.3
 
 ## Added

@@ -4,10 +4,12 @@
 module "vision_events" {
   source = "../../"
   events_configuration = var.events_configuration
+  tenancy_ocid = var.tenancy_ocid
 }
 
 module "vision_home_region_events" {
   source = "../../"
   providers = { oci = oci.home }
   events_configuration = var.home_region_events_configuration
+  tenancy_ocid = var.tenancy_ocid
 }

@@ -8,7 +8,7 @@ This example shows how to manage events related to API Gateway deployments in Or
 1. Rename *input.auto.tfvars.template* to *\<project-name\>.auto.tfvars*, where *\<project-name\>* is any name of your choice.
 
 2. Within *\<project-name\>.auto.tfvars*, provide tenancy connectivity information and adjust the *events_configuration* input variable, by making the appropriate substitutions:
-   - Replace *\<REPLACE-BY-COMPARTMENT-OCID\>* placeholders by appropriate compartment OCIDs. 
+   - Replace *\<REPLACE-BY-COMPARTMENT-OCID\>* placeholders by appropriate compartment OCIDs. Or utilize the reserved key "TENANCY-ROOT" for the root compartment OCID.
    - Replace *\<REPLACE-BY-COMPARTMENT-OCID-TO-FILTER-ON\>* placeholder by an appropriate compartment OCID. 
    - Replace *email.address@example.com* by actual email addresses.
 
