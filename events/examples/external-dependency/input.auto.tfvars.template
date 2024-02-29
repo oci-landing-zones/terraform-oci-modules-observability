@@ -4,16 +4,15 @@
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <REPLACE-BY-ROOT-COMPARTMENT-OCID> placeholders by your Root compartment OCID. 
-# 4. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references,
+# 3. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references,
 #    expected to be found in the OCI Object Storage object specified in oci_compartments_dependency.
-# 5. Replace <REPLACE-BY-TOPIC-REFERENCE> placeholders by the appropriate topic references,
+# 4. Replace <REPLACE-BY-TOPIC-REFERENCE> placeholders by the appropriate topic references,
 #    expected to be found in the OCI Object Storage object specified in oci_topics_dependency.
-# 6. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
-# 7. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
-#    object is tipically stored in OCI Object Storage by the module that manages compartments.
-# 8. Replace <REPLACE-BY-OBJECT-NAME-FOR-TOPICS> placeholder by the OCI Object Storage object to with the topic references. This 
-#    object is tipically stored in OCI Object Storage by the module that manages topics.
+# 5. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
+# 6. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
+#    object is typically stored in OCI Object Storage by the module that manages compartments.
+# 7. Replace <REPLACE-BY-OBJECT-NAME-FOR-TOPICS> placeholder by the OCI Object Storage object to with the topic references. This 
+#    object is typically stored in OCI Object Storage by the module that manages topics.
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -35,7 +34,7 @@ region               = "<your tenancy region>"      # This is your region, where
 
 events_configuration = { 
   
-  default_compartment_id = "<REPLACE-BY-ROOT-COMPARTMENT-OCID>" #Root compartment
+  default_compartment_id = "TENANCY-ROOT"
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
@@ -89,7 +88,7 @@ events_configuration = {
 
 home_region_events_configuration = { 
   
-  default_compartment_id = "<REPLACE-BY-ROOT-COMPARTMENT-OCID>" #Root compartment
+  default_compartment_id = "TENANCY-ROOT"
   
   event_rules = {
     IAM-EVENTS-KEY = { 

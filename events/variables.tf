@@ -1,6 +1,12 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
+variable "tenancy_ocid" {
+  description = "The tenancy OCID"
+  type = string
+  default = null
+}
+
 variable "events_configuration" {
   description = "Events configuration settings, defining all aspects to manage events in OCI. Please see the comments within each attribute for details."
   type = object({

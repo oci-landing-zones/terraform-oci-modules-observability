@@ -32,6 +32,7 @@ No modules.
 | <a name="input_enable_output"></a> [enable\_output](#input\_enable\_output) | Whether Terraform should enable the module output. | `bool` | `true` | no |
 | <a name="input_module_name"></a> [module\_name](#input\_module\_name) | The module name. | `string` | `"alarms"` | no |
 | <a name="input_streams_dependency"></a> [streams\_dependency](#input\_streams\_dependency) | A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the topic OCID) of string type. | `map(any)` | `null` | no |
+| <a name="input_tenancy_ocid"></a> [tenancy\_ocid](#input\_tenancy\_ocid) | The tenancy OCID | `string` | `null` | no |
 | <a name="input_topics_dependency"></a> [topics\_dependency](#input\_topics\_dependency) | A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the topic OCID) of string type. | `map(any)` | `null` | no |
 
 ## Outputs
