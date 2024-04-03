@@ -1,4 +1,4 @@
-# CIS OCI Landing Zone Observability Modules
+# OCI Landing Zone Observability Modules
 
 ![Landing Zone logo](./landing_zone_300.png)
 
