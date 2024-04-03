@@ -1,4 +1,4 @@
-# CIS OCI Notifications Module Example - Vision notifications
+# OCI Notifications Module Example - Vision notifications
 
 ## Introduction
 

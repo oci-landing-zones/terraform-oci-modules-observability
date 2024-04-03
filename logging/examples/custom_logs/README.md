@@ -1,4 +1,4 @@
-# CIS OCI Logging Module Example - Custom Logs
+# OCI Logging Module Example - Custom Logs
 
 ## Introduction
 

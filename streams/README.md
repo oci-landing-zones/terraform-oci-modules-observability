@@ -1,4 +1,4 @@
-# CIS OCI Landing Zone Streams Module
+# OCI Landing Zone Streams Module
 
 ![Landing Zone logo](../landing_zone_300.png)
 

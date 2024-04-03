@@ -1,4 +1,4 @@
-# CIS OCI Landing Zone Service Connector Hub Module
+# OCI Landing Zone Service Connector Hub Module
 
 ![Landing Zone logo](../landing_zone_300.png)
 

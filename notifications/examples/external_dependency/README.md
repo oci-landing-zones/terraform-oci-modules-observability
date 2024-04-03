@@ -1,4 +1,4 @@
-# CIS OCI Notifications Module Example - External Dependency
+# OCI Notifications Module Example - External Dependency
 
 ## Introduction
 
