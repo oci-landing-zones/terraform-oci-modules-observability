@@ -97,7 +97,7 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 
 In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overriden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes.
 
-**Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs* and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
+**Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs*, and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
 
 The *default_* attributes are the following:
 
@@ -105,13 +105,19 @@ The *default_* attributes are the following:
 - **default_defined_tags**: (Optional) The default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: (Optional) The default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 
+The module can also be used to create Logging Analytics log groups and enable Logging Analytics. 
+
+To disable Logging Analytics, navigate to the Logging Analytics service page on the Console and select the "Service Details" section on the bottom left menu. From there, disable Logging Analytics by clicking the red "Terminate" button.
+
 ### Defining Log Groups
-- **log_groups**: A map of log groups. In OCI, every log must be belong to a log group.
+- **onboard_logging_analytics**: (Optional) Whether your tenancy will enable Logging Analytics. Set to true ONLY if wish to onboard your tenancy to Logging Analytics, set to false if your tenancy has ALREADY enabled Logging Analytics. Check in Console. Default is false.
+- **log_groups**: A map of log groups. In OCI, every log must belong to a log group.
   - **compartment_id**: (Optional) The compartment where the log group is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep) section.
+  - **type**: (Optional) Include this value and set it to "logging_analytics" to create a Logging Analytics log group, otherwise a default log group will be created. 
   - **name**: The log group name.             
   - **description**: (Optional) The log group description. It defaults to log group name if undefined.      
   - **defined_tags**: (Optional) The log group defined tags. *default_defined_tags* is used if undefined.
-  - **freeform_tags**: (Optional) The log group freeform tags. *default_freeform_tags* is used if undefined.
+  - **freeform_tags**: (Optional) The log group freeform tags. *default_freeform_tags* is used if undefined.   
 
 ### Defining Service Logs  
 - **service_logs**: (Optional) A map of service logs. **Use this when defining service logs for single resources**. Logs are created in the same compartment as the enclosing log group.
@@ -205,4 +211,8 @@ An optional feature, external dependencies are resources managed elsewhere that 
 - [Logging in Terraform OCI Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/logging_log)
 
 ## <a name="issues">Known Issues</a>
-None.
+1. Attempting to onboard your tenancy to Logging Analytics more than once will cause errors.
+   ```
+   `Error: 409-Conflict, Error on-boarding LogAnalytics for tenant idbktv455emw as it is already on-boarded or in the process of getting on-boarded`
+   ```
+   Avoid this error by first checking in your Oracle Cloud Console if Logging Analytics has been enabled. If it has been enabled, set the `onboard_logging_analytics` variable to `false`.
