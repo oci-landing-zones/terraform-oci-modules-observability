@@ -34,9 +34,9 @@ resource "oci_streaming_stream_pool" "these" {
     for_each = each.value.private_endpoint_settings != null ? [each.value.private_endpoint_settings] : []
       iterator = pes
       content {
-        subnet_id = length(regexall("^ocid1.*$", pes.value.subnet_id)) > 0 ? pes.value.subnet_id : var.network_dependency[pes.value.subnet_id].id
+        subnet_id = length(regexall("^ocid1.*$", pes.value.subnet_id)) > 0 ? pes.value.subnet_id : var.network_dependency["subnets"][pes.value.subnet_id].id
         private_endpoint_ip = pes.value.private_endpoint_ip
-        nsg_ids = pes.value.nsg_ids != null ? ([for id in pes.value.nsg_ids : (length(regexall("^ocid1.*$", id)) > 0 ? id : var.network_dependency[id].id)]) : null
+        nsg_ids = pes.value.nsg_ids != null ? ([for id in pes.value.nsg_ids : (length(regexall("^ocid1.*$", id)) > 0 ? id : var.network_dependency["network_security_groups"][id].id)]) : null
       }
     }
     defined_tags  = each.value.defined_tags != null ? each.value.defined_tags : var.streams_configuration.default_defined_tags
