@@ -1,11 +1,11 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-
-variable "tenancy_ocid" {
-  description = "The tenancy OCID"
-  type        = string
-  default     = null
-}
+variable "tenancy_ocid" {}
+variable "region" { description = "Your tenancy region" }
+variable "user_ocid" { default = "" }
+variable "fingerprint" { default = "" }
+variable "private_key_path" { default = "" }
+variable "private_key_password" { default = "" }
 
 variable "logging_configuration" {
   description = "Logging configuration settings, defining all aspects to manage logging in OCI. Please see the comments within each attribute for details."
@@ -65,18 +65,6 @@ variable "logging_configuration" {
       freeform_tags      = optional(map(string))
     })))
   })
-}
-
-variable "enable_output" {
-  description = "Whether Terraform should enable module output."
-  type        = bool
-  default     = true
-}
-
-variable "module_name" {
-  description = "The module name."
-  type        = string
-  default     = "logging"
 }
 
 variable "compartments_dependency" {

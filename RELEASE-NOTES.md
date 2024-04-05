@@ -1,7 +1,12 @@
+# April 05, 2024 Release Notes - 0.1.5
+
+## Updates
+### Logging Module
+1. Support for Logging Analytics log groups added.
+
 # February 28, 2024 Release Notes - 0.1.4
 
 ## Updates
-
 ### Events Module
 1. Networking events updated:
     - Delete event for Local Peering Gateway renamed to *com.oraclecloud.virtualnetwork.deletelocalpeeringgateway.end*.
