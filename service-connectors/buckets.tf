@@ -30,6 +30,19 @@ resource "oci_objectstorage_bucket" "these" {
     versioning     = coalesce(each.value.cis_level,"1") == "2" ? "Enabled" : "Disabled"
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_freeform_tags)
+
+    storage_tier = each.value.storage_tier
+    dynamic retention_rules {
+      for_each = each.value.retention_rules != null ? each.value.retention_rules : {}
+      iterator = ls
+      content {
+        display_name = ls.value.display_name
+        duration {
+            time_amount = ls.value.time_amount
+            time_unit = ls.value.time_unit
+        }
+      }
+   }
 }
 
 /* locals {

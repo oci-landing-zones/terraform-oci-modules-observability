@@ -1,10 +1,14 @@
 # Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
-variable "tenancy_ocid" {
-    description = "The tenancy ocid"
-    type = string
-}
+variable "tenancy_ocid" {}
+variable "home_region" {description = "Your tenancy home region"}
+variable "region" {description = "Your tenancy region"}
+variable "user_ocid" {default = ""}
+variable "fingerprint" {default = ""}
+variable "private_key_path" {default = ""}
+variable "private_key_password" {default = ""}
+
 variable "service_connectors_configuration" {
   description = "Service Connectors configuration settings, defining all aspects to manage service connectors and related resources in OCI. Please see the comments within each attribute for details."
 
@@ -39,6 +43,7 @@ variable "service_connectors_configuration" {
       target = object({ # the target
         kind = string, # supported targets: "objectstorage", "streaming", "functions", "logginganalytics", "notifications".
         bucket_name = optional(string), # the target bucket name (only applicable if kind is "objectstorage"). This attribute is overloaded: it can be either a bucket name or a reference (a key) to the bucket name.
+        #bucket_key = optional(string), # the corresponding bucket key as defined in the buckets map object (only applicable if kind is "objectstorage"). 
         bucket_batch_rollover_size_in_mbs = optional(number), # the bucket batch rollover size in megabytes (only applicable if kind is "objectstorage"). 
         bucket_batch_rollover_time_in_ms = optional(number), # the bucket batch rollover time in milliseconds (only applicable if kind is "objectstorage"). 
         bucket_object_name_prefix = optional(string), # the prefix of objects eventually created in the bucket (only applicable if kind is "objectstorage").
@@ -47,10 +52,12 @@ variable "service_connectors_configuration" {
         function_id = optional(string) # the target function (only applicable if kind is "functions"). This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
         log_group_id = optional(string) # the target log group (only applicable if kind is "logginganalytics"). This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
         compartment_id = optional(string), # the target resource compartment. Required if using a literal name for bucket_name or a literal OCID for stream_id, topic_id, function_id, or log_group_id. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+        #policy_name = optional(string) # the policy name allowing service connector to push data to target.
+        #policy_description = optional(string) # the policy description.
       })
 
       policy = optional(object({ # If you omit this block in the declaration, the policy compartment_id, name and description are derived from the target.
-        compartment_id = optional(string), # the compartment where the policy is attached. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+        compartment_id = string, # the compartment where the policy is attached. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
         name = optional(string), # the policy name.
         description = optional(string) # the policy description.
       }))
@@ -95,52 +102,4 @@ variable "service_connectors_configuration" {
     })))
 
   })    
-}
-
-variable compartments_dependency {
-  description = "A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the compartment OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable topics_dependency {
-  description = "A map of objects containing the externally managed topics this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the topic OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable streams_dependency {
-  description = "A map of objects containing the externally managed streams this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the stream OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable functions_dependency {
-  description = "A map of objects containing the externally managed functions this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the function OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable logs_dependency {
-  description = "A map of objects containing the externally managed log groups and logs this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the log_group or log OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable kms_dependency {
-  description = "A map of objects containing the externally managed encryption keys this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the key OCID) of string type." 
-  type = map(any)
-  default = null
-}
-
-variable enable_output {
-  description = "Whether Terraform should enable module output."
-  type = bool
-  default = true
-}
-
-variable module_name {
-  description = "The module name."
-  type = string
-  default = "service-connectors"
 }
