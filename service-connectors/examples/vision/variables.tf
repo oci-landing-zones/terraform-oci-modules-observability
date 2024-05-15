@@ -70,6 +70,13 @@ variable "service_connectors_configuration" {
       kms_key_id = optional(string), # the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a key OCID or a reference (a key) to the key OCID.
       defined_tags = optional(map(string)), # bucket defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags = optional(map(string)) # bucket freeform_tags. default_freeform_tags is used if this is not defined.
+      storage_tier = optional(string),  # the type of storage tier of this bucket. Archive, Standard
+      retention_rules = optional(map(object({
+        display_name          = string # A user-specified name for the retention rule
+        time_amount           = number # The timeAmount is interpreted in units defined by the timeUnit parameter
+        time_unit             = string # The unit that should be used to interpret timeAmount.  Days, Years
+        time_rule_locked      = optional(string) #  The date and time as per RFC 3339 after which this rule is locked and can only be deleted by deleting the bucket.
+      }))) # bucket retention rules
     })))
 
     streams = optional(map(object({ # the streams to manage.

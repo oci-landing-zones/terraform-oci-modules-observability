@@ -18,8 +18,12 @@ resource "oci_objectstorage_bucket" "these" {
   for_each = var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}
     lifecycle {
       precondition {
-        condition = coalesce(each.value.cis_level,"1") == "2" ? (each.value.kms_key_ocid != null ? true : false) : true # false triggers this.
+        condition = coalesce(each.value.cis_level,"1") == "2" ? (each.value.kms_key_id != null ? true : false) : true # false triggers this.
         error_message = "VALIDATION FAILURE (CIS Storage 4.1.2): A customer managed key is required when CIS level is set to 2."
+      }
+      precondition {
+        condition = contains(local.storage_tier_types, coalesce(each.value.storage_tier, "Standard"))
+        error_message = "VALIDATION FAILURE : Invalid value for \"storage_tier\" attribute. Valid values are ${join(", ",local.storage_tier_types)} (case sensitive)."
       }
     }  
     provider       = oci
@@ -30,16 +34,16 @@ resource "oci_objectstorage_bucket" "these" {
     versioning     = coalesce(each.value.cis_level,"1") == "2" ? "Enabled" : "Disabled"
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_freeform_tags)
-
+    
     storage_tier = each.value.storage_tier
     dynamic retention_rules {
-      for_each = each.value.retention_rules != null ? each.value.retention_rules : {}
+      for_each = coalesce(each.value.cis_level,"1") == "2" ? {} : ( each.value.retention_rules != null ? each.value.retention_rules : {} ) # cannot add retention rules to a bucket that has versioning enabled
       iterator = ls
       content {
         display_name = ls.value.display_name
         duration {
             time_amount = ls.value.time_amount
-            time_unit = ls.value.time_unit
+            time_unit = upper(ls.value.time_unit)
         }
       }
    }

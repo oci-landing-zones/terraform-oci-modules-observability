@@ -171,6 +171,11 @@ Within *service_connectors_configuration*, use the *buckets* attribute to define
 - **kms_key_id**: the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a Key OCID or a reference (a key) to the Key OCID.
 - **defined_tags**: the bucket defined_tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the bucket freeform_tags. *default_freeform_tags* is used if this is not defined.
+- **storage_tier**: the bucket's storage tier type. Default is "Standard'. When 'Archive' tier type is set explicitly, the bucket is put in the Archive Storage tier. The 'storageTier' property is immutable after bucket is created.
+- **retention_rules**: a list of objects defining the bucket retention rules (Optional). You cannot add retention rules to a bucket that has versioning enabled.
+    - **display_name**: the rule's display name
+    - **time_amount**: the retention duration time amount (number)
+    - **time_unit**: the retention duration time unit in "DAYS" or "YEARS"
 
 The following example defines a bucket that is versioned and encrypted with a customer managed key:
 ```
@@ -180,6 +185,25 @@ buckets = {
     compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
     cis_level = "2"
     kms_key_id = "ocid1.key.oc1..kkkkk..uir"
+  }
+}
+```
+
+The following example defines a bucket that is encrypted with a customer managed key and with retention rules defined. Retention rules cannot be added to a bucket that has versioning Enabled (when cis_level = "2"):
+```
+buckets = {
+  SERVICE-CONNECTOR-BUCKET-KEY = { # this referring key can be referred by bucket_name in target attribute
+    name = "vision-service-connector-bucket"
+    compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
+    cis_level = "1"
+    kms_key_id = "ocid1.key.oc1..kkkkk..uir"
+    retention_rules = {
+      RULE1 = {
+        display_name = "bucket retention rule 1"
+        time_amount  = 1
+        time_unit    = "DAYS"
+      }
+    }
   }
 } 
 ```
