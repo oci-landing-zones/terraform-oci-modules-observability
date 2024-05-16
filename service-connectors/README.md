@@ -105,6 +105,7 @@ Service connectors are created in "INACTIVE" state by default. Within the *servi
 #### Defining the Source
 Within the *service_connectors* attribute, use the *source* attribute to define the service connector source resources. Within *source*, the following attributes are supported.
 - **kind**: the type of source. Supported values are "logging" and "streaming".
+- **cursor_kind**: the type of cursor, which determines the starting point from which the stream will be consumed. Options "LATEST", "TRIM_HORIZON". Only applicable if *kind* = "streaming".
 - **audit_logs**: a list of objects where audit logs are expected to be found. Multiple audit log locations can be specified using the *cmp_id* attribute. Only applicable if *kind* is "logging".
     - **cmp_id**: the compartment where audit logs are expected to be found. For referring to all audit logs in the tenancy, provide the value "ALL". This attribute is overloaded: it can be either a compartment OCID, a reference (a key) to the compartment OCID, or the "ALL" value.
 - **non_audit_logs**: a list of objects where any logs other than audit logs are expected to be found. Multiple logs can be specified using *cmp_id*, *log_group_id* and *log_id* attributes. Only applicable if *kind* is "logging".

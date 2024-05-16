@@ -23,6 +23,7 @@ variable "service_connectors_configuration" {
 
       source = object({
         kind = string # Supported sources: "logging" and "streaming".
+        cursor_kind = optional(string) # The type of cursor, which determines the starting point from which the stream will be consumed. Options "LATEST", "TRIM_HORIZON" (only applicable if kind = "streaming")
         audit_logs = optional(list(object({ # the audit logs (only applicable if kind = "logging").
           cmp_id = string # the compartment where to get audit logs from. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. Use "ALL" to include all audit logs in the tenancy.
         })))
