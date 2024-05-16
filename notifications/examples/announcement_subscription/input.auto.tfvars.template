@@ -1,11 +1,18 @@
-# Copyright (c) 2024 Oracle and/or its affiliates.
+# Copyright (c) 2023 Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
-# 3. Replace <COMPARTMENT-ID> placeholder with the OCID of the compartment the resource will be placed in.
-# 4. Replace <TOPIC-ID> placeholder with the OCID of the notification topic the announcement will be attached to.
+# 3. Replace <REPLACE-BY-COMPARTMENT-REFERENCE> placeholders by the appropriate compartment references, expected to be found in the 
+#    OCI Object Storage object specified in oci_compartments_dependency. 
+# 4. Replace email.address_1@example.com and email.address_2@example.com by actual email addresses.
+# 5. Replace <REPLACE-BY-MOBILE-PHONE-NUMBER> placeholder with an actual mobile number for SMS notifications.
+# 6. Replace <REPLACE-BY-BUCKET-NAME> placeholder by the OCI Object Storage bucket for configuration sharing across modules.
+# 7. Replace <REPLACE-BY-OBJECT-NAME-FOR-COMPARTMENTS> placeholder by the OCI Object Storage object with the compartments references. This 
+#    object is tipically stored in OCI Object Storage by the module that manages compartments.
+# 8. Replace <REPLACE-BY-OBJECT-NAME-FOR-TOPICS> placeholder by the OCI Object Storage object to hold topic references. This 
+#    object written to the shared configuration bucket by this example.
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
