@@ -1,4 +1,4 @@
 module "test_announcenment_subscription" {
-  source = "../../"
+  source = "../"
   notifications_configuration = var.notifications_configuration
 }
