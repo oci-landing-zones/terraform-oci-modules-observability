@@ -23,6 +23,7 @@ variable "service_connectors_configuration" {
 
       source = object({
         kind = string # Supported sources: "logging" and "streaming".
+        cursor_kind = optional(string) # The type of cursor, which determines the starting point from which the stream will be consumed. Options "LATEST", "TRIM_HORIZON" (only applicable if kind = "streaming")
         audit_logs = optional(list(object({ # the audit logs (only applicable if kind = "logging").
           cmp_id = string # the compartment where to get audit logs from. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. Use "ALL" to include all audit logs in the tenancy.
         })))
@@ -63,6 +64,12 @@ variable "service_connectors_configuration" {
       kms_key_id = optional(string), # the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a key OCID or a reference (a key) to the key OCID.
       defined_tags = optional(map(string)), # bucket defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags = optional(map(string)) # bucket freeform_tags. default_freeform_tags is used if this is not defined.
+      storage_tier = optional(string),  # the type of storage tier of this bucket. Archive, Standard
+      retention_rules = optional(map(object({
+        display_name          = string # A user-specified name for the retention rule
+        time_amount           = number # The timeAmount is interpreted in units defined by the timeUnit parameter
+        time_unit             = string # The unit that should be used to interpret timeAmount.  Days, Years
+      }))) # bucket retention rules
     })))
 
     streams = optional(map(object({ # the streams to manage.
