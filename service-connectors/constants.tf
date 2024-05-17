@@ -24,6 +24,4 @@ locals {
         (local.TARGET_NOTIFICATIONS) : "topic_id"
     }
     subscription_protocols = ["EMAIL","CUSTOM_HTTPS","SLACK","PAGERDUTY","ORACLE_FUNCTIONS","SMS"]
-    storage_tier_types = ["Archive", "Standard"]
-    retention_rules_time_units = ["DAYS", "YEARS"]
 }
