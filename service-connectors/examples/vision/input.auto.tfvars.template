@@ -38,7 +38,6 @@ service_connectors_configuration = {
       #activate = true # Service Connector is created inactive. Uncomment this line to make it active.
       source = {
         kind = "logging" # Other supported values: "streaming"
-        #cursor_kind = "TRIM_HORIZON" ## "LATEST", "TRIM_HORIZON" (only applicable if kind = "streaming")
         audit_logs = [
           {cmp_id = "ALL"} # "ALL" means all tenancy audit logs. Only applicable if kind = "logging".
         ] 
@@ -76,14 +75,6 @@ service_connectors_configuration = {
       #kms_key_id = null # The ocid of an existing KMS key. Required if cis_level = "2". 
       #defined_tags = null
       #freeform_tags = null
-      # storage_tier = "Standard" ## Value can be "Standard" or "Archive". If left commented out, the default oci value is "Standard"
-      # retention_rules = {   # If cis_level = "2", retention rules are ignored; cannot use retention rules if versioning is Enabled
-      #   RULE1 = {
-      #     display_name = "bucket retention rule 1"
-      #     time_amount  = 1      ## duration time amount
-      #     time_unit    = "DAYS" ## duration time unit (DAYS | YEARS)
-      #   }
-      # }
     }
   }
 }

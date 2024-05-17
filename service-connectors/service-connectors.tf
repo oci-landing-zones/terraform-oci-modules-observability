@@ -44,13 +44,6 @@ resource "oci_sch_service_connector" "these" {
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.service_connectors_configuration.default_freeform_tags)
     source {
       kind = lower(each.value.source.kind)
-      dynamic "cursor" {
-        for_each = lower(each.value.source.kind) == local.SOURCE_STREAMING ? each.value.source.cursor_kind != null ? [each.value.source.cursor_kind] : [] : []
-        iterator = ls
-        content {
-          kind = upper(ls.value)
-        }
-      }
       dynamic "log_sources" {
       for_each = lower(each.value.source.kind) == local.SOURCE_LOGGING ? each.value.source.audit_logs != null ? toset(each.value.source.audit_logs) : [] : []
         iterator = ls
