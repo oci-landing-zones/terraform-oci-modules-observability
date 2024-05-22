@@ -48,7 +48,7 @@ resource "oci_sch_service_connector" "these" {
       for_each = lower(each.value.source.kind) == local.SOURCE_LOGGING ? each.value.source.audit_logs != null ? toset(each.value.source.audit_logs) : [] : []
         iterator = ls
         content {
-          compartment_id = upper(ls.value.cmp_id) == "ALL" ? var.tenancy_ocid : ls.value.cmp_id
+          compartment_id = upper(ls.value.cmp_id) == "ALL" ? var.tenancy_ocid : length(regexall("^ocid1.*$", ls.value.cmp_id)) > 0 ? ls.value.cmp_id : var.compartments_dependency[ls.value.cmp_id].id
           log_group_id = upper(ls.value.cmp_id) == "ALL" ? "_Audit_Include_Subcompartment" : "_Audit"
           log_id       = ""
         }
