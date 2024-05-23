@@ -1,3 +1,13 @@
+# May 22, 2024 Release Notes - 0.1.6
+
+## Updates
+1. [Notifications module](./notifications/)
+    - Support for announcement subscriptions via the newly added *announcement_subscriptions* attribute.
+
+2. [Service Connector Hub module](./service-connectors/)
+    - Retention rules support for bucket targets.
+    - Cursor support for streaming targets.
+
 # April 05, 2024 Release Notes - 0.1.5
 
 ## Updates

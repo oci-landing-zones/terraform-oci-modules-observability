@@ -22,6 +22,21 @@ variable "notifications_configuration" {
       defined_tags = optional(map(string)) # topic defined_tags. default_defined_tags is used if undefined.
       freeform_tags = optional(map(string)) # topic freeform_tags. default_freeform_tags is used if undefined.
     })))
+    announcement_subscriptions = optional(map(object({
+      compartment_id        = optional(string)
+      display_name          = string
+      notification_topic_id = string
+      description           = optional(string)
+      defined_tags          = optional(map(string))
+      freeform_tags         = optional(map(string))
+      preferred_language    = optional(string)
+      preferred_time_zone   = optional(string)
+      filter_groups         = optional(map(object({
+        name                         = string
+        filter_type                  = string
+        filter_value                 = list(string)
+      })))
+    })))
   })
 }
 
