@@ -10,7 +10,6 @@
 
 data "oci_objectstorage_namespace" "this" {
   count = var.service_connectors_configuration.buckets != null ? 1 : 0
-  provider = oci
   compartment_id = var.tenancy_ocid
 }
 
