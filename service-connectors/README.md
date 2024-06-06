@@ -173,6 +173,7 @@ Within *service_connectors_configuration*, use the *buckets* attribute to define
 - **defined_tags**: the bucket defined_tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the bucket freeform_tags. *default_freeform_tags* is used if this is not defined.
 - **storage_tier**: the bucket's storage tier type. Default is "Standard'. When 'Archive' tier type is set explicitly, the bucket is put in the Archive Storage tier. The 'storageTier' property is immutable after bucket is created.
+- **replica_region**: the name of the secondary region the buckets will be replicated to like "us-ashburn-1". If you're not replicating buckets, leave this variable undefined.
 - **retention_rules**: a list of objects defining the bucket retention rules (Optional). You cannot add retention rules to a bucket that has versioning enabled.
     - **display_name**: the rule's display name
     - **time_amount**: the retention duration time amount (number)

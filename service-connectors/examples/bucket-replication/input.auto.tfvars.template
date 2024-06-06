@@ -1,0 +1,66 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-OCID> placeholders by appropriate compartment OCIDs. 
+# 4. Replace <REPLACE-BY-LOG_GROUP-OCID> placeholder by appropriate log group OCID.
+# 5. Replace <REPLACE-BY-REPLICATION-REGION-NAME> placeholder with desired replication region name like "us-ashburn-1"
+# Some attributes are commented out on purpose, to let users know about the options available. 
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<tenancy OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<user OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<PEM key fingerprint>"      # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side).
+private_key_path     = "<path to the private key>"  # This is the full path on your local system to the API signing private key.
+private_key_password = ""                           # This is the password that protects the private key, if any.
+home_region          = "<your tenancy home region>" # This is your tenancy home region, where Service Connector policies are created.
+region               = "<your tenancy region>"      # This is your tenancy region, where all other resources are created. It can be the same as home_region.
+secondary_region     = "<your replica region>"      # This is the tenancy secondary region where replicated buckets will be created. If you're not replicating buckets, set this to the same region as home_region.
+
+#---------------------------------------
+# Input variable
+#---------------------------------------
+
+service_connectors_configuration = {
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>" # Default compartment ocid for all resources. It's overriden by compartment_ocid in each object.
+  #default_defined_tags   = null
+  #default_freeform_tags  = null
+
+  service_connectors = {
+    DEFAULT-LOG-SERVICE-CONNECTOR = {
+      display_name   = "DEFAULT-LOG-SERVICE-CONNECTOR"
+
+      source = {
+        kind = "logging"
+        non_audit_logs = [{
+          cmp_id       = "<REPLACE-BY-COMPARTMENT-OCID>",
+          log_group_id = "<REPLACE-BY-LOG_GROUP-OCID>"
+        }]
+      }
+      target = {
+        kind                      = "objectstorage"
+        bucket_name               = "DEFAULT-LOG-BUCKET"
+        bucket_object_name_prefix = "test"
+      }
+      policy = {
+        name           = "Test-Service-Connector-Policy-default-log"
+        description    = "Test Service Connector Policy"
+        compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>"
+             }
+    }
+  }
+
+  buckets = {
+    DEFAULT-LOG-BUCKET = {
+      name               = "DEFAULT-BUCKET"
+      description        = "Default bucket"
+      replica_region     = "<REPLACE-BY-REPLICATION-REGION-NAME>"
+    }
+  }
+}
