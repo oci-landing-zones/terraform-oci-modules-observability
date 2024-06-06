@@ -65,7 +65,6 @@ variable "service_connectors_configuration" {
       defined_tags = optional(map(string)), # bucket defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags = optional(map(string)) # bucket freeform_tags. default_freeform_tags is used if this is not defined.
       storage_tier = optional(string),  # the type of storage tier of this bucket. Archive, Standard
-      enable_replication = optional(bool), # whether the buckets will be replicated to the secondary region
       replica_region = optional(string), # name of the secondary region the buckets will be replicated to
       retention_rules = optional(map(object({
         display_name          = string # A user-specified name for the retention rule

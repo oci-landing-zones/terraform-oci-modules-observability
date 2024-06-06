@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 resource "oci_objectstorage_bucket" "bucket_replica" {
-  for_each = { for k, v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : k => v if v.enable_replication == true }
+  for_each = { for k, v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : k => v if v.replica_region != null }
   lifecycle {
     precondition {
       condition = coalesce(each.value.cis_level,"1") == "2" ? (each.value.kms_key_ocid != null ? true : false) : true # false triggers this.
@@ -20,7 +20,7 @@ resource "oci_objectstorage_bucket" "bucket_replica" {
 }
 
 resource "oci_objectstorage_replication_policy" "these" {
-  for_each = { for k, v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : k => v if v.enable_replication == true }
+  for_each = { for k, v in (var.service_connectors_configuration.buckets != null ? var.service_connectors_configuration.buckets : {}) : k => v if v.replica_region != null }
 
   bucket                  = oci_objectstorage_bucket.these[each.key].name
   destination_bucket_name = oci_objectstorage_bucket.bucket_replica[each.key].name
