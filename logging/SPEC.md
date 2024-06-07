@@ -36,9 +36,8 @@ No modules.
 | [oci_identity_compartment.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/identity_compartment) | data source |
 | [oci_log_analytics_namespaces.logging_analytics_namespaces](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/log_analytics_namespaces) | data source |
 | [oci_network_load_balancer_network_load_balancers.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/network_load_balancer_network_load_balancers) | data source |
-| [oci_objectstorage_bucket_summaries.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_bucket_summaries)                             | data source |
-| [oci_objectstorage_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_namespace)                                            | data source |
-| [oci_log_analytics_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/log_analytics_namespace)                                            | data source |
+| [oci_objectstorage_bucket_summaries.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_bucket_summaries) | data source |
+| [oci_objectstorage_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_namespace) | data source |
 
 ## Inputs
 
