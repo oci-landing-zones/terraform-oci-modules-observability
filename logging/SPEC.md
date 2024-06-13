@@ -59,3 +59,4 @@ No modules.
 | <a name="output_log_groups"></a> [log\_groups](#output\_log\_groups) | The log groups. |
 | <a name="output_logging_analytics_log_groups"></a> [logging\_analytics\_log\_groups](#output\_logging\_analytics\_log\_groups) | Logging analytics log groups |
 | <a name="output_service_logs"></a> [service\_logs](#output\_service\_logs) | The logs. |
+
