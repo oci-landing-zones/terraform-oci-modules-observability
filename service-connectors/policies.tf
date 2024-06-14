@@ -1,8 +1,8 @@
 locals {
     
-  policy_statements = { for key, sc in var.service_connectors_configuration.service_connectors : key => {  
-  
-    grants = lower(sc.target.kind) == local.TARGET_OBJECT_STORAGE ? [
+  policy_statements = { for key, sc in var.service_connectors_configuration.service_connectors : key => {
+
+    grants = sc.target.bucket_namespace != null ? [] : lower(sc.target.kind) == local.TARGET_OBJECT_STORAGE ? [
       <<EOF
           Allow any-user to manage objects in compartment id ${contains(keys(oci_objectstorage_bucket.these),sc.target.bucket_name) ? oci_objectstorage_bucket.these[sc.target.bucket_name].compartment_id : (sc.target.compartment_id != null ? (length(regexall("^ocid1.*$", sc.target.compartment_id)) > 0 ? sc.target.compartment_id : var.compartments_dependency[sc.target.compartment_id].id) : (sc.compartment_id != null ? (length(regexall("^ocid1.*$", sc.compartment_id)) > 0 ? sc.compartment_id : var.compartments_dependency[sc.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id)))} where all {
           request.principal.type='serviceconnector',
@@ -92,7 +92,7 @@ locals {
 #--------------------------------------------------
 resource "oci_identity_policy" "these" {
   depends_on = [ oci_sch_service_connector.these ]
-  for_each = var.service_connectors_configuration.service_connectors
+  for_each = { for k,v in var.service_connectors_configuration.service_connectors : k => v if v.target.bucket_namespace == null }
     lifecycle {
       precondition {
         condition = contains(local.targets,lower(each.value.target.kind))

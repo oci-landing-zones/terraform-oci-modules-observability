@@ -142,6 +142,7 @@ Within the *service_connectors* attribute, use the *target* attribute to define 
 - **bucket_batch_rollover_size_in_mbs**: the bucket batch rollover size in megabytes. Only applicable if kind is "objectstorage". 
 - **bucket_batch_rollover_time_in_ms** : the bucket batch rollover time in milliseconds. Only applicable if kind is "objectstorage". 
 - **bucket_object_name_prefix**: the prefix of objects eventually created in the bucket. Only applicable if kind is "objectstorage".
+- **bucket_namespace**: the target bucket_namespace. Only necessary for cross-tenancy configurations where the objectstorage namespace of the target tenancy needs to be defined (only applicable if kind is "objectstorage"). Not needed for single-tenancy configurations.
 - **stream_id**: the target stream. Only applicable if kind is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
 - **topic_id**: the target topic. Only applicable if kind is "notifications". This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
 - **function_id**: the target function. Only applicable if kind is "functions". This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.

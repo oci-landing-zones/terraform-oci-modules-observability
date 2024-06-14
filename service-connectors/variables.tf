@@ -43,6 +43,7 @@ variable "service_connectors_configuration" {
         bucket_batch_rollover_size_in_mbs = optional(number), # the bucket batch rollover size in megabytes (only applicable if kind is "objectstorage"). 
         bucket_batch_rollover_time_in_ms = optional(number), # the bucket batch rollover time in milliseconds (only applicable if kind is "objectstorage"). 
         bucket_object_name_prefix = optional(string), # the prefix of objects eventually created in the bucket (only applicable if kind is "objectstorage").
+        bucket_namespace = optional(string), # the target bucket_namespace. This is only for cross-tenancy configurations where the namespace for target tenancy needs to be defined (only applicable if kind is "objectstorage").
         stream_id = optional(string) # the target stream (only applicable if kind is "streaming"). This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
         topic_id = optional(string) # the target topic (only applicable if kind is "notifications"). This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
         function_id = optional(string) # the target function (only applicable if kind is "functions"). This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
