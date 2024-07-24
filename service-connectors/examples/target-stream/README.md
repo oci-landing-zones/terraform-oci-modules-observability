@@ -1,4 +1,4 @@
-# CIS OCI Service Connectors Module Example - Vision service connectors
+# OCI Service Connectors Module Example - Vision service connectors
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# CIS OCI Streams Module Example - External Dependency
+# OCI Streams Module Example - External Dependency
 
 ## Introduction
 

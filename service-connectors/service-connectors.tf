@@ -44,6 +44,13 @@ resource "oci_sch_service_connector" "these" {
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.service_connectors_configuration.default_freeform_tags)
     source {
       kind = lower(each.value.source.kind)
+      dynamic "cursor" {
+        for_each = lower(each.value.source.kind) == local.SOURCE_STREAMING ? each.value.source.cursor_kind != null ? [each.value.source.cursor_kind] : [] : []
+        iterator = ls
+        content {
+          kind = upper(ls.value)
+        }
+      }
       dynamic "log_sources" {
       for_each = lower(each.value.source.kind) == local.SOURCE_LOGGING ? each.value.source.audit_logs != null ? toset(each.value.source.audit_logs) : [] : []
         iterator = ls
@@ -70,6 +77,7 @@ resource "oci_sch_service_connector" "these" {
       bucket             = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.target.bucket_name != null ? (contains(keys(oci_objectstorage_bucket.these),each.value.target.bucket_name) ? oci_objectstorage_bucket.these[each.value.target.bucket_name].name : each.value.target.bucket_name) : null) : null
       object_name_prefix = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.target.bucket_object_name_prefix != null ? each.value.target.bucket_object_name_prefix : null) : null
       #namespace          = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.object_storage_target_details.bucket_namespace != null ? each.value.object_storage_target_details.bucket_namespace : data.oci_objectstorage_namespace.this.namespace) : null
+      namespace          = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.target.bucket_namespace != null ? each.value.target.bucket_namespace : data.oci_objectstorage_namespace.this[0].namespace) : null
       batch_rollover_size_in_mbs = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? coalesce(each.value.target.bucket_batch_rollover_size_in_mbs, 100) : null
       batch_rollover_time_in_ms  = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? coalesce(each.value.target.bucket_batch_rollover_time_in_ms, 420000) : null
       stream_id          = lower(each.value.target.kind) == local.TARGET_STREAMING ? (each.value.target.stream_id != null ? (length(regexall("^ocid1.*$", each.value.target.stream_id)) > 0 ? each.value.target.stream_id : (contains(keys(oci_streaming_stream.these),each.value.target.stream_id) ? oci_streaming_stream.these[each.value.target.stream_id].id : var.streams_dependency[each.value.target.stream_id].id)) : null) : null

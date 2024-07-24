@@ -1,4 +1,4 @@
-# CIS OCI Events Module Example - External Dependency
+# OCI Events Module Example - External Dependency
 
 ## Introduction
 

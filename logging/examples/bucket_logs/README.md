@@ -1,4 +1,4 @@
-# CIS OCI Logging Module Example - Bucket Logs in Bulk
+# OCI Logging Module Example - Bucket Logs in Bulk
 
 ## Introduction
 

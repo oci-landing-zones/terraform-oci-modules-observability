@@ -1,4 +1,4 @@
-# CIS OCI Alarms Module Example - Supplied alarms
+# OCI Alarms Module Example - Supplied alarms
 
 ## Introduction
 
