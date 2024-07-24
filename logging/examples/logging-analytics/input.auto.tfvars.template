@@ -1,0 +1,43 @@
+# Copyright (c) 2023 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
+# 2. Provide values for "Tenancy Connectivity Variables".
+# 3. Replace <REPLACE-BY-COMPARTMENT-*> placeholders with appropriate compartment OCIDs or keys (if using external dependency).
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------
+# Tenancy Connectivity Variables
+#---------------------------------------
+
+tenancy_ocid         = "<REPLACE-BY-TENANCY-OCID>"             # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "Tenancy: <your tenancy name>").
+user_ocid            = "<REPLACE-BY-USER-OCID>"                # Get this from OCI Console (after logging in, go to top-right-most menu item and click option "My profile").
+fingerprint          = "<REPLACE-BY-USER-FINGERPRINT>"         # The fingerprint can be gathered from your user account. In the "My profile page, click "API keys" on the menu in left hand side.
+private_key_path     = "<REPLACE-BY-PRIVATE-KEY-PATH>"         # This is the full path on your local system to the API signing private key.
+private_key_password = ""                                      # This is the password that protects the private key, if any.
+region               = "<REPLACE-BY-YOUR-TENANCY-REGION>"      # This is your region, where all other events are created. It can be the same as home_region.
+
+#---------------------------------------
+# Input variables
+#---------------------------------------
+
+logging_configuration = {
+  default_compartment_id = "<REPLACE-BY-COMPARTMENT-OCID>",
+    onboard_logging_analytics = true, # if logging analytics has not been enabled already, set to true, and if logging analytics has been enabled previously, set to false
+
+  log_groups = {
+    DEFAULT-LOG-ANALYTICS-LOG-GROUP = {
+      type = "logging_analytics"
+      compartment_id = null
+      name   = "Default_Group"
+      description    = "Logging Analytics Log Group for Default_Group"
+    }
+    AUDIT-LOG-ANALYTICS-LOG-GROUP = {
+      type = "logging_analytics"
+      compartment_id = null
+      name   = "Audit_Group"
+      description    = "Logging Analytics Log Group for Audit_Group"
+    }
+  }
+}
