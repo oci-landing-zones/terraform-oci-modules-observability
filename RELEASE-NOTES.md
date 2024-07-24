@@ -1,4 +1,4 @@
- July 24, 2024 Release Notes - 0.1.7
+# July 24, 2024 Release Notes - 0.1.7
 
 ## Updates
 1. Aligned [README.md](./README.md) structure to Oracle's GitHub organizations requirements.
