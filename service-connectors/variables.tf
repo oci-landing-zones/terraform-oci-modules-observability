@@ -23,6 +23,7 @@ variable "service_connectors_configuration" {
 
       source = object({
         kind = string # Supported sources: "logging" and "streaming".
+        cursor_kind = optional(string) # The type of cursor, which determines the starting point from which the stream will be consumed. Options "LATEST", "TRIM_HORIZON" (only applicable if kind = "streaming")
         audit_logs = optional(list(object({ # the audit logs (only applicable if kind = "logging").
           cmp_id = string # the compartment where to get audit logs from. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. Use "ALL" to include all audit logs in the tenancy.
         })))
@@ -42,6 +43,7 @@ variable "service_connectors_configuration" {
         bucket_batch_rollover_size_in_mbs = optional(number), # the bucket batch rollover size in megabytes (only applicable if kind is "objectstorage"). 
         bucket_batch_rollover_time_in_ms = optional(number), # the bucket batch rollover time in milliseconds (only applicable if kind is "objectstorage"). 
         bucket_object_name_prefix = optional(string), # the prefix of objects eventually created in the bucket (only applicable if kind is "objectstorage").
+        bucket_namespace = optional(string), # the target bucket_namespace. This is only for cross-tenancy configurations where the namespace for target tenancy needs to be defined (only applicable if kind is "objectstorage").
         stream_id = optional(string) # the target stream (only applicable if kind is "streaming"). This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
         topic_id = optional(string) # the target topic (only applicable if kind is "notifications"). This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
         function_id = optional(string) # the target function (only applicable if kind is "functions"). This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
@@ -63,6 +65,13 @@ variable "service_connectors_configuration" {
       kms_key_id = optional(string), # the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a key OCID or a reference (a key) to the key OCID.
       defined_tags = optional(map(string)), # bucket defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags = optional(map(string)) # bucket freeform_tags. default_freeform_tags is used if this is not defined.
+      storage_tier = optional(string),  # the type of storage tier of this bucket. Archive, Standard
+      replica_region = optional(string), # name of the secondary region the buckets will be replicated to
+      retention_rules = optional(map(object({
+        display_name          = string # A user-specified name for the retention rule
+        time_amount           = number # The timeAmount is interpreted in units defined by the timeUnit parameter
+        time_unit             = string # The unit that should be used to interpret timeAmount.  Days, Years
+      }))) # bucket retention rules
     })))
 
     streams = optional(map(object({ # the streams to manage.

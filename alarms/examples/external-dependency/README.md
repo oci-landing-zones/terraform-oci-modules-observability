@@ -1,4 +1,4 @@
-# CIS OCI Alarms Module Example - External Dependency
+# OCI Alarms Module Example - External Dependency
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# CIS OCI Alarms Module Example - Vision alarms
+# OCI Alarms Module Example - Vision alarms
 
 ## Introduction
 
