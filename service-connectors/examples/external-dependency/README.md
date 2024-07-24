@@ -1,4 +1,4 @@
-# CIS OCI Service Connector Module Example - External Dependency
+# OCI Service Connector Module Example - External Dependency
 
 ## Introduction
 

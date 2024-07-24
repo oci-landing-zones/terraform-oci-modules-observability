@@ -1,4 +1,4 @@
-# CIS OCI Landing Zone Logging Module
+# OCI Landing Zone Logging Module
 
 ![Landing Zone logo](../landing_zone_300.png)
 
