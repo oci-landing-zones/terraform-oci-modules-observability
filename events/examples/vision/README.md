@@ -1,4 +1,4 @@
-# CIS OCI Events Module Example - Vision events
+# OCI Events Module Example - Vision events
 
 ## Introduction
 

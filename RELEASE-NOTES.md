@@ -1,3 +1,10 @@
+# July 24, 2024 Release Notes - 0.1.7
+
+## Updates
+1. Aligned [README.md](./README.md) structure to Oracle's GitHub organizations requirements.
+2. [Service Connectors module](./service-connectors/)
+    - Target buckets can now be archived, replicated to another region and configured with retention rules.
+
 # May 22, 2024 Release Notes - 0.1.6
 
 ## Updates
@@ -8,11 +15,13 @@
     - Retention rules support for bucket targets.
     - Cursor support for streaming targets.
 
+
 # April 05, 2024 Release Notes - 0.1.5
 
 ## Updates
 ### Logging Module
 1. Support for Logging Analytics log groups added.
+
 
 # February 28, 2024 Release Notes - 0.1.4
 
