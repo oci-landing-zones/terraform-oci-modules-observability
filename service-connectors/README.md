@@ -1,4 +1,4 @@
-# CIS OCI Landing Zone Service Connector Hub Module
+# OCI Landing Zone Service Connector Hub Module
 
 ![Landing Zone logo](../landing_zone_300.png)
 
@@ -142,6 +142,7 @@ Within the *service_connectors* attribute, use the *target* attribute to define 
 - **bucket_batch_rollover_size_in_mbs**: the bucket batch rollover size in megabytes. Only applicable if kind is "objectstorage". 
 - **bucket_batch_rollover_time_in_ms** : the bucket batch rollover time in milliseconds. Only applicable if kind is "objectstorage". 
 - **bucket_object_name_prefix**: the prefix of objects eventually created in the bucket. Only applicable if kind is "objectstorage".
+- **bucket_namespace**: the target bucket_namespace. Only necessary for cross-tenancy configurations where the objectstorage namespace of the target tenancy needs to be defined (only applicable if kind is "objectstorage"). Not needed for single-tenancy configurations.
 - **stream_id**: the target stream. Only applicable if kind is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
 - **topic_id**: the target topic. Only applicable if kind is "notifications". This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
 - **function_id**: the target function. Only applicable if kind is "functions". This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
@@ -173,6 +174,7 @@ Within *service_connectors_configuration*, use the *buckets* attribute to define
 - **defined_tags**: the bucket defined_tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the bucket freeform_tags. *default_freeform_tags* is used if this is not defined.
 - **storage_tier**: the bucket's storage tier type. Default is "Standard'. When 'Archive' tier type is set explicitly, the bucket is put in the Archive Storage tier. The 'storageTier' property is immutable after bucket is created.
+- **replica_region**: the name of the secondary region the buckets will be replicated to like "us-ashburn-1". If you're not replicating buckets, leave this variable undefined.
 - **retention_rules**: a list of objects defining the bucket retention rules (Optional). You cannot add retention rules to a bucket that has versioning enabled.
     - **display_name**: the rule's display name
     - **time_amount**: the retention duration time amount (number)
