@@ -1,4 +1,4 @@
-# CIS OCI Logging Module Example - Vision Service Logs
+# OCI Logging Module Example - Vision Service Logs
 
 ## Introduction
 

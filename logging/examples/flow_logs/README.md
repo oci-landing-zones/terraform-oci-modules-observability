@@ -1,4 +1,4 @@
-# CIS OCI Logging Module Example - Flow Logs in Bulk
+# OCI Logging Module Example - Flow Logs in Bulk
 
 ## Introduction
 

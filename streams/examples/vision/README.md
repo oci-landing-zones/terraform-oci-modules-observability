@@ -1,4 +1,4 @@
-# CIS OCI Streams Module Example - Vision streams
+# OCI Streams Module Example - Vision streams
 
 ## Introduction
 
