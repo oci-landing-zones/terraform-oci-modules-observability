@@ -36,8 +36,9 @@ No modules.
 | [oci_identity_compartment.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/identity_compartment) | data source |
 | [oci_log_analytics_namespaces.logging_analytics_namespaces](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/log_analytics_namespaces) | data source |
 | [oci_network_load_balancer_network_load_balancers.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/network_load_balancer_network_load_balancers) | data source |
-| [oci_objectstorage_bucket_summaries.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_bucket_summaries) | data source |
-| [oci_objectstorage_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_namespace) | data source |
+| [oci_objectstorage_bucket_summaries.these](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_bucket_summaries)                             | data source |
+| [oci_objectstorage_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/objectstorage_namespace)                                            | data source |
+| [oci_log_analytics_namespace.this](https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/log_analytics_namespace)                                            | data source |
 
 ## Inputs
 
@@ -58,3 +59,4 @@ No modules.
 | <a name="output_log_groups"></a> [log\_groups](#output\_log\_groups) | The log groups. |
 | <a name="output_logging_analytics_log_groups"></a> [logging\_analytics\_log\_groups](#output\_logging\_analytics\_log\_groups) | Logging analytics log groups |
 | <a name="output_service_logs"></a> [service\_logs](#output\_service\_logs) | The logs. |
+

@@ -15,13 +15,11 @@
     - Retention rules support for bucket targets.
     - Cursor support for streaming targets.
 
-
 # April 05, 2024 Release Notes - 0.1.5
 
 ## Updates
 ### Logging Module
 1. Support for Logging Analytics log groups added.
-
 
 # February 28, 2024 Release Notes - 0.1.4
 
