@@ -199,3 +199,91 @@ An optional feature, external dependencies are resources managed elsewhere that 
    `Error: 409-Conflict, Error on-boarding LogAnalytics for tenant idbktv455emw as it is already on-boarded or in the process of getting on-boarded`
    ```
    Avoid this error by first checking in your Oracle Cloud Console if Logging Analytics has been enabled. If it has been enabled, set the `onboard_logging_analytics` variable to `false`.
+
+2. *bucket_logs* and *flow_logs* attributes should not be used if this module is used in conjunction with another module that creates the compartments referenced in *target_compartment_ids* attribute of *bucket_logs* and *flow_logs*. Such an attempt makes Terraform plan to fail with the following error:
+    ```
+    Error: Invalid for_each argument
+
+      on .terraform/modules/oci_lz_orchestrator.oci_lz_logging/logging/bucket_logs.tf line 38, in data "oci_objectstorage_bucket_summaries" "these" 
+
+      38:   for_each = toset(local.bucket_logs_compartment_ids)
+
+        ├────────────────
+
+        │ local.bucket_logs_compartment_ids is tuple with 3 elements
+
+    The "for_each" set includes values derived from resource attributes that
+
+    cannot be determined until apply, and so Terraform cannot determine the full
+
+    set of keys that will identify the instances of this resource.
+
+    When working with unknown values in for_each, it's better to use a map value
+
+    where the keys are defined statically in your configuration and where only
+
+    the values contain apply-time results.
+
+    Alternatively, you could use the -target planning option to first apply only
+
+    the resources that the for_each value depends on, and then apply a second
+
+    time to fully converge.
+
+    Error: Invalid for_each argument
+
+      on .terraform/modules/oci_lz_orchestrator.oci_lz_logging/logging/flow_logs.tf line 115, in data "oci_identity_compartment" "these" 
+
+    115:   for_each = toset(local.flow_logs_compartment_ids)
+
+        ├────────────────
+
+        │ local.flow_logs_compartment_ids is tuple with 1 element
+
+    The "for_each" set includes values derived from resource attributes that
+
+    cannot be determined until apply, and so Terraform cannot determine the full
+
+    set of keys that will identify the instances of this resource.
+
+    When working with unknown values in for_each, it's better to use a map value
+
+    where the keys are defined statically in your configuration and where only
+
+    the values contain apply-time results.
+
+    Alternatively, you could use the -target planning option to first apply only
+
+    the resources that the for_each value depends on, and then apply a second
+
+    time to fully converge.
+
+    Error: Invalid for_each argument
+
+      on .terraform/modules/oci_lz_orchestrator.oci_lz_logging/logging/flow_logs.tf line 137, in data "oci_core_vcns" "these" 
+
+    137:   for_each = toset(local.flow_logs_compartment_ids)
+
+        ├────────────────
+
+        │ local.flow_logs_compartment_ids is tuple with 1 element
+
+    The "for_each" set includes values derived from resource attributes that
+
+    cannot be determined until apply, and so Terraform cannot determine the full
+
+    set of keys that will identify the instances of this resource.
+
+    When working with unknown values in for_each, it's better to use a map value
+
+    where the keys are defined statically in your configuration and where only
+
+    the values contain apply-time results.
+
+    Alternatively, you could use the -target planning option to first apply only
+
+    the resources that the for_each value depends on, and then apply a second
+
+    time to fully converge. 
+    ```
+In such scenario, create logs using the *service_logs* attribute instead. 
