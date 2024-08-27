@@ -34,8 +34,8 @@ variable "notifications_configuration" {
       display_name          = string
       notification_topic_id = string
       description           = optional(string)
-      defined_tags          = optional(string)
-      freeform_tags         = optional(string)
+      defined_tags          = optional(map(string))
+      freeform_tags         = optional(map(string))
       preferred_language    = optional(string)
       preferred_time_zone   = optional(string)
       filter_groups         = optional(map(object({
