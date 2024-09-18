@@ -14,14 +14,14 @@ variable "logging_configuration" {
     default_defined_tags      = optional(map(string)),
     default_freeform_tags     = optional(map(string)),
     onboard_logging_analytics = optional(bool),
-    log_groups = map(object({
+    log_groups = optional(map(object({
       type           = optional(string)
       compartment_id = optional(string)
       name           = string
       description    = optional(string)
       freeform_tags  = optional(map(string))
       defined_tags   = optional(map(string))
-    }))
+    })),{})
     service_logs = optional(map(object({
       name               = string
       log_group_id       = string
@@ -32,7 +32,7 @@ variable "logging_configuration" {
       retention_duration = optional(number)
       defined_tags       = optional(map(string))
       freeform_tags      = optional(map(string))
-    })))
+    })),{})
     flow_logs = optional(map(object({
       name_prefix            = optional(string)
       log_group_id           = string
@@ -42,7 +42,7 @@ variable "logging_configuration" {
       retention_duration     = optional(number)
       defined_tags           = optional(map(string))
       freeform_tags          = optional(map(string))
-    })))
+    })),{})
     bucket_logs = optional(map(object({
       name_prefix            = optional(string)
       log_group_id           = string
@@ -52,7 +52,7 @@ variable "logging_configuration" {
       retention_duration     = optional(number)
       defined_tags           = optional(map(string))
       freeform_tags          = optional(map(string))
-    })))
+    })),{})
     custom_logs = optional(map(object({
       name               = string
       log_group_id       = string
@@ -63,7 +63,7 @@ variable "logging_configuration" {
       retention_duration = optional(number)
       defined_tags       = optional(map(string))
       freeform_tags      = optional(map(string))
-    })))
+    })),{})
   })
 }
 
@@ -79,8 +79,18 @@ variable "module_name" {
   default     = "logging"
 }
 
-variable "compartments_dependency" {
-  description = "A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the compartment OCID) of string type."
-  type        = map(any)
-  default     = null
+variable compartments_dependency {
+  description = "A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the compartment OCID) of string type." 
+  type = map(object({
+    id = string
+  }))
+  default = null
+}
+
+variable "log_groups_dependency" {
+  description = "A map of objects containing the externally managed log_groups this module may depend on. All map objects must have the same type and must contain at least an 'id' attribute (representing the log group OCID) of string type."
+  type = map(object({
+    id = string
+  }))
+  default = null
 }

@@ -190,7 +190,7 @@ resource "oci_logging_log" "flow_logs" {
       }
     }
     display_name = each.value.name
-    log_group_id = oci_logging_log_group.these[each.value.log_group_id].id
+    log_group_id = contains(keys(var.logging_configuration.log_groups),each.value.log_group_id) ? oci_logging_log_group.these[each.value.log_group_id].id : (length(regexall("^ocid1.*$", each.value.log_group_id)) > 0 ? each.value.log_group_id : var.log_groups_dependency[each.value.log_group_id].id)
     log_type     = "SERVICE"
     configuration {
       #compartment_id = each.value.compartment_id

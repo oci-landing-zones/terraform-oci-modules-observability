@@ -21,9 +21,9 @@ resource "oci_log_analytics_log_analytics_log_group" "these" {
 }
 
 resource "oci_logging_log" "these" {
-  for_each     = var.logging_configuration.service_logs != null ? var.logging_configuration.service_logs : {}
+  for_each = var.logging_configuration.service_logs != null ? var.logging_configuration.service_logs : {}
     display_name = replace(each.value.name,"/\\s+/","-")
-    log_group_id = oci_logging_log_group.these[each.value.log_group_id].id
+    log_group_id = contains(keys(var.logging_configuration.log_groups),each.value.log_group_id) ? oci_logging_log_group.these[each.value.log_group_id].id : (length(regexall("^ocid1.*$", each.value.log_group_id)) > 0 ? each.value.log_group_id : var.log_groups_dependency[each.value.log_group_id].id)
     log_type     = "SERVICE"
     configuration {
       #compartment_id = each.value.compartment_id
@@ -41,9 +41,9 @@ resource "oci_logging_log" "these" {
 }
 
 resource "oci_logging_log" "these_custom" {
-  for_each           = var.logging_configuration.custom_logs != null ? var.logging_configuration.custom_logs : {}
+  for_each = var.logging_configuration.custom_logs != null ? var.logging_configuration.custom_logs : {}
     display_name       = replace(each.value.name,"/\\s+/","-")
-    log_group_id       = oci_logging_log_group.these[each.value.log_group_id].id
+    log_group_id       = contains(keys(var.logging_configuration.log_groups),each.value.log_group_id) ? oci_logging_log_group.these[each.value.log_group_id].id : (length(regexall("^ocid1.*$", each.value.log_group_id)) > 0 ? each.value.log_group_id : var.log_groups_dependency[each.value.log_group_id].id)
     log_type           = "CUSTOM"
     is_enabled         = each.value.is_enabled
     retention_duration = each.value.retention_duration
@@ -52,7 +52,7 @@ resource "oci_logging_log" "these_custom" {
 }
 
 resource "oci_logging_unified_agent_configuration" "these" {
-  for_each       = var.logging_configuration.custom_logs != null ? var.logging_configuration.custom_logs : {}
+  for_each = var.logging_configuration.custom_logs != null ? var.logging_configuration.custom_logs : {}
     compartment_id = each.value.compartment_id != null ? each.value.compartment_id : var.logging_configuration.default_compartment_id
     is_enabled     = each.value.is_enabled
     description    = format("%s%s", "Agent configuration for ", each.value.name)
