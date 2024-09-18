@@ -15,11 +15,11 @@ locals {
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
         for subnet in coalesce(data.oci_core_subnets.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].subnets, []) : {
-          key = upper("${fl_key}-${subnet.display_name}-${substr(subnet.id,-10,-1)}")
+          key = upper("${fl_key}-${replace(subnet.display_name,"/\\s+/","-")}-${substr(subnet.id,-10,-1)}")
           category = "subnet"
           resource_id = subnet.id
           service = "flowlogs"
-          name = "${subnet.display_name}-${substr(subnet.id,-10,-1)}-flow-log"
+          name = "${replace(subnet.display_name,"/\\s+/","-")}-${substr(subnet.id,-10,-1)}-flow-log"
           log_group_id = fl_value.log_group_id
           is_enabled = fl_value.is_enabled
           retention_duration = fl_value.retention_duration
@@ -35,11 +35,11 @@ locals {
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
         for vcn in coalesce(data.oci_core_vcns.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].virtual_networks, []) : {
-          key = upper("${fl_key}-${vcn.display_name}-${substr(vcn.id,-10,-1)}")
+          key = upper("${fl_key}-${replace(vcn.display_name,"/\\s+/","-")}-${substr(vcn.id,-10,-1)}")
           category = "vcn"
           resource_id = vcn.id
           service = "flowlogs"
-          name = "${vcn.display_name}-${substr(vcn.id,-10,-1)}-flow-log"
+          name = "${replace(vcn.display_name,"/\\s+/","-")}-${substr(vcn.id,-10,-1)}-flow-log"
           log_group_id = fl_value.log_group_id
           is_enabled = fl_value.is_enabled
           retention_duration = fl_value.retention_duration
@@ -55,11 +55,11 @@ locals {
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for cmp_id in fl_value.target_compartment_ids : [
         for attach in coalesce(data.oci_core_vnic_attachments.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].vnic_attachments, []) : {
-          key = upper("${fl_key}-${data.oci_core_vnic.these[attach.vnic_id].display_name}")
+          key = upper("${fl_key}-${replace(data.oci_core_vnic.these[attach.vnic_id].display_name,"/\\s+/","-")}")
           category = "vnic"
           resource_id = attach.vnic_id
           service = "flowlogs"
-          name = "${data.oci_core_vnic.these[attach.vnic_id].display_name}-flow-log"
+          name = "${replace(data.oci_core_vnic.these[attach.vnic_id].display_name,"/\\s+/","-")}-flow-log"
           log_group_id = fl_value.log_group_id
           is_enabled = fl_value.is_enabled
           retention_duration = fl_value.retention_duration
@@ -83,11 +83,11 @@ locals {
     for fl_key, fl_value in (var.logging_configuration.flow_logs != null ? var.logging_configuration.flow_logs : {}) : [
       for k, v in coalesce(data.oci_core_private_ips.nlbs, {}) : [
         for ip in coalesce(v.private_ips, []) : {
-          key = upper("${fl_key}-${ip.display_name}")
+          key = upper("${fl_key}-${replace(ip.display_name,"/\\s+/","-")}")
           category = "vnic"
           resource_id = ip.vnic_id
           service = "flowlogs"
-          name = "${ip.display_name}-flow-log"
+          name = "${replace(ip.display_name,"/\\s+/","-")}-flow-log"
           log_group_id = fl_value.log_group_id
           is_enabled = fl_value.is_enabled
           retention_duration = fl_value.retention_duration
@@ -119,7 +119,7 @@ data "oci_identity_compartment" "these" {
         error_message = "VALIDATION FAILURE: compartment id \"${each.key}\" not found."
       }
     }
-      id = each.key
+    id = each.key
 }
 
 data "oci_core_subnets" "these" {

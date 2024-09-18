@@ -4,8 +4,8 @@
 resource "oci_logging_log_group" "these" {
   for_each       = { for k, v in var.logging_configuration.log_groups : k => v if v.type == null }
     compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.logging_configuration.default_compartment_id)) > 0 ? var.logging_configuration.default_compartment_id : var.compartments_dependency[var.logging_configuration.default_compartment_id].id)
-    display_name   = each.value.name
-    description    = each.value.description != null ? each.value.description : each.value.name
+    display_name   = replace(each.value.name,"/\\s+/","-")
+    description    = each.value.description != null ? each.value.description : replace(each.value.name,"/\\s+/","-")
     defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.logging_configuration.default_defined_tags
     freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.logging_configuration.default_freeform_tags)
 }
@@ -13,8 +13,8 @@ resource "oci_logging_log_group" "these" {
 resource "oci_log_analytics_log_analytics_log_group" "these" {
   for_each       = { for k, v in var.logging_configuration.log_groups : k => v if upper(coalesce(v.type, "__void__")) == "LOGGING_ANALYTICS" }
     compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.logging_configuration.default_compartment_id)) > 0 ? var.logging_configuration.default_compartment_id : var.compartments_dependency[var.logging_configuration.default_compartment_id].id)
-    display_name   = each.value.name
-    description    = each.value.description != null ? each.value.description : each.value.name
+    display_name   = replace(each.value.name,"/\\s+/","-")
+    description    = each.value.description != null ? each.value.description : replace(each.value.name,"/\\s+/","-")
     namespace      = data.oci_log_analytics_namespaces.logging_analytics_namespaces.namespace_collection[0].items[0].namespace
 
   depends_on = [time_sleep.log_group_propagation_delay]
@@ -22,7 +22,7 @@ resource "oci_log_analytics_log_analytics_log_group" "these" {
 
 resource "oci_logging_log" "these" {
   for_each     = var.logging_configuration.service_logs != null ? var.logging_configuration.service_logs : {}
-    display_name = each.value.name
+    display_name = replace(each.value.name,"/\\s+/","-")
     log_group_id = oci_logging_log_group.these[each.value.log_group_id].id
     log_type     = "SERVICE"
     configuration {
@@ -42,7 +42,7 @@ resource "oci_logging_log" "these" {
 
 resource "oci_logging_log" "these_custom" {
   for_each           = var.logging_configuration.custom_logs != null ? var.logging_configuration.custom_logs : {}
-    display_name       = each.value.name
+    display_name       = replace(each.value.name,"/\\s+/","-")
     log_group_id       = oci_logging_log_group.these[each.value.log_group_id].id
     log_type           = "CUSTOM"
     is_enabled         = each.value.is_enabled

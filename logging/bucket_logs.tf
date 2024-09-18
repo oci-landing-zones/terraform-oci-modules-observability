@@ -12,11 +12,11 @@ locals {
     for bl_key, bl_value in (var.logging_configuration.bucket_logs != null ? var.logging_configuration.bucket_logs : {}) : [
       for cmp_id in bl_value.target_compartment_ids : [
         for bucket in data.oci_objectstorage_bucket_summaries.these[(length(regexall("^ocid1.*$", cmp_id)) > 0 ? cmp_id : var.compartments_dependency[cmp_id].id)].bucket_summaries : {
-          key = upper("${bl_key}-${bucket.name}")
+          key = upper("${bl_key}-${replace(bucket.name,"/\\s+/","-")}")
           category = bl_value.category
           resource_id = bucket.name
           service = "objectstorage"
-          name = "${bucket.name}-${bl_value.category}-log"
+          name = "${replace(bucket.name,"/\\s+/","-")}-${bl_value.category}-log"
           log_group_id = bl_value.log_group_id
           is_enabled = bl_value.is_enabled
           retention_duration = bl_value.retention_duration
