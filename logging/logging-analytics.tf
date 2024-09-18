@@ -17,6 +17,7 @@ resource "oci_log_analytics_namespace" "this" {
 }
 
 resource "time_sleep" "log_group_propagation_delay" {
+  count = coalesce(var.logging_configuration.onboard_logging_analytics, false) ? 1 : 0
   depends_on      = [oci_log_analytics_namespace.this]
   create_duration = "90s"
 }
