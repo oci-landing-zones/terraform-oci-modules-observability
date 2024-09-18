@@ -39,14 +39,14 @@ logging_configuration = {
 
   service_logs = {
     SUBNET-FLOW-LOG = {
-      name = "vision-subnet-flow-logs"
+      name = "vision-subnet-flow-log"
       log_group_id = "VCN-FLOW-LOG-GROUP"
       service = "flowlogs"
       category = "all"
       resource_id = "<REPLACE-BY-SUBNET-OCID-TO-ENABLE-LOG-FOR>"
     }
     BUCKET-LOG = {
-      name = "vision-bucket-write-logs"
+      name = "vision-bucket-write-log"
       log_group_id = "BUCKET-LOG-GROUP"
       service = "objectstorage"
       category = "write"
