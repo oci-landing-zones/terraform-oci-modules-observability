@@ -78,9 +78,11 @@ For referring to a specific module version, append *ref=\<version\>* to the *sou
 ```
 ## <a name="functioning">Module Functioning</a>
 
-In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overriden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes.
+In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overridden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes. Additionally, *logging_configuration* defines the *enable_cis_checks* attribute, that by default enforces CIS recommendations throughout the module. For disabling the enforcement, set it to false.
 
 **Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs*, and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
+
+- **enable_cis_checks**: (Optional) When true (default) enforces CIS recommendations when appropriate. For disabling the enforcement, set it to false.
 
 The *default_* attributes are the following:
 

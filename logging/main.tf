@@ -22,6 +22,12 @@ resource "oci_log_analytics_log_analytics_log_group" "these" {
 
 resource "oci_logging_log" "these" {
   for_each = var.logging_configuration.service_logs != null ? var.logging_configuration.service_logs : {}
+  lifecycle {
+      precondition {
+        condition     = (var.logging_configuration.enable_cis_checks == true && each.value.retention_duration >= 90) || (var.logging_configuration.enable_cis_checks == false)
+        error_message = "VALIDATION FAILURE: Log \"${each.key}\" has an invalid retention duration. For complying with CIS framework, set the \"retention_duration\" attribute to 90 or greater. For forcing a value smaller than 90, set \"enable_cis_checks\" attribute to false."
+      }
+    }   
     display_name = replace(each.value.name,"/\\s+/","-")
     log_group_id = contains(keys(var.logging_configuration.log_groups),each.value.log_group_id) ? oci_logging_log_group.these[each.value.log_group_id].id : (length(regexall("^ocid1.*$", each.value.log_group_id)) > 0 ? each.value.log_group_id : var.log_groups_dependency[each.value.log_group_id].id)
     log_type     = "SERVICE"
@@ -35,7 +41,7 @@ resource "oci_logging_log" "these" {
       }
     }
     is_enabled         = coalesce(each.value.is_enabled, true)
-    retention_duration = coalesce(each.value.retention_duration, 60)
+    retention_duration = each.value.retention_duration
     defined_tags       = each.value.defined_tags != null ? each.value.defined_tags : var.logging_configuration.default_defined_tags
     freeform_tags      = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.logging_configuration.default_freeform_tags)
 }
