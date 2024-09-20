@@ -67,20 +67,22 @@ module "logging" {
 For invoking the module remotely, set the module *source* attribute to the logging module folder in this repository, as shown:
 ```
 module "logging" {
-  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability/logging"
+  source = "github.com/oci-landing-zones/terraform-oci-modules-observability/logging"
   tenancy_ocid = var.tenancy_ocid # for deploying bucket logs using bucket_logs attribute.
   logging_configuration = var.logging_configuration
 }
 ```
 For referring to a specific module version, append *ref=\<version\>* to the *source* attribute value, as in:
 ```
-  source = "github.com/oracle-quickstart/terraform-oci-cis-landing-zone-observability//logging?ref=v0.1.0"
+  source = "github.com/oci-landing-zones/terraform-oci-modules-observability//logging?ref=v0.1.0"
 ```
 ## <a name="functioning">Module Functioning</a>
 
-In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overriden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes.
+In this module, log groups and logs are defined using the top-level *logging_configuration* variable. It contains a set of attributes starting with the prefix *default_* and a set of attributes to define any number of log groups and logs. The *default_* attribute values are applied to all log groups and logs, unless overridden at the object level. **The module supports defining service and custom logs for single resources or for a set of resources within specified compartments**. For defining logs to single resources, use either *service_logs* or *custom_logs* attributes. For defining service logs to a set of resources within specified compartments, use *flow_logs* or *bucket_logs* attributes. Additionally, *logging_configuration* defines the *enable_cis_checks* attribute, that by default enforces CIS recommendations throughout the module. For disabling the enforcement, set it to false.
 
 **Note**: *log_groups*, *service_logs*, *flow_logs*, *bucket_logs*, and *custom_logs* are maps of objects. Each object is defined as a key/value pair. The key must be unique and not be changed once defined. See the [examples](./examples/) folder for sample declarations.
+
+- **enable_cis_checks**: (Optional) When true (default) enforces CIS recommendations when appropriate. For disabling the enforcement, set it to false.
 
 The *default_* attributes are the following:
 
@@ -94,7 +96,7 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
 
 ### Defining Log Groups
 - **onboard_logging_analytics**: (Optional) Whether your tenancy will enable Logging Analytics. Set to true ONLY if wish to onboard your tenancy to Logging Analytics, set to false if your tenancy has ALREADY enabled Logging Analytics. Check in Console. Default is false.
-- **log_groups**: A map of log groups. In OCI, every log must belong to a log group.
+- **log_groups**: (Optional) A map of log groups. In OCI, every log must belong to a log group. If a log group is not deployed, the module adds the logs to an existing log group. See [External Dependencies](#extdep) section.
   - **compartment_id**: (Optional) The compartment where the log group is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID. See [External Dependencies](#extdep) section.
   - **type**: (Optional) Include this value and set it to "logging_analytics" to create a Logging Analytics log group, otherwise a default log group will be created. 
   - **name**: The log group name.             
@@ -105,7 +107,7 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
 ### Defining Service Logs  
 - **service_logs**: (Optional) A map of service logs. **Use this when defining service logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **name**: The log name.
-  - **log_group_id**: The log group. The value should be one of the reference keys defined in *log_groups*.
+  - **log_group_id**: The log group. This attribute is overloaded: it can be either one of the reference keys defined in *log_groups* attribute, a log group OCID or a reference key defined in *log_groups_dependency* variable. See [External Dependencies](#extdep) section.
   - **service**: The resource service name for which the log is being created. Sample valid values: "flowlogs", "objectstorage". Supported services may change over time. See [Services Integrated with the Logging Services and their Categories](#services).
   - **category**: The category name within each service. This is service specific and valid values may change over time. See [Services Integrated with the Logging Services and their Categories](#services).
   - **resource_id**: The resource id to create the log for.
@@ -117,7 +119,7 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
 ### Defining Flow Logs
 - **flow_logs**: A map of flow logs. **Use this when defining flow logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing flow log group.
   - **name_prefix**: (Optional) a prefix to flow log names.
-  - **log_group_id** The flow log group. The value should be one of the reference keys defined in *log_groups*.
+  - **log_group_id**: The log group. This attribute is overloaded: it can be either one of the reference keys defined in *log_groups* attribute, a log group OCID or a reference key defined in *log_groups_dependency* variable. See [External Dependencies](#extdep) section.
   - **target_resource_type** The target resource type for flow logs. Valid values: "vcn", "subnet", "vnic".
   - **target_compartment_ids** The list of compartments containing the resources of type defined in target_resource_type to create flow logs for. The module searches for all resources of target_resource_type in these compartments. For "vnic" target_resource_type, NLB (Network Load Balancer) private IP VNICs are also included.
   - **is_enabled**: (Optional) Whether the flow logs are enabled. Default is true.
@@ -128,7 +130,7 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
 ### Defining Bucket Logs  
 - **bucket_logs**: A map of bucket logs. **Use this when defining bucket logs in bulk within specified compartments**. Logs are created in the same compartment as the enclosing bucket log group.
   - **name_prefix**: (Optional) a prefix to bucket log names.
-  - **log_group_id**: The bucket log group. The value should be one of the reference keys defined in *log_groups*.
+  - **log_group_id**: The log group. This attribute is overloaded: it can be either one of the reference keys defined in *log_groups* attribute, a log group OCID or a reference key defined in *log_groups_dependency* variable. See [External Dependencies](#extdep) section.
   - **target_compartment_ids**: The list of compartments containing the buckets to create logs for. The module seaeches for all buckets in these compartments.
   - **category**: The category of operations to enable the bucket logs for. Valid values: "read" or "write".
   - **is_enabled**: (Optional) Whether the bucket logs are enabled. Default is true.
@@ -140,7 +142,7 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
 - **custom_logs**: A map of custom logs. **Use this when defining custom logs for single resources**. Logs are created in the same compartment as the enclosing log group.
   - **compartment_id**: (Optional) The compartment where log is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
   - **name**: The log name.
-  - **log_group_id**: The log group. The value should be one of the reference keys defined in *log_groups*.
+  - **log_group_id**: The log group. This attribute is overloaded: it can be either one of the reference keys defined in *log_groups* attribute, a log group OCID or a reference key defined in *log_groups_dependency* variable. See [External Dependencies](#extdep) section.
   - **dynamic_groups**: The list of dynamic groups associated with this configuration
   - **parser_type**: (Optional) The type of fluent parser. Valid values: "NONE", "SYSLOG", "CSV", "TSV", "REGEXP", "MULTILINE", "APACHE_ERROR", "APACHE2", "AUDITD", "JSON", "CRI". Default is "NONE".
   - **path**: Absolute paths for log source files. Wildcards can be used.
@@ -188,6 +190,8 @@ WAF Service | "waf" | "all"
 An optional feature, external dependencies are resources managed elsewhere that resources managed by this module may depend on. The following dependencies are supported:
 
 - **compartments_dependency**: A map of objects containing the externally managed compartments this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the compartment OCID. This mechanism allows for the usage of referring keys (instead of OCIDs) in *default_compartment_id* and *compartment_id* attributes. The module replaces the keys by the OCIDs provided within *compartments_dependency* map. Contents of *compartments_dependency* is typically the output of a [Compartments module](../compartments/) client.
+
+- **log_groups_dependency**: A map of objects containing the externally managed log_groups this module may depend on. All map objects must have the same type and must contain at least an *id* attribute with the log_group OCID. This mechanism allows for the usage of referring keys (instead of OCIDs) in *log_group_id* attributes. The module replaces the keys by the OCIDs provided within *log_groups_dependency* map.
 
 ## <a name="related">Related Documentation</a>
 - [OCI Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/home.htm)
