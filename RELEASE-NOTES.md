@@ -1,3 +1,11 @@
+# September 20, 2024 Release Notes - 0.1.9
+
+## Updates
+1. [Logging module](./logging/)
+    - Per CIS framework recommendation 8.10, the module now, by default, enforces a retention duration of at least 90 days for all logs. This can be disabled by setting *enable_cis_checks* attribute to false.
+    - Log groups can now be injected via the external dependency mechanism. Attribute *log_group_id*, in addition to being a reference key defined in *log_groups* attribute, can now also be a log group OCID or a reference key defined in *log_groups_dependency* variable. 
+    - Bug fix: log names can now be created for network resources (like subnets and VCNs) with spaces in their names.
+
 # August 27, 2024 Release Notes - 0.1.8
 
 ## Updates
