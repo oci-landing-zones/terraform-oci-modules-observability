@@ -11,11 +11,3 @@ variable "logging_configuration" {
   description = "Logging configuration settings, defining all aspects to manage logging in OCI. Please see the comments within each attribute for details."
   type = any
 }
-
-variable "external_dependency" {
-  type = object({
-    bucket_name = string
-    cmp_dependency = list(string)
-  })
-  default = null
-}
