@@ -1,3 +1,9 @@
+# May 14, 2026 Release Notes - 0.2.6
+
+## Updates
+1. [Logging module](./logging/)
+  - Fix: [issue 29](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/29). the dependency of unrelated compartments to flow log's *target_compartment_ids* attribute has been removed. Note that the use case scenario where a compartment is provisioned along flow logs in the same configuration, and that compartment is referenced in *target_compartment_ids* attribute is not covered. For this scenario, we recommend separate configurations, as in the same run Terraform cannot lookup vcns/subnets/vnics in compartments that only exist after the apply.
+  
 # February 20, 2026 Release Notes - 0.2.5
 
 ## Updates
