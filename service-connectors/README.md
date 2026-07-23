@@ -188,18 +188,6 @@ buckets = {
 }
 ```
 
-The following example defines a versioned bucket encrypted with an Oracle managed key:
-```
-buckets = {
-  SERVICE-CONNECTOR-BUCKET-KEY = {
-    name = "versioned-oracle-managed-key-bucket"
-    compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
-    cis_level = "1"
-    versioning = "Enabled"
-  }
-}
-```
-
 The following example defines a bucket that is encrypted with a customer managed key and with retention rules defined. Retention rules cannot be added to a bucket that has versioning Enabled (when cis_level = "2"):
 ```
 buckets = {
