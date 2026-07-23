@@ -166,6 +166,7 @@ Within *service_connectors_configuration*, use the *buckets* attribute to define
 - **compartment_id**: the compartment where the bucket is created. *default_compartment_id* is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **cis_level**: the CIS level, driving bucket versioning and encryption. Supported values: "1" and "2". cis_level = "1": no versioning, encryption with Oracle managed key. cis_level = 2": versioning enabled, encryption with customer managed key.
 - **kms_key_id**: the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a Key OCID or a reference (a key) to the Key OCID.
+- **versioning**: whether bucket versioning is enabled. Supported values are "Enabled" and "Disabled". If undefined, versioning is enabled for cis_level = "2" and disabled otherwise. Set this to "Enabled" with cis_level = "1" to use versioning with an Oracle managed key.
 - **defined_tags**: the bucket defined_tags. *default_defined_tags* is used if this is not defined.
 - **freeform_tags**: the bucket freeform_tags. *default_freeform_tags* is used if this is not defined.
 - **storage_tier**: the bucket's storage tier type. Default is "Standard'. When 'Archive' tier type is set explicitly, the bucket is put in the Archive Storage tier. The 'storageTier' property is immutable after bucket is created.
@@ -183,6 +184,18 @@ buckets = {
     compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
     cis_level = "2"
     kms_key_id = "ocid1.key.oc1..kkkkk..uir"
+  }
+}
+```
+
+The following example defines a versioned bucket encrypted with an Oracle managed key:
+```
+buckets = {
+  SERVICE-CONNECTOR-BUCKET-KEY = {
+    name = "versioned-oracle-managed-key-bucket"
+    compartment_id = "ocid1.compartment.oc1..bbbbb...epa"
+    cis_level = "1"
+    versioning = "Enabled"
   }
 }
 ```
