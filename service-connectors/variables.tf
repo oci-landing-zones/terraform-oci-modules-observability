@@ -80,6 +80,7 @@ variable "service_connectors_configuration" {
       cis_level          = optional(string),      # the cis_level. Default is "1". Drives bucket versioning and encryption. cis_level = "1": no versioning, encryption with Oracle managed key. cis_level = "2": versioning enabled, encryption with customer managed key.
       kms_key_id         = optional(string),      # the customer managed key. Required if cis_level = "2". This attribute is overloaded: it can be either a key OCID or a reference (a key) to the key OCID.
       kms_key_id_replica = optional(string),      # the customer managed key for the bucket replica. Required if cis_level = "2". This attribute is overloaded: it can be either a key OCID or a reference (a key) to the key OCID.
+      versioning         = optional(string),      # whether to enable bucket versioning. Valid values are "Enabled" and "Disabled". If undefined, versioning is enabled for cis_level = "2" and disabled otherwise.
       defined_tags       = optional(map(string)), # bucket defined_tags. default_defined_tags is used if this is not defined.
       freeform_tags      = optional(map(string))  # bucket freeform_tags. default_freeform_tags is used if this is not defined.
       storage_tier       = optional(string),      # the type of storage tier of this bucket. Archive, Standard
