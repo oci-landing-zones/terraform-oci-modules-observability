@@ -1,0 +1,60 @@
+{
+  "database_observability_configuration": {
+    "default_compartment_id": "CMP-LZ-SHARED-EXACS-DB-KEY",
+    "default_freeform_tags": {
+      "environment": "production",
+      "owner": "database-platform"
+    },
+    "lifecycle_id": "oneoe-exadb-observability",
+    "operation_stage": "ENABLE",
+    "dbm_private_endpoints": {
+      "DBM-EXADB-PE-KEY": {
+        "name": "dbm-exadb-private-endpoint",
+        "description": "Private Database Management access for the One-OE ExaDB-D platform.",
+        "subnet_id": "SUBNET-LZ-EXACS-DB-KEY",
+        "nsg_ids": [
+          "NSG-LZ-EXACS-OBSERVABILITY-KEY"
+        ],
+        "is_cluster": true,
+        "is_dns_resolution_enabled": true
+      }
+    },
+    "opsi_private_endpoints": {
+      "OPSI-EXADB-PE-KEY": {
+        "display_name": "opsi-exadb-private-endpoint",
+        "description": "Private Operations Insights access for the One-OE ExaDB-D platform.",
+        "vcn_id": "VCN-LZ-EXACS-KEY",
+        "subnet_id": "SUBNET-LZ-EXACS-DB-KEY",
+        "nsg_ids": [
+          "NSG-LZ-EXACS-OBSERVABILITY-KEY"
+        ],
+        "is_used_for_rac_dbs": true
+      }
+    },
+    "databases": {
+      "EXADB-CDB-KEY": {
+        "database_id": "DATABASE-EXADB-CDB-KEY",
+        "database_type": "CDB",
+        "managed_database_id": "MANAGED-DATABASE-EXADB-CDB-KEY",
+        "dbm_private_endpoint_id": "DBM-EXADB-PE-KEY",
+        "opsi_private_endpoint_id": "OPSI-EXADB-PE-KEY",
+        "enable_operations_insights": true,
+        "management_type": "ADVANCED",
+        "service_name": "<CDB_LISTENER_SERVICE>",
+        "password_secret_id": "SECRET-EXADB-CDB-DBSNMP-KEY"
+      },
+      "EXADB-PDB-KEY": {
+        "database_id": "DATABASE-EXADB-PDB-KEY",
+        "database_type": "PDB",
+        "parent_database_key": "EXADB-CDB-KEY",
+        "managed_database_id": "MANAGED-DATABASE-EXADB-PDB-KEY",
+        "dbm_private_endpoint_id": "DBM-EXADB-PE-KEY",
+        "opsi_private_endpoint_id": "OPSI-EXADB-PE-KEY",
+        "enable_operations_insights": true,
+        "management_type": "ADVANCED",
+        "service_name": "<PDB_LISTENER_SERVICE>",
+        "password_secret_id": "SECRET-EXADB-PDB-DBSNMP-KEY"
+      }
+    }
+  }
+}

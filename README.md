@@ -13,6 +13,7 @@ The following modules are available:
 - [Notifications](./notifications/)
 - [Streams](./streams/)
 - [Service Connectors](./service-connectors/)
+- [Database Observability](./database-observability/)
 
 Within each module you find an *examples* folder. Each example is a fully runnable Terraform configuration that you can quickly test and put to use by modifying the input data according to your own needs.  
 

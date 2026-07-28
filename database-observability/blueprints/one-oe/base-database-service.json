@@ -1,0 +1,58 @@
+{
+  "database_observability_configuration": {
+    "default_compartment_id": "CMP-LZ-APPLICATION-DB-KEY",
+    "default_freeform_tags": {
+      "environment": "production",
+      "owner": "database-platform"
+    },
+    "lifecycle_id": "oneoe-base-db-observability",
+    "operation_stage": "ENABLE",
+    "dbm_private_endpoints": {
+      "DBM-BASE-DB-PE-KEY": {
+        "name": "dbm-base-db-private-endpoint",
+        "description": "Private Database Management access for the One-OE Base Database platform.",
+        "subnet_id": "SUBNET-LZ-APPLICATION-DB-KEY",
+        "nsg_ids": [
+          "NSG-LZ-APPLICATION-DB-OBSERVABILITY-KEY"
+        ],
+        "is_dns_resolution_enabled": true
+      }
+    },
+    "opsi_private_endpoints": {
+      "OPSI-BASE-DB-PE-KEY": {
+        "display_name": "opsi-base-db-private-endpoint",
+        "description": "Private Operations Insights access for the One-OE Base Database platform.",
+        "vcn_id": "VCN-LZ-APPLICATION-DB-KEY",
+        "subnet_id": "SUBNET-LZ-APPLICATION-DB-KEY",
+        "nsg_ids": [
+          "NSG-LZ-APPLICATION-DB-OBSERVABILITY-KEY"
+        ]
+      }
+    },
+    "databases": {
+      "BASE-DB-CDB-KEY": {
+        "database_id": "DATABASE-BASE-DB-CDB-KEY",
+        "database_type": "CDB",
+        "managed_database_id": "MANAGED-DATABASE-BASE-DB-CDB-KEY",
+        "dbm_private_endpoint_id": "DBM-BASE-DB-PE-KEY",
+        "opsi_private_endpoint_id": "OPSI-BASE-DB-PE-KEY",
+        "enable_operations_insights": true,
+        "management_type": "ADVANCED",
+        "service_name": "<CDB_LISTENER_SERVICE>",
+        "password_secret_id": "SECRET-BASE-DB-CDB-DBSNMP-KEY"
+      },
+      "BASE-DB-PDB-KEY": {
+        "database_id": "DATABASE-BASE-DB-PDB-KEY",
+        "database_type": "PDB",
+        "parent_database_key": "BASE-DB-CDB-KEY",
+        "managed_database_id": "MANAGED-DATABASE-BASE-DB-PDB-KEY",
+        "dbm_private_endpoint_id": "DBM-BASE-DB-PE-KEY",
+        "opsi_private_endpoint_id": "OPSI-BASE-DB-PE-KEY",
+        "enable_operations_insights": true,
+        "management_type": "ADVANCED",
+        "service_name": "<PDB_LISTENER_SERVICE>",
+        "password_secret_id": "SECRET-BASE-DB-PDB-DBSNMP-KEY"
+      }
+    }
+  }
+}

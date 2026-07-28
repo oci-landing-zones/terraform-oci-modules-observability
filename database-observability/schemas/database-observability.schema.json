@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/adibirzu/oci-dbman-opsi/database-observability/schemas/database-observability.schema.json",
+  "title": "OCI Landing Zone Database Observability Terraform Variables",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "region",
+    "database_observability_configuration"
+  ],
+  "properties": {
+    "region": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenancy_ocid": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "database_observability_configuration": {
+      "$ref": "#/$defs/configuration"
+    },
+    "compartments_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "vcns_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "subnets_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "network_security_groups_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "databases_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "managed_databases_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "vault_secrets_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "dbm_private_endpoints_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    },
+    "opsi_private_endpoints_dependency": {
+      "$ref": "#/$defs/dependencyMap"
+    }
+  },
+  "$defs": {
+    "dependencyMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "tagMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dbmPrivateEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "subnet_id"
+      ],
+      "properties": {
+        "compartment_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "subnet_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nsg_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_cluster": {
+          "type": "boolean"
+        },
+        "is_dns_resolution_enabled": {
+          "type": "boolean"
+        },
+        "defined_tags": {
+          "$ref": "#/$defs/tagMap"
+        },
+        "freeform_tags": {
+          "$ref": "#/$defs/tagMap"
+        }
+      }
+    },
+    "opsiPrivateEndpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "vcn_id",
+        "subnet_id"
+      ],
+      "properties": {
+        "compartment_id": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "vcn_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subnet_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nsg_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_used_for_rac_dbs": {
+          "type": "boolean"
+        },
+        "defined_tags": {
+          "$ref": "#/$defs/tagMap"
+        },
+        "freeform_tags": {
+          "$ref": "#/$defs/tagMap"
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "database_id",
+        "database_type",
+        "dbm_private_endpoint_id",
+        "service_name",
+        "password_secret_id"
+      ],
+      "properties": {
+        "compartment_id": {
+          "type": "string"
+        },
+        "database_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "database_type": {
+          "enum": [
+            "CDB",
+            "PDB",
+            "NON_CDB"
+          ]
+        },
+        "parent_database_key": {
+          "type": "string"
+        },
+        "managed_database_id": {
+          "type": "string"
+        },
+        "dbm_private_endpoint_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "opsi_private_endpoint_id": {
+          "type": "string"
+        },
+        "enable_operations_insights": {
+          "type": "boolean"
+        },
+        "management_type": {
+          "enum": [
+            "BASIC",
+            "ADVANCED"
+          ]
+        },
+        "service_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "password_secret_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ssl_secret_id": {
+          "type": "string"
+        },
+        "monitoring_user": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "NORMAL",
+            "SYSDBA",
+            "SYSOPER",
+            "SYSASM"
+          ]
+        },
+        "protocol": {
+          "enum": [
+            "TCP",
+            "TCPS"
+          ]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "defined_tags": {
+          "$ref": "#/$defs/tagMap"
+        },
+        "freeform_tags": {
+          "$ref": "#/$defs/tagMap"
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_compartment_id",
+        "lifecycle_id",
+        "databases"
+      ],
+      "properties": {
+        "default_compartment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "default_defined_tags": {
+          "$ref": "#/$defs/tagMap"
+        },
+        "default_freeform_tags": {
+          "$ref": "#/$defs/tagMap"
+        },
+        "lifecycle_id": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]+$"
+        },
+        "operation_stage": {
+          "enum": [
+            "ENABLE",
+            "DISABLE_TARGETS",
+            "DISABLE_CDB"
+          ]
+        },
+        "dbm_private_endpoints": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/dbmPrivateEndpoint"
+          }
+        },
+        "opsi_private_endpoints": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/opsiPrivateEndpoint"
+          }
+        },
+        "databases": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/database"
+          }
+        }
+      }
+    }
+  }
+}

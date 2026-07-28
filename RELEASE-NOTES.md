@@ -1,3 +1,14 @@
+# Unreleased
+
+## Updates
+1. [Database Observability module](./database-observability/)
+  - Enhancement: Added Vault-backed Database Management and Operations Insights
+    lifecycle management for Base Database Service and Exadata Database Service
+    CDB, PDB, and non-CDB targets. Includes Landing Zone dependency maps,
+    staged fail-closed disablement, private endpoints, examples, JSON Schema,
+    and One-OE source configuration fragments. Tracks
+    [issue 33](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/33).
+
 # May 14, 2026 Release Notes - 0.2.6
 
 ## Updates
