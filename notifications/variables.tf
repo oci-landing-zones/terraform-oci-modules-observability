@@ -25,7 +25,7 @@ variable "notifications_configuration" {
     announcement_subscriptions = optional(map(object({
       compartment_id        = optional(string)
       display_name          = string
-      notification_topic_id = string
+      notification_topic_id = string # notification topic to use for the announcement subscription. It can be either a topic OCID or a reference (a key) to a topic in the topics attribute.
       description           = optional(string)
       defined_tags          = optional(map(string))
       freeform_tags         = optional(map(string))

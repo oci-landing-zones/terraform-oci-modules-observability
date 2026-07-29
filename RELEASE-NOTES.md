@@ -1,3 +1,9 @@
+# Next-release
+
+## Updates
+1. [Notifications module](./notifications/)
+  - Enhancement: [issue 24](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/24). Announcement subscriptions can now assign a notification topic using its logical key in the *topics* attribute, while continuing to support literal topic OCIDs.
+
 # May 14, 2026 Release Notes - 0.2.6
 
 ## Updates
