@@ -1,3 +1,9 @@
+# Next-release
+
+## Updates
+1. [Alarms module](./alarms/)
+  - Enhancement: [issue 23](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/23). Added Oracle-recommended Database Management alarms for Autonomous Databases as pre-configured alarm types, including the required *provider = "DBM"* free-form tag.
+
 # May 14, 2026 Release Notes - 0.2.6
 
 ## Updates

@@ -77,7 +77,7 @@ In this module, alarms are defined using the *alarms_configuration* object, that
 ## Defining the Alarms to Trigger
 
 Within the *alarms* attribute, the alarms to trigger can be specific in two ways: through pre-configured alarm types or by supplying specific alarms.
-- **pre-configured alarm types**: use the *preconfigured_alarm_type* attributes, assigning it a list of the following supported values: *high-cpu-alarm*, *instance-status-alarm*, *vm-maintenance-alarm*, *bare-metal-unhealthy-alarm*, *high-memory-alarm*, *adb-cpu-alarm*, *adb-storage-alarm*,*vpn-status-alarm* and *fast-connect-status-alarm*. For the list of metrics in each of these types, check [preconfigured_alarms.tf file](./preconfigured_alarms.tf).
+- **pre-configured alarm types**: use the *preconfigured_alarm_type* attributes, assigning it a list of the supported values in the [preconfigured_alarms.tf file](./preconfigured_alarms.tf). Oracle-recommended Database Management types are *dbm-cpu-alarm*, *dbm-failed-logins-critical-alarm*, *dbm-failed-logins-warning-alarm*, *dbm-monitoring-stopped-alarm*, *dbm-session-utilization-critical-alarm*, *dbm-session-utilization-warning-alarm*, *dbm-sessions-warning-alarm*, *dbm-storage-critical-alarm*, and *dbm-storage-warning-alarm*. These alarm queries apply to all Autonomous Databases in the metric compartment and automatically include the *provider = "DBM"* free-form tag.
 - **supplied alarm**: use the *supplied_alarm* attribute, assigning its member attributes:
   - **query**: the Monitoring Query Language (MQL) expression to evaluate for the alarm. Example: "CpuUtilization[1m].mean() > 80".
   - **namespace**: indicator of the resource, service, or application that emits the metric. Example: "oci_computeagent".
@@ -177,6 +177,7 @@ alarms_configuration = {
 
 ## <a name="related">Related Documentation</a>
 - [Overview of Monitoring](https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm)
+- [Set Up Alarm Definitions in Database Management](https://docs.oracle.com/en-us/iaas/database-management/doc/alarm-definitions.html)
 - [Overview of Notifications](https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm)
 - [Overview of Streaming](https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm)
 - [Monitoring Alarms in Terraform OCI Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/monitoring_alarm)
