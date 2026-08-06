@@ -61,7 +61,7 @@ locals {
       repeat_notification_critical_alarms = "PT4H"
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-failed-logins-critical-alarm = {
+    adb-failed-logins-critical-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "FailedLogons[5m].mean() > 30"
       severity                            = "CRITICAL"
@@ -70,7 +70,7 @@ locals {
       repeat_notification_critical_alarms = "PT4H"
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-failed-logins-warning-alarm = {
+    adb-failed-logins-warning-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "FailedLogons[5m].mean() > 20"
       severity                            = "WARNING"
@@ -79,7 +79,7 @@ locals {
       repeat_notification_critical_alarms = null
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-monitoring-stopped-alarm = {
+    adb-monitoring-stopped-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "DatabaseAvailability[10m].absent()"
       severity                            = "CRITICAL"
@@ -88,7 +88,7 @@ locals {
       repeat_notification_critical_alarms = "PT4H"
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-sessions-warning-alarm = {
+    adb-sessions-warning-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "Sessions[15m].mean() > 30"
       severity                            = "WARNING"
@@ -97,7 +97,7 @@ locals {
       repeat_notification_critical_alarms = null
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-storage-warning-alarm = {
+    adb-storage-warning-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "StorageUtilization[30m].mean() > 75"
       severity                            = "WARNING"
