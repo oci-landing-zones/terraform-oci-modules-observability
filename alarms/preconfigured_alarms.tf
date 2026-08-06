@@ -45,23 +45,16 @@ locals {
     }
     adb-cpu-alarm = {
       namespace                           = "oci_autonomous_database"
-      query                               = "CpuUtilization[1m].mean() > 80"
+      query                               = "CpuUtilization[5m].mean() > 85"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
+      freeform_tags                       = { provider = "DBM" }
     }
     adb-storage-alarm = {
       namespace                           = "oci_autonomous_database"
-      query                               = "StorageUtilization[1m].mean() > 80"
-      severity                            = "CRITICAL"
-      message_format                      = "PRETTY_JSON"
-      pending_duration                    = "PT5M"
-      repeat_notification_critical_alarms = "PT4H"
-    }
-    dbm-cpu-alarm = {
-      namespace                           = "oci_autonomous_database"
-      query                               = "CpuUtilization[5m].mean() > 85"
+      query                               = "StorageUtilization[30m].mean() > 85"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
@@ -95,24 +88,6 @@ locals {
       repeat_notification_critical_alarms = "PT4H"
       freeform_tags                       = { provider = "DBM" }
     }
-    dbm-session-utilization-critical-alarm = {
-      namespace                           = "oci_autonomous_database"
-      query                               = "SessionUtilization[5m].mean() > 85"
-      severity                            = "CRITICAL"
-      message_format                      = "PRETTY_JSON"
-      pending_duration                    = "PT5M"
-      repeat_notification_critical_alarms = "PT4H"
-      freeform_tags                       = { provider = "DBM" }
-    }
-    dbm-session-utilization-warning-alarm = {
-      namespace                           = "oci_autonomous_database"
-      query                               = "SessionUtilization[5m].mean() > 75"
-      severity                            = "WARNING"
-      message_format                      = "PRETTY_JSON"
-      pending_duration                    = "PT5M"
-      repeat_notification_critical_alarms = null
-      freeform_tags                       = { provider = "DBM" }
-    }
     dbm-sessions-warning-alarm = {
       namespace                           = "oci_autonomous_database"
       query                               = "Sessions[15m].mean() > 30"
@@ -120,15 +95,6 @@ locals {
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
-      freeform_tags                       = { provider = "DBM" }
-    }
-    dbm-storage-critical-alarm = {
-      namespace                           = "oci_autonomous_database"
-      query                               = "StorageUtilization[30m].mean() > 85"
-      severity                            = "CRITICAL"
-      message_format                      = "PRETTY_JSON"
-      pending_duration                    = "PT5M"
-      repeat_notification_critical_alarms = "PT4H"
       freeform_tags                       = { provider = "DBM" }
     }
     dbm-storage-warning-alarm = {
@@ -160,4 +126,3 @@ locals {
 
 
 }
-
