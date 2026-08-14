@@ -75,6 +75,70 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
+    exadata-vm-cluster-high-cpu-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "CpuUtilization[1m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-vm-cluster-high-memory-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "MemoryUtilization[1m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-vm-cluster-high-filesystem-utilization-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "FilesystemUtilization[1m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-vm-cluster-high-asm-diskgroup-utilization-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "ASMDiskgroupUtilization[10m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-vm-cluster-high-swap-utilization-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "SwapUtilization[1m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-vm-cluster-node-status-alarm = {
+      namespace                           = "oci_database_cluster"
+      query                               = "NodeStatus[1m].mean() == 0"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-database-high-cpu-alarm = {
+      namespace                           = "oci_database"
+      query                               = "CpuUtilization[5m].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
+    exadata-database-high-storage-utilization-alarm = {
+      namespace                           = "oci_database"
+      query                               = "StorageUtilization[1h].mean() > 80"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+    }
   }
 
 
