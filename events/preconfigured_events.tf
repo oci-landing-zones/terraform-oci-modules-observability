@@ -80,12 +80,21 @@ locals {
     database = {
       description = "CIS Landing Zone database events."
       conditions = ["com.oraclecloud.databaseservice.autonomous.database.critical",
-      "com.oraclecloud.databaseservice.dbsystem.critical"]
+        "com.oraclecloud.databaseservice.dbsystem.critical",
+        "com.oraclecloud.databaseservice.database.critical",
+        "com.oraclecloud.databaseservice.dbnode.critical",
+      "com.oraclecloud.databaseservice.autonomous.container.database.critical"]
     }
-    exainfra = {
+    exainfra = { # deprecated, use database-infra instead
       description = "CIS Landing Zone Exadata Cloud Service events."
+      conditions = ["com.oraclecloud.databaseservice.exadatainfrastructure.critical"]
+    }
+    database-infra = {
+      description = "CIS Landing Zone cloud database infrastructure events."
       conditions = ["com.oraclecloud.databaseservice.exadatainfrastructure.critical",
-      "com.oraclecloud.databaseservice.autonomous.cloudautonomousvmcluster.critical"]
+        "com.oraclecloud.databaseservice.autonomous.cloudautonomousvmcluster.critical",
+        "com.oraclecloud.databaseservice.autonomous.vmcluster.critical",
+      "com.oraclecloud.databaseservice.exadatainfrastructureconnectstatus"]
     }
     budget = {
       description = "CIS Landing Zone budget events."

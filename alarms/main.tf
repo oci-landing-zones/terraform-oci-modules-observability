@@ -58,7 +58,11 @@ resource "oci_monitoring_alarm" "these" {
   message_format               = each.value.supplied_alarm != null ? each.value.supplied_alarm.message_format != null ? each.value.supplied_alarm.message_format : "PRETTY_JSON" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].message_format
   repeat_notification_duration = each.value.supplied_alarm != null ? each.value.supplied_alarm.severity != null ? (each.value.supplied_alarm.severity == "CRITICAL" ? (each.value.supplied_alarm.repeat_notification_critical_alarms != null ? each.value.supplied_alarm.repeat_notification_critical_alarms : "PT4H") : each.value.supplied_alarm.repeat_notification_critical_alarms) : "PT4H" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].repeat_notification_critical_alarms
   defined_tags                 = each.value.defined_tags != null ? each.value.defined_tags : var.alarms_configuration.default_defined_tags
-  freeform_tags                = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags)
+  freeform_tags = merge(
+    local.cislz_module_tag,
+    each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags,
+    each.value.supplied_alarm == null ? try(local.preconfigured_alarms[each.value.preconfigured_alarm_type].freeform_tags, {}) : {}
+  )
 }
 
 resource "oci_ons_notification_topic" "these" {
@@ -131,4 +135,3 @@ resource "oci_streaming_stream" "these" {
   defined_tags       = each.value.defined_tags != null ? each.value.defined_tags : var.alarms_configuration.default_defined_tags
   freeform_tags      = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags)
 }
-
