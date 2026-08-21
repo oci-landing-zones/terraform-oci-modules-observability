@@ -232,40 +232,40 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"  
     }
-    # Exadata Alarms
-    EXADATA-VM-CLUSTER-HIGH-CPU-ALARM-WARNING = {
+    # Database Alarms - apply to cloud databases in general, including Exadata Cloud@Customer.
+    DATABASE-CLUSTER-HIGH-CPU-ALARM-WARNING = {
       namespace                           = "oci_database_cluster"
-      query                               = "CpuUtilization[1m].mean() > 80"
+      query                               = "CpuUtilization[5m].mean() > 80"
       severity                            = "WARNING"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-VM-CLUSTER-HIGH-CPU-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-HIGH-CPU-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
-      query                               = "CpuUtilization[1m].mean() > 90"
+      query                               = "CpuUtilization[5m].mean() > 90"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-VM-CLUSTER-HIGH-MEMORY-ALARM-WARNING = {
+    DATABASE-CLUSTER-HIGH-MEMORY-ALARM-WARNING = {
       namespace                           = "oci_database_cluster"
-      query                               = "MemoryUtilization[1m].mean() > 80"
+      query                               = "MemoryUtilization[5m].mean() > 80"
       severity                            = "WARNING"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-VM-CLUSTER-HIGH-MEMORY-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-HIGH-MEMORY-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
-      query                               = "MemoryUtilization[1m].mean() > 90"
+      query                               = "MemoryUtilization[5m].mean() > 90"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-VM-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-WARNING = {
+    DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-WARNING = {
       namespace                           = "oci_database_cluster"
       query                               = "FilesystemUtilization[30m].mean() > 75"
       severity                            = "WARNING"
@@ -273,7 +273,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-VM-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
       query                               = "FilesystemUtilization[30m].mean() > 85"
       severity                            = "CRITICAL"
@@ -281,7 +281,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-VM-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-WARNING = {
+    DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-WARNING = {
       namespace                           = "oci_database_cluster"
       query                               = "ASMDiskgroupUtilization[30m].mean() > 75"
       severity                            = "WARNING"
@@ -289,7 +289,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-VM-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
       query                               = "ASMDiskgroupUtilization[30m].mean() > 85"
       severity                            = "CRITICAL"
@@ -297,7 +297,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-VM-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-WARNING = {
+    DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-WARNING = {
       namespace                           = "oci_database_cluster"
       query                               = "SwapUtilization[5m].mean() > 75"
       severity                            = "WARNING"
@@ -305,7 +305,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-VM-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
       query                               = "SwapUtilization[5m].mean() > 85"
       severity                            = "CRITICAL"
@@ -313,7 +313,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-VM-CLUSTER-NODE-STATUS-ALARM-CRITICAL = {
+    DATABASE-CLUSTER-NODE-STATUS-ALARM-CRITICAL = {
       namespace                           = "oci_database_cluster"
       query                               = "NodeStatus[1m].mean() == 0"
       severity                            = "CRITICAL"
@@ -321,23 +321,23 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-DATABASE-HIGH-CPU-ALARM-WARNING = {
+    DATABASE-HIGH-CPU-ALARM-WARNING = {
       namespace                           = "oci_database"
-      query                               = "CpuUtilization[1m].mean() > 80"
+      query                               = "CpuUtilization[5m].mean() > 80"
       severity                            = "WARNING"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-DATABASE-HIGH-CPU-ALARM-CRITICAL = {
+    DATABASE-HIGH-CPU-ALARM-CRITICAL = {
       namespace                           = "oci_database"
-      query                               = "CpuUtilization[1m].mean() > 90"
+      query                               = "CpuUtilization[5m].mean() > 90"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
     }
-    EXADATA-DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-WARNING = {
+    DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-WARNING = {
       namespace                           = "oci_database"
       query                               = "StorageUtilization[30m].mean() > 75"
       severity                            = "WARNING"
@@ -345,7 +345,7 @@ locals {
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = null
     }
-    EXADATA-DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-CRITICAL = {
+    DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-CRITICAL = {
       namespace                           = "oci_database"
       query                               = "StorageUtilization[30m].mean() > 85"
       severity                            = "CRITICAL"
