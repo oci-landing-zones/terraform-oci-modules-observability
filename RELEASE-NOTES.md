@@ -8,7 +8,7 @@
   - **Network**: *NETWORK-VPN-STATUS-ALARM-CRITICAL*, *NETWORK-FAST-CONNECT-STATUS-ALARM-CRITICAL*, and *NETWORK-VNIC-CONNECTION-TRACKING-ALARM-CRITICAL*.
   - **Database Cluster**: *DATABASE-CLUSTER-HIGH-CPU-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-CPU-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-MEMORY-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-MEMORY-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-CRITICAL*, and *DATABASE-CLUSTER-NODE-STATUS-ALARM-CRITICAL*.
   - **Database**: *DATABASE-HIGH-CPU-ALARM-WARNING*, *DATABASE-HIGH-CPU-ALARM-CRITICAL*, *DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-WARNING*, and *DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-CRITICAL*.
-  - The following legacy types are deprecated; update configurations to use the indicated replacement types:
+  - Deprecation: The following legacy types are deprecated. Update configurations to use the indicated replacement types:
     - *high-cpu-alarm*: *COMPUTE-HIGH-CPU-ALARM-WARNING* or *COMPUTE-HIGH-CPU-ALARM-CRITICAL*.
     - *instance-status-alarm*: *COMPUTE-VM-STATUS-ALARM-CRITICAL*.
     - *vm-maintenance-alarm*: *COMPUTE-MAINTENANCE-ALARM-WARNING*.
@@ -18,6 +18,17 @@
     - *adb-storage-alarm*: *ADB-HIGH-STORAGE-ALARM-WARNING* or *ADB-HIGH-STORAGE-ALARM-CRITICAL*.
     - *vpn-status-alarm*: *NETWORK-VPN-STATUS-ALARM-CRITICAL*.
     - *fast-connect-status-alarm*: *NETWORK-FAST-CONNECT-STATUS-ALARM-CRITICAL*.
+
+2. [Events module](./events/)
+  - Enhancement: Added the following [preconfigured database events](./events/preconfigured_events.tf):
+    - *com.oraclecloud.databaseservice.dbsystem.critical*
+    - *com.oraclecloud.databaseservice.database.critical*
+    - *com.oraclecloud.databaseservice.dbnode.critical*
+    - *com.oraclecloud.databaseservice.autonomous.container.database.critical*
+    - *com.oraclecloud.databaseservice.autonomous.cloudautonomousvmcluster.critical*
+    - *com.oraclecloud.databaseservice.autonomous.vmcluster.critical*
+    - *com.oraclecloud.databaseservice.exadatainfrastructureconnectstatus*
+  - Deprecation: The *exainfra* preconfigured event type is deprecated. Update configurations to use *database-infra*, which includes the Exadata infrastructure critical event and the new cloud database infrastructure events.
 
 # February 20, 2026 Release Notes - 0.2.5
 

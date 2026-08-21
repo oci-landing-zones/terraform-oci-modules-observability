@@ -85,8 +85,12 @@ locals {
         "com.oraclecloud.databaseservice.dbnode.critical",
       "com.oraclecloud.databaseservice.autonomous.container.database.critical"]
     }
-    exainfra = {
+    exainfra = { # deprecated, use database-infra instead
       description = "CIS Landing Zone Exadata Cloud Service events."
+      conditions = ["com.oraclecloud.databaseservice.exadatainfrastructure.critical"]
+    }
+    database-infra = {
+      description = "CIS Landing Zone cloud database infrastructure events."
       conditions = ["com.oraclecloud.databaseservice.exadatainfrastructure.critical",
         "com.oraclecloud.databaseservice.autonomous.cloudautonomousvmcluster.critical",
         "com.oraclecloud.databaseservice.autonomous.vmcluster.critical",
