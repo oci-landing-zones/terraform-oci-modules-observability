@@ -80,7 +80,7 @@ In this module, events are defined using the *events_configuration* object, that
 
 Within *event_rules*, the event types to capture can be specified in two ways: through pre-configured events categories or by supplying specific event types.
 
-- **pre-configured events categories**: use the *preconfigured_events_categories* attribute, assigning it a list of the following supported values: *iam*, *network*, *storage*, *database*, *exainfra*, *compute*, *budget* and *cloudguard*. For the list of event types in each of these categories, check [preconfigured_events.tf file](./preconfigured_events.tf). 
+- **pre-configured events categories**: use the *preconfigured_events_categories* attribute, assigning it a list of the following supported values: *iam*, *network*, *storage*, *database*, *exainfra* (deprecated in favor of database-infra), *database-infra*, *compute*, *budget* and *cloudguard*. For the list of event types in each of these categories, check [preconfigured_events.tf file](./preconfigured_events.tf). 
 - **supplied events**: use the *supplied_events* attribute, assigning it a list of valid OCI event type names. Event type names are service specific. Look at [Service that Produce Events](https://docs.oracle.com/en-us/iaas/Content/Events/) for event types within each service.
 
 **Note**: *supplied_events* takes precedence over *preconfigured_events_categories*.
