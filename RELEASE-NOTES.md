@@ -1,4 +1,4 @@
-# Next-release
+# August XX, 2026 Release Notes - 0.2.7
 
 ## Updates
 1. [Alarms module](./alarms/)
