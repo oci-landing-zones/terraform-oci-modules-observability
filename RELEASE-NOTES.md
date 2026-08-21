@@ -1,9 +1,37 @@
-# Next-release
+# Unreleased
 
 ## Updates
 1. [Alarms module](./alarms/)
-  - Enhancement: [issue 23](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/23). Updated the existing *adb-cpu-alarm* and *adb-storage-alarm* pre-configured types to Oracle-recommended Database Management thresholds and added the five missing alarm types for Autonomous AI Databases. Existing uses of the two ADB alarm types will update their queries and add the required *provider = "DBM"* free-form tag.
-2. [Service Connectors module](./service-connectors/)
+  - Enhancement: Added 33 new [preconfigured alarm types](./alarms/preconfigured_alarms.tf) for Compute, Autonomous Database, Network, Database Cluster, and Database monitoring. Database alarms apply to cloud databases in general, including Exadata Cloud@Customer, and covering VM clusters as well as Real Application Clusters (RAC).
+  - **Compute**: *COMPUTE-HIGH-CPU-ALARM-WARNING*, *COMPUTE-HIGH-CPU-ALARM-CRITICAL*, *COMPUTE-VM-STATUS-ALARM-CRITICAL*, *COMPUTE-MAINTENANCE-ALARM-WARNING*, *COMPUTE-BARE-METAL-HEALTH-ALARM-CRITICAL*, *COMPUTE-HIGH-MEMORY-ALARM-WARNING*, and *COMPUTE-HIGH-MEMORY-ALARM-CRITICAL*.
+  - **Autonomous Database**: *ADB-HIGH-CPU-ALARM-WARNING*, *ADB-HIGH-CPU-ALARM-CRITICAL*, *ADB-HIGH-STORAGE-ALARM-WARNING*, *ADB-HIGH-STORAGE-ALARM-CRITICAL*, *ADB-FAILED-LOGINS-ALARM-WARNING*, *ADB-FAILED-LOGINS-ALARM-CRITICAL*, *ADB-MONITORING-AVAILABILITY-ALARM-CRITICAL*, and *ADB-SESSIONS-ALARM-WARNING*.
+  - **Network**: *NETWORK-VPN-STATUS-ALARM-CRITICAL*, *NETWORK-FAST-CONNECT-STATUS-ALARM-CRITICAL*, and *NETWORK-VNIC-CONNECTION-TRACKING-ALARM-CRITICAL*.
+  - **Database Cluster**: *DATABASE-CLUSTER-HIGH-CPU-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-CPU-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-MEMORY-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-MEMORY-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-FILESYSTEM-UTILIZATION-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-ASM-DISKGROUP-UTILIZATION-ALARM-CRITICAL*, *DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-WARNING*, *DATABASE-CLUSTER-HIGH-SWAP-UTILIZATION-ALARM-CRITICAL*, and *DATABASE-CLUSTER-NODE-STATUS-ALARM-CRITICAL*.
+  - **Database**: *DATABASE-HIGH-CPU-ALARM-WARNING*, *DATABASE-HIGH-CPU-ALARM-CRITICAL*, *DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-WARNING*, and *DATABASE-HIGH-STORAGE-UTILIZATION-ALARM-CRITICAL*.
+  - Deprecation: The following legacy types are deprecated. Update configurations to use the indicated replacement types:
+    - *high-cpu-alarm*: *COMPUTE-HIGH-CPU-ALARM-WARNING* or *COMPUTE-HIGH-CPU-ALARM-CRITICAL*.
+    - *instance-status-alarm*: *COMPUTE-VM-STATUS-ALARM-CRITICAL*.
+    - *vm-maintenance-alarm*: *COMPUTE-MAINTENANCE-ALARM-WARNING*.
+    - *bare-metal-unhealthy-alarm*: *COMPUTE-BARE-METAL-HEALTH-ALARM-CRITICAL*.
+    - *high-memory-alarm*: *COMPUTE-HIGH-MEMORY-ALARM-WARNING* or *COMPUTE-HIGH-MEMORY-ALARM-CRITICAL*.
+    - *adb-cpu-alarm*: *ADB-HIGH-CPU-ALARM-WARNING* or *ADB-HIGH-CPU-ALARM-CRITICAL*.
+    - *adb-storage-alarm*: *ADB-HIGH-STORAGE-ALARM-WARNING* or *ADB-HIGH-STORAGE-ALARM-CRITICAL*.
+    - *vpn-status-alarm*: *NETWORK-VPN-STATUS-ALARM-CRITICAL*.
+    - *fast-connect-status-alarm*: *NETWORK-FAST-CONNECT-STATUS-ALARM-CRITICAL*.
+  - These enhancements also cover [issue 23](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/23). 
+
+2. [Events module](./events/)
+  - Enhancement: Added the following [preconfigured database events](./events/preconfigured_events.tf):
+    - *com.oraclecloud.databaseservice.dbsystem.critical*
+    - *com.oraclecloud.databaseservice.database.critical*
+    - *com.oraclecloud.databaseservice.dbnode.critical*
+    - *com.oraclecloud.databaseservice.autonomous.container.database.critical*
+    - *com.oraclecloud.databaseservice.autonomous.cloudautonomousvmcluster.critical*
+    - *com.oraclecloud.databaseservice.autonomous.vmcluster.critical*
+    - *com.oraclecloud.databaseservice.exadatainfrastructureconnectstatus*
+  - Deprecation: The *exainfra* preconfigured event type is deprecated. Update configurations to use *database-infra*, which includes the Exadata infrastructure critical event and the new cloud database infrastructure events.
+
+3. [Service Connectors module](./service-connectors/)
   - Enhancement: [issue 20](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/20). Added an optional bucket *versioning* attribute so versioning can be enabled while using Oracle managed keys.
 
 # May 14, 2026 Release Notes - 0.2.6
