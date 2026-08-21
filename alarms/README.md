@@ -184,6 +184,7 @@ alarms_configuration = {
 
 ## <a name="related">Related Documentation</a>
 - [Overview of Monitoring](https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm)
+- [Set Up Alarm Definitions in Database Management](https://docs.oracle.com/en-us/iaas/database-management/doc/alarm-definitions.html)
 - [Overview of Notifications](https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm)
 - [Overview of Streaming](https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm)
 - [Monitoring Alarms in Terraform OCI Provider](https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/monitoring_alarm)

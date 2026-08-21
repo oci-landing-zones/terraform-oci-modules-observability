@@ -104,11 +104,12 @@ locals {
     # Autonomous Database Alarms
     adb-cpu-alarm = { # deprecated, use ADB-HIGH-CPU-ALARM-WARNING or ADB-HIGH-CPU-ALARM-CRITICAL
       namespace                           = "oci_autonomous_database"
-      query                               = "CpuUtilization[1m].mean() > 80"
+      query                               = "CpuUtilization[5m].mean() > 85"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
+      freeform_tags                       = { provider = "DBM" }
     }
     ADB-HIGH-CPU-ALARM-WARNING = {
       namespace                           = "oci_autonomous_database"
@@ -130,11 +131,57 @@ locals {
     }
     adb-storage-alarm = { # deprecated, use ADB-HIGH-STORAGE-ALARM-WARNING or ADB-HIGH-STORAGE-ALARM-CRITICAL
       namespace                           = "oci_autonomous_database"
-      query                               = "StorageUtilization[1m].mean() > 80"
+      query                               = "StorageUtilization[30m].mean() > 85"
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
       repeat_notification_critical_alarms = "PT4H"
+      freeform_tags                       = { provider = "DBM" }
+    }
+    adb-failed-logins-critical-alarm = {
+      namespace                           = "oci_autonomous_database"
+      query                               = "FailedLogons[5m].mean() > 30"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = "PT4H"
+      freeform_tags                       = { provider = "DBM" }
+    }
+    adb-failed-logins-warning-alarm = {
+      namespace                           = "oci_autonomous_database"
+      query                               = "FailedLogons[5m].mean() > 20"
+      severity                            = "WARNING"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = null
+      freeform_tags                       = { provider = "DBM" }
+    }
+    adb-monitoring-stopped-alarm = {
+      namespace                           = "oci_autonomous_database"
+      query                               = "DatabaseAvailability[10m].absent()"
+      severity                            = "CRITICAL"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT1M"
+      repeat_notification_critical_alarms = "PT4H"
+      freeform_tags                       = { provider = "DBM" }
+    }
+    adb-sessions-warning-alarm = {
+      namespace                           = "oci_autonomous_database"
+      query                               = "Sessions[15m].mean() > 30"
+      severity                            = "WARNING"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = null
+      freeform_tags                       = { provider = "DBM" }
+    }
+    adb-storage-warning-alarm = {
+      namespace                           = "oci_autonomous_database"
+      query                               = "StorageUtilization[30m].mean() > 75"
+      severity                            = "WARNING"
+      message_format                      = "PRETTY_JSON"
+      pending_duration                    = "PT5M"
+      repeat_notification_critical_alarms = null
+      freeform_tags                       = { provider = "DBM" }
     }
     ADB-HIGH-STORAGE-ALARM-WARNING = {
       namespace                           = "oci_autonomous_database"
@@ -357,6 +404,3 @@ locals {
 
 
 }
-
-
-
