@@ -1,4 +1,4 @@
-# Unreleased
+# August XX, 2026 Release Notes - 0.2.7
 
 ## Updates
 1. [Alarms module](./alarms/)
@@ -34,6 +34,9 @@
 3. [Service Connectors module](./service-connectors/)
   - Enhancement: [issue 20](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/20). Added an optional bucket *versioning* attribute so versioning can be enabled while using Oracle managed keys.
 
+4. [Notifications module](./notifications/)
+  - Enhancement: [issue 24](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/24). Announcement subscriptions can now assign a notification topic using its logical key in the *topics* attribute, while continuing to support literal topic OCIDs.
+  - 
 # May 14, 2026 Release Notes - 0.2.6
 
 ## Updates

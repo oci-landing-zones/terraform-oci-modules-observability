@@ -21,7 +21,7 @@ resource "oci_announcements_service_announcement_subscription" "these" {
   for_each            = var.notifications_configuration.announcement_subscriptions != null ? var.notifications_configuration.announcement_subscriptions : {}
   compartment_id      = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.notifications_configuration.default_compartment_id)) > 0 ? var.notifications_configuration.default_compartment_id : var.compartments_dependency[var.notifications_configuration.default_compartment_id].id)
   display_name        = each.value.display_name
-  ons_topic_id        = each.value.notification_topic_id
+  ons_topic_id        = length(regexall("^ocid1.*$", each.value.notification_topic_id)) > 0 ? each.value.notification_topic_id : oci_ons_notification_topic.these[each.value.notification_topic_id].id
   description         = each.value.description
   defined_tags        = merge(each.value.defined_tags, var.notifications_configuration.default_defined_tags)
   freeform_tags       = merge(each.value.freeform_tags, var.notifications_configuration.default_freeform_tags)
