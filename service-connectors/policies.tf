@@ -1,6 +1,6 @@
 locals {
 
-  policy_statements = { for key, sc in var.service_connectors_configuration.service_connectors : key => {
+  policy_statements = { for key, sc in coalesce(var.service_connectors_configuration.service_connectors, {}) : key => {
 
     grants = sc.target.bucket_namespace != null ? [] : lower(sc.target.kind) == local.TARGET_OBJECT_STORAGE ? [
       <<EOF
@@ -99,7 +99,7 @@ locals {
 #--------------------------------------------------
 resource "oci_identity_policy" "these" {
   depends_on = [oci_sch_service_connector.these]
-  for_each   = { for k, v in var.service_connectors_configuration.service_connectors : k => v if v.target.bucket_namespace == null }
+  for_each   = { for k, v in coalesce(var.service_connectors_configuration.service_connectors, {}) : k => v if v.target.bucket_namespace == null }
   lifecycle {
     precondition {
       condition     = contains(local.targets, lower(each.value.target.kind))

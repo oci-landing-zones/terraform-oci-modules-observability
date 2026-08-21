@@ -1,4 +1,4 @@
-# August XX, 2026 Release Notes - 0.2.7
+# August 24, 2026 Release Notes - 0.2.7
 
 ## Updates
 1. [Alarms module](./alarms/)
@@ -32,6 +32,7 @@
   - Deprecation: The *exainfra* preconfigured event type is deprecated. Update configurations to use *database-infra*, which includes the Exadata infrastructure critical event and the new cloud database infrastructure events.
 
 3. [Service Connectors module](./service-connectors/)
+  - Enhancement: [issue 19](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/19). *service_connectors* object made optional, although the primary purpose of this module is not managing standalone buckets, but as targets of a service connector.
   - Enhancement: [issue 20](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/20). Added an optional bucket *versioning* attribute so versioning can be enabled while using Oracle managed keys.
 
 4. [Notifications module](./notifications/)
