@@ -18,6 +18,7 @@
     - *adb-storage-alarm*: *ADB-HIGH-STORAGE-ALARM-WARNING* or *ADB-HIGH-STORAGE-ALARM-CRITICAL*.
     - *vpn-status-alarm*: *NETWORK-VPN-STATUS-ALARM-CRITICAL*.
     - *fast-connect-status-alarm*: *NETWORK-FAST-CONNECT-STATUS-ALARM-CRITICAL*.
+  - These enhancements also cover [issue 23](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/23). 
 
 2. [Events module](./events/)
   - Enhancement: Added the following [preconfigured database events](./events/preconfigured_events.tf):
@@ -30,6 +31,15 @@
     - *com.oraclecloud.databaseservice.exadatainfrastructureconnectstatus*
   - Deprecation: The *exainfra* preconfigured event type is deprecated. Update configurations to use *database-infra*, which includes the Exadata infrastructure critical event and the new cloud database infrastructure events.
 
+3. [Service Connectors module](./service-connectors/)
+  - Enhancement: [issue 20](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/20). Added an optional bucket *versioning* attribute so versioning can be enabled while using Oracle managed keys.
+
+# May 14, 2026 Release Notes - 0.2.6
+
+## Updates
+1. [Logging module](./logging/)
+  - Fix: [issue 29](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/29). the dependency of unrelated compartments to flow log's *target_compartment_ids* attribute has been removed. Note that the use case scenario where a compartment is provisioned along flow logs in the same configuration, and that compartment is referenced in *target_compartment_ids* attribute is not covered. For this scenario, we recommend separate configurations, as in the same run Terraform cannot lookup vcns/subnets/vnics in compartments that only exist after the apply.
+  
 # February 20, 2026 Release Notes - 0.2.5
 
 ## Updates

@@ -30,13 +30,13 @@ resource "oci_objectstorage_bucket" "these" {
   name           = each.value.name
   namespace      = data.oci_objectstorage_namespace.this[0].namespace
   kms_key_id     = each.value.kms_key_id != null ? (length(regexall("^ocid1.*$", each.value.kms_key_id)) > 0 ? each.value.kms_key_id : var.kms_dependency[each.value.kms_key_id].id) : null
-  versioning     = coalesce(each.value.cis_level, "1") == "2" ? "Enabled" : "Disabled"
+  versioning     = coalesce(each.value.versioning, coalesce(each.value.cis_level, "1") == "2" ? "Enabled" : "Disabled")
   defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
   freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_freeform_tags)
 
   storage_tier = each.value.storage_tier
   dynamic "retention_rules" {
-    for_each = coalesce(each.value.cis_level, "1") == "2" ? {} : (each.value.retention_rules != null ? each.value.retention_rules : {}) # cannot add retention rules to a bucket that has versioning enabled
+    for_each = coalesce(each.value.versioning, coalesce(each.value.cis_level, "1") == "2" ? "Enabled" : "Disabled") == "Enabled" ? {} : (each.value.retention_rules != null ? each.value.retention_rules : {}) # cannot add retention rules to a bucket that has versioning enabled
     iterator = ls
     content {
       display_name = ls.value.display_name
