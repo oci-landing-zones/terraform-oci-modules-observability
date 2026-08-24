@@ -26,6 +26,8 @@ locals {
 
   data_element_attributes = ["compartmentId", "compartmentName", "resourceName", "resourceId", "availabilityDomain"]
 
+  preconfigured_event_categories = { for rule_key, rule in var.events_configuration["event_rules"] : rule_key => toset([for category in(rule.preconfigured_events_categories != null ? rule.preconfigured_events_categories : []) : lower(category)]) }
+
   filters = { for key, rule in var.events_configuration["event_rules"] : key => merge(rule.tags_filter != null ? { for tag_filter in rule.tags_filter : "definedTags" => { (tag_filter.namespace) : { for tag in tag_filter.tags : (tag.name) => tag.value } } } : {},
     rule.attributes_filter != null ? { for attr_filter in rule.attributes_filter : attr_filter.attr => attr_filter.value if contains(local.data_element_attributes, attr_filter.attr) } : {},
     rule.attributes_filter != null ? { for attr_filter in rule.attributes_filter : "additionalDetails" => { (attr_filter.attr) : attr_filter.value } if !contains(local.data_element_attributes, attr_filter.attr) } : {})
@@ -70,8 +72,8 @@ resource "oci_events_rule" "these" {
   lifecycle {
     precondition {
       #-- This precondition checks if values in preconfigured_events_categories attributes are valid.
-      condition     = each.value.preconfigured_events_categories != null ? length(setintersection(keys(local.preconfigured_events), [for category in each.value.preconfigured_events_categories : lower(category)])) == length([for category in each.value.preconfigured_events_categories : lower(category)]) : true
-      error_message = "VALIDATION FAILURE in event \"${each.key}\": \"${each.value.preconfigured_events_categories != null ? join(",", setsubtract([for category in each.value.preconfigured_events_categories : lower(category)], keys(local.preconfigured_events))) : ""}\" value is invalid for \"preconfigured_events_categories\" attribute. Valid values are ${join(", ", keys(local.preconfigured_events))} (case insensitive)."
+      condition     = each.value.preconfigured_events_categories != null ? alltrue([for category in local.preconfigured_event_categories[each.key] : contains(keys(local.preconfigured_events), category)]) : true
+      error_message = "VALIDATION FAILURE in event \"${each.key}\": \"${each.value.preconfigured_events_categories != null ? join(",", setsubtract(local.preconfigured_event_categories[each.key], keys(local.preconfigured_events))) : ""}\" value is invalid for \"preconfigured_events_categories\" attribute. Valid values are ${join(", ", keys(local.preconfigured_events))} (case insensitive)."
     }
     precondition {
       condition     = var.tenancy_ocid == null && each.value.compartment_id != null && upper(coalesce(each.value.compartment_id, "__void__")) == local.tenancy_root_key ? false : true
@@ -86,7 +88,7 @@ resource "oci_events_rule" "these" {
   compartment_id = each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == "TENANCY-ROOT" ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.events_configuration.default_compartment_id)) > 0 ? var.events_configuration.default_compartment_id : (upper(var.events_configuration.default_compartment_id) == "TENANCY-ROOT" ? var.tenancy_ocid : var.compartments_dependency[var.events_configuration.default_compartment_id].id))
   display_name   = each.value.event_display_name
   description    = each.value.event_description != null ? each.value.event_description : each.value.event_display_name
-  condition      = each.value.supplied_events != null ? jsonencode({ "eventType" : each.value.supplied_events, "data" : local.filters[each.key] }) : jsonencode({ "eventType" : flatten(concat([for category in each.value.preconfigured_events_categories : local.preconfigured_events[lower(category)].conditions])), "data" : local.filters[each.key] })
+  condition      = each.value.supplied_events != null ? jsonencode({ "eventType" : each.value.supplied_events, "data" : local.filters[each.key] }) : jsonencode({ "eventType" : flatten(concat([for category in local.preconfigured_event_categories[each.key] : local.preconfigured_events[category].conditions])), "data" : local.filters[each.key] })
   is_enabled     = each.value.is_enabled != null ? each.value.is_enabled : true
   defined_tags   = each.value.defined_tags != null ? each.value.defined_tags : var.events_configuration.default_defined_tags
   freeform_tags  = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.events_configuration.default_freeform_tags)
