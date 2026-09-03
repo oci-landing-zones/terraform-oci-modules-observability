@@ -56,6 +56,7 @@ In this module, notifications are defined using the *notifications_configuration
 - **default_defined_tags**: the default defined tags that are applied to all resources managed by this module. It can be overriden by *defined_tags* attribute in each resource.
 - **default_freeform_tags**: the default freeform tags that are applied to all resources managed by this module. It can be overriden by *freeform_tags* attribute in each resource.
 - **topics**: define the notification topics and associated subscriptions. 
+- **announcement_subscriptions**: define announcement subscriptions. The *notification_topic_id* attribute can be either a topic OCID or a reference (a key) to a topic in the *topics* attribute.
 
 ## Defining Notification Topics and Subscriptions
 

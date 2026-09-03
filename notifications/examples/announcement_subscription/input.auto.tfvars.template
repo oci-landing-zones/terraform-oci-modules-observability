@@ -5,7 +5,6 @@
 # 1. Rename this file to <project-name>.auto.tfvars, where <project-name> is a name of your choice.
 # 2. Provide values for "Tenancy Connectivity Variables".
 # 3. Replace <COMPARTMENT-ID> placeholder with the OCID of the compartment the resource will be placed in.
-# 4. Replace <TOPIC-ID> placeholder with the OCID of the notification topic the announcement will be attached to.
 #-------------------------------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------
@@ -28,10 +27,16 @@ notifications_configuration = {
   #default_defined_tags   = null
   #default_freeform_tags  = null
 
+  topics = {
+    ANNOUNCEMENT-SUBSCRIPTION-TOPIC-KEY = {
+      name = "announcement-subscription-topic"
+    }
+  }
+
   announcement_subscriptions = {
     ANNOUNCEMENT-SUBSCRIPTION-TEST = {
-      display_name = "announcement-test"
-      notification_topic_id = "<TOPIC-ID>"
+      display_name          = "announcement-test"
+      notification_topic_id = "ANNOUNCEMENT-SUBSCRIPTION-TOPIC-KEY"
       filter_groups = {
         TEST-FILTER-GROUP = {
           name         = "test-filter-group"

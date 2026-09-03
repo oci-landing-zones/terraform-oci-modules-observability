@@ -22,7 +22,7 @@
 #--- 1. oci_sch_service_connector
 #--------------------------------------------------
 resource "oci_sch_service_connector" "these" {
-  for_each = var.service_connectors_configuration.service_connectors
+  for_each = coalesce(var.service_connectors_configuration.service_connectors,{})
   lifecycle {
     precondition {
       condition     = contains(local.sources, lower(each.value.source.kind))

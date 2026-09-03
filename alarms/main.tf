@@ -5,6 +5,8 @@ locals {
 
   tenancy_root_key = "TENANCY-ROOT"
 
+  preconfigured_alarms_by_type = { for alarm_type, alarm in local.preconfigured_alarms : lower(alarm_type) => alarm }
+
   subscriptions = flatten([
     for topic_key, topic in(var.alarms_configuration["topics"] != null ? var.alarms_configuration["topics"] : {}) : [
       for subs in(topic["subscriptions"] != null ? topic["subscriptions"] : []) : [
@@ -31,7 +33,7 @@ resource "oci_monitoring_alarm" "these" {
   for_each = var.alarms_configuration["alarms"]
   lifecycle {
     precondition {
-      condition     = each.value.preconfigured_alarm_type != null ? contains(keys(local.preconfigured_alarms), each.value.preconfigured_alarm_type) : true
+      condition     = each.value.preconfigured_alarm_type != null ? contains(keys(local.preconfigured_alarms_by_type), lower(each.value.preconfigured_alarm_type)) : true
       error_message = "VALIDATION FAILURE in alarm \"${each.key}\": invalid \"preconfigured_alarm_type\" ${coalesce(each.value.preconfigured_alarm_type, "__void__")}. Valid values are: ${join(", ", keys(local.preconfigured_alarms))}  (case insensitive)."
     }
     precondition {
@@ -51,14 +53,18 @@ resource "oci_monitoring_alarm" "these" {
   display_name                 = each.value.display_name
   is_enabled                   = each.value.is_enabled != null ? each.value.is_enabled : true
   metric_compartment_id        = each.value.supplied_alarm != null ? (each.value.supplied_alarm.metric_compartment_id != null ? (length(regexall("^ocid1.*$", each.value.supplied_alarm.metric_compartment_id)) > 0 ? each.value.supplied_alarm.metric_compartment_id : (upper(each.value.supplied_alarm.metric_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.supplied_alarm.metric_compartment_id].id)) : (each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.alarms_configuration.default_compartment_id)) > 0 ? var.alarms_configuration.default_compartment_id : (upper(var.alarms_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.alarms_configuration.default_compartment_id].id)))) : (each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.alarms_configuration.default_compartment_id)) > 0 ? var.alarms_configuration.default_compartment_id : (upper(var.alarms_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.alarms_configuration.default_compartment_id].id)))
-  namespace                    = each.value.supplied_alarm != null ? each.value.supplied_alarm.namespace : local.preconfigured_alarms[each.value.preconfigured_alarm_type].namespace
-  query                        = each.value.supplied_alarm != null ? each.value.supplied_alarm.query : local.preconfigured_alarms[each.value.preconfigured_alarm_type].query
-  severity                     = each.value.supplied_alarm != null ? each.value.supplied_alarm.severity != null ? each.value.supplied_alarm.severity : "CRITICAL" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].severity
-  pending_duration             = each.value.supplied_alarm != null ? each.value.supplied_alarm.pending_duration != null ? each.value.supplied_alarm.pending_duration : "PT5M" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].pending_duration
-  message_format               = each.value.supplied_alarm != null ? each.value.supplied_alarm.message_format != null ? each.value.supplied_alarm.message_format : "PRETTY_JSON" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].message_format
-  repeat_notification_duration = each.value.supplied_alarm != null ? each.value.supplied_alarm.severity != null ? (each.value.supplied_alarm.severity == "CRITICAL" ? (each.value.supplied_alarm.repeat_notification_critical_alarms != null ? each.value.supplied_alarm.repeat_notification_critical_alarms : "PT4H") : each.value.supplied_alarm.repeat_notification_critical_alarms) : "PT4H" : local.preconfigured_alarms[each.value.preconfigured_alarm_type].repeat_notification_critical_alarms
+  namespace                    = each.value.supplied_alarm != null ? each.value.supplied_alarm.namespace : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].namespace
+  query                        = each.value.supplied_alarm != null ? each.value.supplied_alarm.query : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].query
+  severity                     = each.value.supplied_alarm != null ? each.value.supplied_alarm.severity != null ? each.value.supplied_alarm.severity : "CRITICAL" : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].severity
+  pending_duration             = each.value.supplied_alarm != null ? each.value.supplied_alarm.pending_duration != null ? each.value.supplied_alarm.pending_duration : "PT5M" : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].pending_duration
+  message_format               = each.value.supplied_alarm != null ? each.value.supplied_alarm.message_format != null ? each.value.supplied_alarm.message_format : "PRETTY_JSON" : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].message_format
+  repeat_notification_duration = each.value.supplied_alarm != null ? each.value.supplied_alarm.severity != null ? (each.value.supplied_alarm.severity == "CRITICAL" ? (each.value.supplied_alarm.repeat_notification_critical_alarms != null ? each.value.supplied_alarm.repeat_notification_critical_alarms : "PT4H") : each.value.supplied_alarm.repeat_notification_critical_alarms) : "PT4H" : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].repeat_notification_critical_alarms
   defined_tags                 = each.value.defined_tags != null ? each.value.defined_tags : var.alarms_configuration.default_defined_tags
-  freeform_tags                = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags)
+  freeform_tags = merge(
+    local.cislz_module_tag,
+    each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags,
+    each.value.supplied_alarm == null ? try(local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].freeform_tags, {}) : {}
+  )
 }
 
 resource "oci_ons_notification_topic" "these" {
@@ -131,4 +137,3 @@ resource "oci_streaming_stream" "these" {
   defined_tags       = each.value.defined_tags != null ? each.value.defined_tags : var.alarms_configuration.default_defined_tags
   freeform_tags      = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.alarms_configuration.default_freeform_tags)
 }
-
