@@ -204,7 +204,7 @@ An optional feature, external dependencies are resources managed elsewhere that 
    ```
    Avoid this error by first checking in your Oracle Cloud Console if Logging Analytics has been enabled. If it has been enabled, set the `onboard_logging_analytics` variable to `false`.
 
-2. Discovery through *bucket_logs* and *flow_logs* requires the target compartments and resources to exist before planning. Create new targets in an earlier apply. Existing flow-log targets can be discovered while compartment tag-default changes are pending. If target OCIDs or discovered resource collections are unknown until apply, Terraform plan can fail with errors such as:
+2. Compartment-wide discovery through *bucket_logs* and *flow_logs* uses OCI query results to determine log instance keys. If target compartment OCIDs or discovered resource collections are unknown during planning, Terraform cannot determine those keys and can fail with errors such as the following. This restriction does not apply to explicit *service_logs*: fixed log keys and target resource IDs supplied as values allow logs and their targets to be created in the same apply. Existing flow-log targets can be discovered while compartment tag-default changes are pending.
     ```
     Error: Invalid for_each argument
 
