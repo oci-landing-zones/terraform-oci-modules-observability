@@ -1,3 +1,10 @@
+# Unreleased - 0.2.8
+
+## Updates
+
+1. [Logging module](./logging/)
+  - Fix: [issue 31](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/31). Flow-log discovery in existing compartments no longer fails planning when compartment tag defaults have pending changes. Subnet, VNIC and NLB discovery use the compartment lookup result directly instead of redundant data-source preconditions. This fixes compartment-wide discovery; explicit `service_logs` creation is unchanged. The pre-existing limitation on discovering resources whose IDs or query results are unknown during planning remains.
+
 # August 24, 2026 Release Notes - 0.2.7
 
 ## Updates

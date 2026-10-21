@@ -145,14 +145,8 @@ data "oci_identity_compartment" "these" {
 }
 
 data "oci_core_subnets" "these" {
-  for_each = local.subnet_flow_logs_compartments
-  lifecycle {
-    precondition {
-      condition     = contains(keys(data.oci_identity_compartment.these), each.key)
-      error_message = "VALIDATION FAILURE: compartment id \"${each.value}\" not found."
-    }
-  }
-  compartment_id = each.value
+  for_each       = local.subnet_flow_logs_compartments
+  compartment_id = data.oci_identity_compartment.these[each.key].id
 }
 
 data "oci_core_vcns" "these" {
@@ -161,14 +155,8 @@ data "oci_core_vcns" "these" {
 }
 
 data "oci_core_vnic_attachments" "these" {
-  for_each = local.vnic_flow_logs_compartments
-  lifecycle {
-    precondition {
-      condition     = contains(keys(data.oci_identity_compartment.these), each.key)
-      error_message = "VALIDATION FAILURE: compartment id \"${each.value}\" not found."
-    }
-  }
-  compartment_id = each.value
+  for_each       = local.vnic_flow_logs_compartments
+  compartment_id = data.oci_identity_compartment.these[each.key].id
 }
 
 data "oci_core_vnic" "these" {
@@ -177,14 +165,8 @@ data "oci_core_vnic" "these" {
 }
 
 data "oci_network_load_balancer_network_load_balancers" "these" {
-  for_each = local.vnic_flow_logs_compartments
-  lifecycle {
-    precondition {
-      condition     = contains(keys(data.oci_identity_compartment.these), each.key)
-      error_message = "VALIDATION FAILURE: compartment id \"${each.value}\" not found."
-    }
-  }
-  compartment_id = each.value
+  for_each       = local.vnic_flow_logs_compartments
+  compartment_id = data.oci_identity_compartment.these[each.key].id
 }
 
 data "oci_core_private_ips" "nlbs" {
