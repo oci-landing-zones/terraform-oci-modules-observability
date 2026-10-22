@@ -114,7 +114,7 @@ Each entry in `alarms` accepts the following optional settings for both supplied
 | `overrides` | Ordered list of evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. |
 | `suppression` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. |
 
-Omitting these settings preserves provider defaults. `overrides` defaults to an empty list; `suppression` defaults to null. To remove a suppression window, omit it or set it to null.
+For new alarms, omitted settings use provider defaults. `overrides` defaults to an empty list; `suppression` defaults to null. The OCI provider treats both nested blocks as optional and computed, so omitting them or setting them to null does not clear existing remote overrides or suppression. To end a suppression, update its end time or remove it through OCI Monitoring and refresh Terraform state.
 
 For example, add the following attributes alongside an alarm's `display_name` and `supplied_alarm` or `preconfigured_alarm_type`:
 
