@@ -1,3 +1,11 @@
+# Unreleased - 0.3.0
+
+## Updates
+
+1. [Alarms module](./alarms/): [issue 13](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/13). Supplied and preconfigured alarms now accept optional summaries, notification bodies, evaluation slack, notifications per metric dimension, subtree metric evaluation, ordered overrides and suppression windows. Existing alarm keys, destinations and defaults are unchanged when the new settings are omitted.
+
+2. The Alarms module requires OCI Terraform Provider 6.8.0 or later for the added alarm arguments and nested blocks. Configurations locked to an older provider must run `terraform init -upgrade` and review the plan before applying. No configuration or state migration is required for alarms that omit the new settings.
+
 # August 24, 2026 Release Notes - 0.2.7
 
 ## Updates

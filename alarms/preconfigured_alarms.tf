@@ -277,7 +277,7 @@ locals {
       severity                            = "CRITICAL"
       message_format                      = "PRETTY_JSON"
       pending_duration                    = "PT5M"
-      repeat_notification_critical_alarms = "PT4H"  
+      repeat_notification_critical_alarms = "PT4H"
     }
     # Database Alarms - apply to cloud databases in general, including Exadata Cloud@Customer.
     DATABASE-CLUSTER-HIGH-CPU-ALARM-WARNING = {
