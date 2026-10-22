@@ -19,10 +19,6 @@ Check the [examples](./examples/) folder for actual module usage.
 
 This module requires Terraform binary version 1.3.0 or greater, as it relies on Optional Object Type Attributes feature. The feature shortens the amount of input values in complex object types, by having Terraform automatically inserting a default value for any missing optional attributes.
 
-### OCI Terraform Provider >= 6.8.0
-
-Alarm summaries, evaluation slack and overrides require OCI Terraform Provider 6.8.0 or later. If the provider is locked to an older version, run `terraform init -upgrade` and review the plan before applying.
-
 ### IAM Permissions
 
 This module requires the following OCI IAM permissions in the compartments where alarms, topics, and streams are defined. 
@@ -104,17 +100,15 @@ Check [preconfigured_alarms.tf file](./preconfigured_alarms.tf) as examples on h
 
 Each entry in `alarms` accepts the following optional settings for both supplied and preconfigured alarms:
 
-| Setting | Purpose |
-|---------|---------|
-| `alarm_summary` | Customize the summary included in alarm messages. |
-| `body` | Provide notification text, such as a runbook reference. |
-| `evaluation_slack_duration` | Wait for metric ingestion before evaluation, from `PT3M` to `PT2H`. |
-| `is_notifications_per_metric_dimension_enabled` | Send a separate notification for each metric stream when true. |
-| `metric_compartment_id_in_subtree` | Include child compartments when true; requires the tenancy OCID as the metric compartment and tenancy-level metric permissions. |
-| `overrides` | Ordered list of evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. |
-| `suppression` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. |
-
-For new alarms, omitted settings use provider defaults. `overrides` defaults to an empty list; `suppression` defaults to null. The OCI provider treats both nested blocks as optional and computed, so omitting them or setting them to null does not clear existing remote overrides or suppression. To end a suppression, update its end time or remove it through OCI Monitoring and refresh Terraform state.
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `alarm_summary` | string | `null` | Customize the summary included in alarm messages. |
+| `body` | string | `null` | Provide notification text, such as a runbook reference. |
+| `evaluation_slack_duration` | string | `null` (OCI: `PT3M`) | Wait for metric ingestion before evaluation, from `PT3M` to `PT2H`. |
+| `is_notifications_per_metric_dimension_enabled` | bool | `null` (OCI: `false`) | Send a separate notification for each metric stream when true. |
+| `metric_compartment_id_in_subtree` | bool | `null` (OCI: `false`) | Include child compartments when true. For supplied alarms, `supplied_alarm.metric_compartment_id` accepts `TENANCY-ROOT` (requires `tenancy_ocid`), a literal tenancy OCID, or a key in `compartments_dependency` that resolves to the tenancy OCID. Requires tenancy-level metric permissions. |
+| `overrides` | list(object) | `[]` | Ordered evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. The provider treats this block as optional and computed; omission or null retains existing remote overrides. |
+| `suppression` | object | `null` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. The provider treats this block as optional and computed; omission or null retains an existing remote suppression. To end it, update its end time or remove it through OCI Monitoring and refresh Terraform state. |
 
 For example, add the following attributes alongside an alarm's `display_name` and `supplied_alarm` or `preconfigured_alarm_type`:
 
