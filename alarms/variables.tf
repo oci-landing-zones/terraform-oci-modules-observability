@@ -15,11 +15,28 @@ variable "alarms_configuration" {
     default_defined_tags   = optional(map(string)), # the default defined tags. It's overriden by the defined_tags attribute within each object.
     default_freeform_tags  = optional(map(string)), # the default freeform tags. It's overriden by the frreform_tags attribute within each object.
 
-    alarms = map(object({                         # the alarms to manage in this configuration.
-      compartment_id           = optional(string) # the compartment where the alarm is created. default_compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
-      display_name             = string           # the alarm name.
-      is_enabled               = optional(bool)   # if the alarm is enabled. Default is true.
-      preconfigured_alarm_type = optional(string) # use a preconfigured alarm.
+    alarms = map(object({                                              # the alarms to manage in this configuration.
+      compartment_id                                = optional(string) # the compartment where the alarm is created. default_compartment_id is used if undefined. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+      display_name                                  = string           # the alarm name.
+      is_enabled                                    = optional(bool)   # if the alarm is enabled. Default is true.
+      preconfigured_alarm_type                      = optional(string) # use a preconfigured alarm.
+      alarm_summary                                 = optional(string)
+      body                                          = optional(string)
+      evaluation_slack_duration                     = optional(string)
+      is_notifications_per_metric_dimension_enabled = optional(bool)
+      metric_compartment_id_in_subtree              = optional(bool)
+      overrides = optional(list(object({
+        body             = optional(string)
+        pending_duration = optional(string)
+        query            = optional(string)
+        rule_name        = optional(string)
+        severity         = optional(string)
+      })), [])
+      suppression = optional(object({
+        time_suppress_from  = string
+        time_suppress_until = string
+        description         = optional(string)
+      }))
       supplied_alarm = optional(object({
         query                               = string           # specify the query for the alarm. can't use the preconfigured_alarm_type attribute if this is set.
         namespace                           = string           # specify the namespace for the query. can't use the preconfigured_alarm_type attribute if this is set.

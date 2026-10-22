@@ -19,6 +19,10 @@ Check the [examples](./examples/) folder for actual module usage.
 
 This module requires Terraform binary version 1.3.0 or greater, as it relies on Optional Object Type Attributes feature. The feature shortens the amount of input values in complex object types, by having Terraform automatically inserting a default value for any missing optional attributes.
 
+### OCI Terraform Provider >= 6.8.0
+
+Alarm summaries, evaluation slack and overrides require OCI Terraform Provider 6.8.0 or later. If the provider is locked to an older version, run `terraform init -upgrade` and review the plan before applying.
+
 ### IAM Permissions
 
 This module requires the following OCI IAM permissions in the compartments where alarms, topics, and streams are defined. 
@@ -95,6 +99,37 @@ Within the *alarms* attribute, the alarms to trigger can be defined in two ways:
 Check [preconfigured_alarms.tf file](./preconfigured_alarms.tf) as examples on how to define these attributes and [Overview of Monitoring](https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm) for details on OCI Monitoring service.
 
 **Note**: *supplied_alarm* takes precedence over *preconfigured_alarm_type*.
+
+### Optional Alarm Settings
+
+Each entry in `alarms` accepts the following optional settings for both supplied and preconfigured alarms:
+
+| Setting | Purpose |
+|---------|---------|
+| `alarm_summary` | Customize the summary included in alarm messages. |
+| `body` | Provide notification text, such as a runbook reference. |
+| `evaluation_slack_duration` | Wait for metric ingestion before evaluation, from `PT3M` to `PT2H`. |
+| `is_notifications_per_metric_dimension_enabled` | Send a separate notification for each metric stream when true. |
+| `metric_compartment_id_in_subtree` | Include child compartments when true; requires the tenancy OCID as the metric compartment and tenancy-level metric permissions. |
+| `overrides` | Ordered list of evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. |
+| `suppression` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. |
+
+Omitting these settings preserves provider defaults. `overrides` defaults to an empty list; `suppression` defaults to null. To remove a suppression window, omit it or set it to null.
+
+For example, add the following attributes alongside an alarm's `display_name` and `supplied_alarm` or `preconfigured_alarm_type`:
+
+```hcl
+body                      = "Check the application runbook."
+evaluation_slack_duration = "PT5M"
+overrides = [
+  {
+    rule_name        = "CriticalCPU"
+    query            = "CpuUtilization[1m].mean() > 95"
+    severity         = "CRITICAL"
+    pending_duration = "PT2M"
+  }
+]
+```
 
 ### Naming Alarms
 

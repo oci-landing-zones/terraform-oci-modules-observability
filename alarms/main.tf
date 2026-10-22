@@ -50,8 +50,34 @@ resource "oci_monitoring_alarm" "these" {
     each.value.destination_topic_ids != null ? ([for id in each.value.destination_topic_ids : length(regexall("^ocid1.*$", id)) > 0 ? id : contains(keys(oci_ons_notification_topic.these), id) ? oci_ons_notification_topic.these[id].id : var.topics_dependency[id].id]) : [],
     each.value.destination_stream_ids != null ? ([for id in each.value.destination_stream_ids : length(regexall("^ocid1.*$", id)) > 0 ? id : contains(keys(oci_streaming_stream.these), id) ? oci_streaming_stream.these[id].id : var.streams_dependency[id].id]) : []
   ) : null
-  display_name                 = each.value.display_name
-  is_enabled                   = each.value.is_enabled != null ? each.value.is_enabled : true
+  display_name                                  = each.value.display_name
+  is_enabled                                    = each.value.is_enabled != null ? each.value.is_enabled : true
+  alarm_summary                                 = each.value.alarm_summary
+  body                                          = each.value.body
+  evaluation_slack_duration                     = each.value.evaluation_slack_duration
+  is_notifications_per_metric_dimension_enabled = each.value.is_notifications_per_metric_dimension_enabled
+  metric_compartment_id_in_subtree              = each.value.metric_compartment_id_in_subtree
+
+  dynamic "overrides" {
+    for_each = each.value.overrides
+    content {
+      body             = overrides.value.body
+      pending_duration = overrides.value.pending_duration
+      query            = overrides.value.query
+      rule_name        = overrides.value.rule_name
+      severity         = overrides.value.severity
+    }
+  }
+
+  dynamic "suppression" {
+    for_each = each.value.suppression[*]
+    content {
+      time_suppress_from  = suppression.value.time_suppress_from
+      time_suppress_until = suppression.value.time_suppress_until
+      description         = suppression.value.description
+    }
+  }
+
   metric_compartment_id        = each.value.supplied_alarm != null ? (each.value.supplied_alarm.metric_compartment_id != null ? (length(regexall("^ocid1.*$", each.value.supplied_alarm.metric_compartment_id)) > 0 ? each.value.supplied_alarm.metric_compartment_id : (upper(each.value.supplied_alarm.metric_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.supplied_alarm.metric_compartment_id].id)) : (each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.alarms_configuration.default_compartment_id)) > 0 ? var.alarms_configuration.default_compartment_id : (upper(var.alarms_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.alarms_configuration.default_compartment_id].id)))) : (each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : (upper(each.value.compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[each.value.compartment_id].id)) : (length(regexall("^ocid1.*$", var.alarms_configuration.default_compartment_id)) > 0 ? var.alarms_configuration.default_compartment_id : (upper(var.alarms_configuration.default_compartment_id) == local.tenancy_root_key ? var.tenancy_ocid : var.compartments_dependency[var.alarms_configuration.default_compartment_id].id)))
   namespace                    = each.value.supplied_alarm != null ? each.value.supplied_alarm.namespace : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].namespace
   query                        = each.value.supplied_alarm != null ? each.value.supplied_alarm.query : local.preconfigured_alarms_by_type[lower(each.value.preconfigured_alarm_type)].query
