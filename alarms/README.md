@@ -106,7 +106,7 @@ Each entry in `alarms` accepts the following optional settings for both supplied
 | `body` | string | `null` | Provide notification text, such as a runbook reference. |
 | `evaluation_slack_duration` | string | `null` (OCI: `PT3M`) | Wait for metric ingestion before evaluation, from `PT3M` to `PT2H`. |
 | `is_notifications_per_metric_dimension_enabled` | bool | `null` (OCI: `false`) | Send a separate notification for each metric stream when true. |
-| `metric_compartment_id_in_subtree` | bool | `null` (OCI: `false`) | Include child compartments when true. For supplied alarms, `supplied_alarm.metric_compartment_id` accepts `TENANCY-ROOT` (requires `tenancy_ocid`), a literal tenancy OCID, or a key in `compartments_dependency` that resolves to the tenancy OCID. Requires tenancy-level metric permissions. |
+| `metric_compartment_id_in_subtree` | bool | `null` (OCI: `false`) | Include child compartments when true; the metric compartment must be the tenancy root. Requires tenancy-level metric permissions. |
 | `overrides` | list(object) | `[]` | Ordered evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. The provider treats this block as optional and computed; omission or null retains existing remote overrides. |
 | `suppression` | object | `null` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. The provider treats this block as optional and computed; omission or null retains an existing remote suppression. To end it, update its end time or remove it through OCI Monitoring and refresh Terraform state. |
 
