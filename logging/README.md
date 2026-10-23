@@ -151,6 +151,23 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
 
+### <a name="logging-analytics-custom-content">Logging Analytics Custom Content</a>
+
+Set *logging_configuration.logging_analytics_custom_content* to import ZIP files exported from Logging Analytics. Each map entry has a required *import_custom_content_file* path and an optional *is_overwrite* flag, which defaults to false. Paths resolve from Terraform's working directory. The tenancy must already be onboarded to Logging Analytics, or *onboard_logging_analytics* must be true.
+
+```hcl
+logging_analytics_custom_content = {
+  STREAM_LOGS = {
+    import_custom_content_file = "${path.root}/content/stream-logs-v1.zip"
+    is_overwrite               = false
+  }
+}
+```
+
+The archive can include custom sources, parsers and fields. The deploying identity needs permission to import those objects in the Logging Analytics namespace. Import the content before creating a service connector that refers to its source name; separate module calls can use Terraform's *depends_on* to establish this ordering.
+
+The provider imports content once. Editing a ZIP at the same path does not trigger another import; use a new versioned path or explicitly replace the import resource. Setting *is_overwrite* to true permits replacement of conflicting namespace content, including content managed elsewhere. Terraform destroy removes the import operation from state but does not delete imported sources, parsers or fields, and the provider does not detect changes to them. Remove unwanted content through Logging Analytics after checking its consumers.
+
 ### <a name="services">Services Integrated with the Logging Services and their Categories</a>
 
 As of Oct/2023, these are the OCI services that are integrated with the Logging service. Use this as reference to fill in *service* and *category* attributes when creating logs using the *service_log* attribute.

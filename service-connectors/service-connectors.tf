@@ -22,8 +22,12 @@
 #--- 1. oci_sch_service_connector
 #--------------------------------------------------
 resource "oci_sch_service_connector" "these" {
-  for_each = coalesce(var.service_connectors_configuration.service_connectors,{})
+  for_each = coalesce(var.service_connectors_configuration.service_connectors, {})
   lifecycle {
+    precondition {
+      condition     = lower(each.value.source.kind) != local.SOURCE_STREAMING || lower(each.value.target.kind) != local.TARGET_LOGGING_ANALYTICS || try(trimspace(each.value.target.log_source_identifier) != "", false)
+      error_message = "Streaming to Logging Analytics requires target.log_source_identifier in service connector ${each.key}."
+    }
     precondition {
       condition     = contains(local.sources, lower(each.value.source.kind))
       error_message = "VALIDATION FAILURE : \"${each.value.source.kind}\" value is invalid for \"source kind\" attribute in \"${each.key}\" service connector. Valid values are ${join(", ", local.sources)} (case insensitive)."
@@ -70,7 +74,7 @@ resource "oci_sch_service_connector" "these" {
         log_id         = ls.value.log_id != null ? (length(regexall("^ocid1.*$", ls.value.log_id)) > 0 ? ls.value.log_id : var.logs_dependency[ls.value.log_id].id) : ""
       }
     }
-    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : var.streams_dependency[each.value.source.stream_id].id) : null
+    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : (contains(keys(oci_streaming_stream.these), each.value.source.stream_id) ? oci_streaming_stream.these[each.value.source.stream_id].id : var.streams_dependency[each.value.source.stream_id].id)) : null
     dynamic "monitoring_sources" {
       for_each = lower(each.value.source.kind) == local.SOURCE_MONITORING ? each.value.source.monitoring != null ? toset(each.value.source.monitoring) : [] : []
       iterator = ms
@@ -110,6 +114,7 @@ resource "oci_sch_service_connector" "these" {
     topic_id                   = lower(each.value.target.kind) == local.TARGET_NOTIFICATIONS ? (each.value.target.topic_id != null ? (length(regexall("^ocid1.*$", each.value.target.topic_id)) > 0 ? each.value.target.topic_id : (contains(keys(oci_ons_notification_topic.these), each.value.target.topic_id) ? oci_ons_notification_topic.these[each.value.target.topic_id].id : var.topics_dependency[each.value.target.topic_id].id)) : null) : null
     function_id                = lower(each.value.target.kind) == local.TARGET_FUNCTIONS ? (each.value.target.function_id != null ? (length(regexall("^ocid1.*$", each.value.target.function_id)) > 0 ? each.value.target.function_id : var.functions_dependency[each.value.target.function_id].id) : null) : null
     log_group_id               = lower(each.value.target.kind) == local.TARGET_LOGGING_ANALYTICS ? (each.value.target.log_group_id != null ? (length(regexall("^ocid1.*$", each.value.target.log_group_id)) > 0 ? each.value.target.log_group_id : var.logs_dependency[each.value.target.log_group_id].id) : null) : null
+    log_source_identifier      = lower(each.value.source.kind) == local.SOURCE_STREAMING && lower(each.value.target.kind) == local.TARGET_LOGGING_ANALYTICS ? each.value.target.log_source_identifier : null
 
     dynamic "dimensions" {
       for_each = lower(each.value.target.kind) == local.TARGET_MONITORING ? each.value.target.dimensions != null ? toset(each.value.target.dimensions) : [] : []
