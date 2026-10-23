@@ -15,7 +15,7 @@ locals {
 resource "oci_identity_policy" "stream_sources" {
   for_each       = local.stream_source_compartments
   provider       = oci.home
-  name           = "service-connector-${each.key}-stream-source-policy"
+  name           = "service-connector-${substr(sha256(oci_sch_service_connector.these[each.key].id), 0, 32)}-stream-source-policy"
   description    = "Allow the service connector to consume its source stream."
   compartment_id = startswith(each.value, "ocid1.") ? each.value : var.compartments_dependency[each.value].id
   statements = [<<EOF
