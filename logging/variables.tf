@@ -15,6 +15,10 @@ variable "logging_configuration" {
     default_defined_tags      = optional(map(string)),
     default_freeform_tags     = optional(map(string)),
     onboard_logging_analytics = optional(bool),
+    logging_analytics_custom_content = optional(map(object({
+      import_custom_content_file = string
+      is_overwrite               = optional(bool, false)
+    })), {})
     log_groups = optional(map(object({
       type           = optional(string)
       compartment_id = optional(string)
