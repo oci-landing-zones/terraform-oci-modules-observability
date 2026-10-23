@@ -164,7 +164,7 @@ logging_analytics_custom_content = {
 }
 ```
 
-The deploying identity needs namespace import permissions. Import before creating connectors that use the source; use *depends_on* between module calls. *is_overwrite* defaults to false; true can replace conflicting namespace content managed elsewhere. The provider neither detects content drift nor deletes imported objects on destroy. Same-path ZIP edits do not reimport: use a versioned path or replace the import resource. Remove unused content through Logging Analytics after checking its consumers.
+The deploying identity needs namespace import permissions. Import before creating connectors that use the source. *is_overwrite* defaults to false; true can replace conflicting namespace content managed elsewhere. The provider neither detects content drift nor deletes imported objects on destroy. Same-path ZIP edits do not reimport: use a versioned path or replace the import resource. Remove unused content through Logging Analytics after checking its consumers.
 
 ### <a name="services">Services Integrated with the Logging Services and their Categories</a>
 

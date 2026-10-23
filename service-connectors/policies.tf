@@ -13,7 +13,6 @@ locals {
     for key, compartment in local.stream_source_compartments : key => [<<EOF
 Allow any-user to {STREAM_READ, STREAM_CONSUME} in compartment id ${startswith(compartment, "ocid1.") ? compartment : var.compartments_dependency[compartment].id} where all {
   request.principal.type='serviceconnector',
-  request.principal.id='${oci_sch_service_connector.these[key].id}',
   request.principal.compartment.id='${oci_sch_service_connector.these[key].compartment_id}',
   target.stream.id='${oci_sch_service_connector.these[key].source[0].stream_id}'
 }
