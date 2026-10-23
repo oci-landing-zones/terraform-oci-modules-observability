@@ -70,7 +70,7 @@ resource "oci_sch_service_connector" "these" {
         log_id         = ls.value.log_id != null ? (length(regexall("^ocid1.*$", ls.value.log_id)) > 0 ? ls.value.log_id : var.logs_dependency[ls.value.log_id].id) : ""
       }
     }
-    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : var.streams_dependency[each.value.source.stream_id].id) : null
+    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : (contains(keys(coalesce(var.streams_dependency, {})), each.value.source.stream_id) ? var.streams_dependency[each.value.source.stream_id].id : oci_streaming_stream.these[each.value.source.stream_id].id)) : null
     dynamic "monitoring_sources" {
       for_each = lower(each.value.source.kind) == local.SOURCE_MONITORING ? each.value.source.monitoring != null ? toset(each.value.source.monitoring) : [] : []
       iterator = ms

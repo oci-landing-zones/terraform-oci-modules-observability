@@ -1,5 +1,26 @@
 locals {
 
+  stream_source_compartments = {
+    for k, sc in coalesce(var.service_connectors_configuration.service_connectors, {}) : k => coalesce(
+      sc.source.compartment_id,
+      length(regexall("^ocid1.*$", sc.source.stream_id)) > 0 ? null : (contains(keys(coalesce(var.streams_dependency, {})), sc.source.stream_id) ? try(var.streams_dependency[sc.source.stream_id].compartment_id, null) : try(oci_streaming_stream.these[sc.source.stream_id].compartment_id, null)),
+      sc.compartment_id,
+      var.service_connectors_configuration.default_compartment_id
+    ) if lower(sc.source.kind) == local.SOURCE_STREAMING && lower(sc.target.kind) == local.TARGET_LOGGING_ANALYTICS
+  }
+
+  stream_source_policy_statements = {
+    for key, compartment in local.stream_source_compartments : key => [<<EOF
+Allow any-user to {STREAM_READ, STREAM_CONSUME} in compartment id ${startswith(compartment, "ocid1.") ? compartment : var.compartments_dependency[compartment].id} where all {
+  request.principal.type='serviceconnector',
+  request.principal.id='${oci_sch_service_connector.these[key].id}',
+  request.principal.compartment.id='${oci_sch_service_connector.these[key].compartment_id}',
+  target.stream.id='${oci_sch_service_connector.these[key].source[0].stream_id}'
+}
+EOF
+    ]
+  }
+
   policy_statements = { for key, sc in coalesce(var.service_connectors_configuration.service_connectors, {}) : key => {
 
     grants = sc.target.bucket_namespace != null ? [] : lower(sc.target.kind) == local.TARGET_OBJECT_STORAGE ? [
@@ -117,4 +138,15 @@ resource "oci_identity_policy" "these" {
   statements    = local.policy_statements[each.key].grants
   defined_tags  = each.value.defined_tags != null ? each.value.defined_tags : var.service_connectors_configuration.default_defined_tags
   freeform_tags = merge(local.cislz_module_tag, each.value.freeform_tags != null ? each.value.freeform_tags : var.service_connectors_configuration.default_freeform_tags)
+}
+
+resource "oci_identity_policy" "stream_sources" {
+  for_each       = local.stream_source_compartments
+  provider       = oci.home
+  name           = "service-connector-${substr(sha256(oci_sch_service_connector.these[each.key].id), 0, 32)}-stream-source-policy"
+  description    = "Allow the service connector to consume its source stream."
+  compartment_id = startswith(each.value, "ocid1.") ? each.value : var.compartments_dependency[each.value].id
+  statements     = local.stream_source_policy_statements[each.key]
+  defined_tags   = var.service_connectors_configuration.service_connectors[each.key].defined_tags != null ? var.service_connectors_configuration.service_connectors[each.key].defined_tags : var.service_connectors_configuration.default_defined_tags
+  freeform_tags  = merge(local.cislz_module_tag, var.service_connectors_configuration.service_connectors[each.key].freeform_tags != null ? var.service_connectors_configuration.service_connectors[each.key].freeform_tags : var.service_connectors_configuration.default_freeform_tags)
 }

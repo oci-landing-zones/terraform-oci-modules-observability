@@ -95,8 +95,8 @@ Within the *service_connectors* attribute, use the *source* attribute to define 
     - **cmp_id**: the compartment where logs are expected to be found. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
     - **log_group_id**: the log group where logs are expected to be found. It is an optional attribute. If not provided, all logs in *cmp_id* are included. This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
     - **log_id**: the log. It is an optional attribute. If not provided, all logs in *log_group_id* are included. This attribute is overloaded: it can be either a log OCID or a reference (a key) to the log OCID.
-- **stream_id**: the source stream. Only applicable if *kind* is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
-- **compartment_id**: (Optional) The source stream compartment OCID or key in *compartments_dependency*. For Streaming to Logging Analytics, the module creates a read/consume policy in this compartment, restricted to the connector and stream. If omitted, it uses *streams_dependency* compartment metadata, then the connector compartment. Set this attribute when an external stream resides elsewhere and its dependency has only an *id*.
+- **stream_id**: the source stream OCID, a key in *streams_dependency*, or a key in this module's *streams* map, in that order. Only applicable if *kind* is "streaming". Both maps support streams created in the same apply; an existing dependency key takes precedence over a matching managed stream key.
+- **compartment_id**: (Optional) The source stream compartment OCID or key in *compartments_dependency*. For Streaming to Logging Analytics, the module creates a read/consume policy here, restricted to the connector and stream. If omitted, it uses the selected stream's compartment metadata, then the connector compartment. Set this for an external stream in another compartment when using a literal OCID or an ID-only dependency.
 - **monitoring**: a list of objects of compartment-specific metric namespaces to retrieve data from. Required if *kind* = "streaming".
     - **cmp_id**: the compartment where metric namespaces are expected to be found. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
     - **namespaces**: The namespaces you want to use for the monitoring source. 
@@ -221,7 +221,7 @@ Within *service_connectors_configuration*, use the *streams* attribute to define
 The following example defines a stream with two partitions and a twelve hour retention period:
 ```
 streams = {
-  SERVICE-CONNECTOR-STREAM-KEY = { # this referring key can be referred by stream_id in target attribute
+  SERVICE-CONNECTOR-STREAM-KEY = { # this key can be used by stream_id in source or target
     name = "vision-service-connector-stream"
     compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     partitions = "2"
