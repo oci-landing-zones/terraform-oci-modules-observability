@@ -25,10 +25,6 @@ resource "oci_sch_service_connector" "these" {
   for_each = coalesce(var.service_connectors_configuration.service_connectors, {})
   lifecycle {
     precondition {
-      condition     = lower(each.value.source.kind) != local.SOURCE_STREAMING || lower(each.value.target.kind) != local.TARGET_LOGGING_ANALYTICS || try(trimspace(each.value.target.log_source_identifier) != "", false)
-      error_message = "Streaming to Logging Analytics requires target.log_source_identifier in service connector ${each.key}."
-    }
-    precondition {
       condition     = contains(local.sources, lower(each.value.source.kind))
       error_message = "VALIDATION FAILURE : \"${each.value.source.kind}\" value is invalid for \"source kind\" attribute in \"${each.key}\" service connector. Valid values are ${join(", ", local.sources)} (case insensitive)."
     }
