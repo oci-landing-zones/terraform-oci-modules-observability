@@ -5,7 +5,6 @@ locals {
   stream_source_compartments = {
     for k, sc in coalesce(var.service_connectors_configuration.service_connectors, {}) : k => coalesce(
       sc.source.compartment_id,
-      try(oci_streaming_stream.these[sc.source.stream_id].compartment_id, null),
       try(var.streams_dependency[sc.source.stream_id].compartment_id, null),
       sc.compartment_id,
       var.service_connectors_configuration.default_compartment_id

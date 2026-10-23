@@ -33,7 +33,7 @@ variable "service_connectors_configuration" {
           log_group_id = optional(string)       # the log group. This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
           log_id       = optional(string)       # the log. This attribute is overloaded: it can be either a log OCID or a reference (a key) to the log OCID.
         })))
-        stream_id      = optional(string) # The source stream OCID or a key in streams or streams_dependency (only applicable if kind = "streaming").
+        stream_id      = optional(string) # The source stream OCID or a key in streams_dependency (only applicable if kind = "streaming").
         compartment_id = optional(string) # The source stream compartment OCID or key. Defaults to stream dependency metadata, then the connector compartment.
         monitoring = optional(list(object({
           cmp_id = string # the compartment containing metric namespaces you want to use for the Monitoring source. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
