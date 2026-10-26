@@ -1,4 +1,4 @@
-# Unreleased - 0.3.0
+# October 26, 2026 Release Notes - 0.3.0
 
 ## Updates
 
