@@ -95,7 +95,8 @@ Within the *service_connectors* attribute, use the *source* attribute to define 
     - **cmp_id**: the compartment where logs are expected to be found. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
     - **log_group_id**: the log group where logs are expected to be found. It is an optional attribute. If not provided, all logs in *cmp_id* are included. This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
     - **log_id**: the log. It is an optional attribute. If not provided, all logs in *log_group_id* are included. This attribute is overloaded: it can be either a log OCID or a reference (a key) to the log OCID.
-- **stream_id**: the source stream. Only applicable if *kind* is "streaming". This attribute is overloaded: it can be either a stream OCID or a reference (a key) to the stream OCID.
+- **stream_id**: the source stream OCID or key. Only applicable if *kind* is "streaming".
+- **compartment_id**: (Optional) The source stream compartment OCID or key. Defaults to the stream's compartment metadata, then the connector compartment. Set this for an external stream in another compartment when that metadata is unavailable.
 - **monitoring**: a list of objects of compartment-specific metric namespaces to retrieve data from. Required if *kind* = "streaming".
     - **cmp_id**: the compartment where metric namespaces are expected to be found. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
     - **namespaces**: The namespaces you want to use for the monitoring source. 
@@ -135,6 +136,7 @@ Within the *service_connectors* attribute, use the *target* attribute to define 
 - **topic_id**: the target topic. Only applicable if kind is "notifications". This attribute is overloaded: it can be either a topic OCID or a reference (a key) to the topic OCID.
 - **function_id**: the target function. Only applicable if kind is "functions". This attribute is overloaded: it can be either a function OCID or a reference (a key) to the function OCID.
 - **log_group_id**: the target log group. Only applicable if kind is "logginganalytics". This attribute is overloaded: it can be either a log group OCID or a reference (a key) to the log group OCID.
+- **log_source_identifier**: The Logging Analytics source name. Required when creating a connector from Streaming to Logging Analytics.
 - **compartment_id**: the target resource compartment. Required if using a literal name for bucket_name or a literal OCID for stream_id, topic_id, function_id, or log_group_id. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
 - **dimensions**: The monitoring dimensions. Only applicable when target kind = "monitoring".
     - **dimension_name**: Dimension key. A valid dimension key includes only printable ASCII, excluding periods (.) and spaces. Custom dimension keys are acceptable.
@@ -159,6 +161,8 @@ Service Connector service needs to authorized by IAM for pushing data to targets
 - **name**: the policy name.
 - **description**: the policy description.
 - **compartment_id**: the policy compartment. You should use this attribute in cases where the target resource compartment is a parent of the service connector compartment in the compartment hierarchy. When that happens, set this attribute with a compartment id that includes both the service connector compartment and the target resource compartment. This attribute is overloaded: it can be either a compartment OCID or a reference (a key) to the compartment OCID.
+
+Streaming to Logging Analytics also creates a read/consume policy in the source stream compartment, allowing service connectors in the connector compartment to consume that stream.
 
 ### Defining Target Buckets
 Within *service_connectors_configuration*, use the *buckets* attribute to define the buckets managed by this module. Within *buckets*, the following attributes are supported:
@@ -219,7 +223,7 @@ Within *service_connectors_configuration*, use the *streams* attribute to define
 The following example defines a stream with two partitions and a twelve hour retention period:
 ```
 streams = {
-  SERVICE-CONNECTOR-STREAM-KEY = { # this referring key can be referred by stream_id in target attribute
+  SERVICE-CONNECTOR-STREAM-KEY = { # this key can be used by stream_id in source or target
     name = "vision-service-connector-stream"
     compartment_id = "ocid1.compartment.oc1..aaaaaa...4ja"
     partitions = "2"

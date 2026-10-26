@@ -96,6 +96,35 @@ Check [preconfigured_alarms.tf file](./preconfigured_alarms.tf) as examples on h
 
 **Note**: *supplied_alarm* takes precedence over *preconfigured_alarm_type*.
 
+### Optional Alarm Settings
+
+Each entry in `alarms` accepts the following optional settings for both supplied and preconfigured alarms:
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `alarm_summary` | string | `null` | Customize the summary included in alarm messages. |
+| `body` | string | `null` | Provide notification text, such as a runbook reference. |
+| `evaluation_slack_duration` | string | `null` (OCI: `PT3M`) | Wait for metric ingestion before evaluation, from `PT3M` to `PT2H`. |
+| `is_notifications_per_metric_dimension_enabled` | bool | `null` (OCI: `false`) | Send a separate notification for each metric stream when true. |
+| `metric_compartment_id_in_subtree` | bool | `null` (OCI: `false`) | Include child compartments when true; the metric compartment must be the tenancy root. Requires tenancy-level metric permissions. |
+| `overrides` | list(object) | `[]` | Ordered evaluation rules with optional `query`, `severity`, `body`, `pending_duration` and `rule_name`. OCI evaluates these in list order before the base rule. The provider treats this block as optional and computed; omission or null retains existing remote overrides. |
+| `suppression` | object | `null` | One notification suppression window with required RFC3339 `time_suppress_from` and `time_suppress_until`, and optional `description`. The provider treats this block as optional and computed; omission or null retains an existing remote suppression. To end it, update its end time or remove it through OCI Monitoring and refresh Terraform state. |
+
+For example, add the following attributes alongside an alarm's `display_name` and `supplied_alarm` or `preconfigured_alarm_type`:
+
+```hcl
+body                      = "Check the application runbook."
+evaluation_slack_duration = "PT5M"
+overrides = [
+  {
+    rule_name        = "CriticalCPU"
+    query            = "CpuUtilization[1m].mean() > 95"
+    severity         = "CRITICAL"
+    pending_duration = "PT2M"
+  }
+]
+```
+
 ### Naming Alarms
 
 Use *display_name* attribute to name alarms.

@@ -1,3 +1,15 @@
+# October 26, 2026 Release Notes - 0.3.0
+
+## Updates
+
+1. [Alarms module](./alarms/): [issue 13](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/13). Supplied and preconfigured alarms now accept optional summaries, notification bodies, evaluation slack, notifications per metric dimension, subtree metric evaluation, ordered overrides and suppression windows. Existing alarm keys, destinations and defaults are unchanged when the new settings are omitted.
+
+2. The Alarms module requires OCI Terraform Provider 6.8.0 or later for the added alarm arguments and nested blocks. Configurations locked to an older provider must run `terraform init -upgrade` and review the plan before applying. No configuration or state migration is required for alarms that omit the new settings.
+
+3. [Service Connectors module](./service-connectors/): [issue 14](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/14). Streaming to Logging Analytics now accepts the required *target.log_source_identifier* and creates a read/consume policy scoped to the connector compartment and source stream. Sources accept keys for streams created by this module. Logging Analytics targets no longer show a recurring compartment change after apply. Set *source.compartment_id* for an external stream in another compartment when its dependency lacks compartment metadata.
+
+4. [Logging module](./logging/): [issue 14](https://github.com/oci-landing-zones/terraform-oci-modules-observability/issues/14). Optional *logging_analytics_custom_content* imports ZIP files containing custom log sources, parsers and fields. Overwrite defaults to false. Imported content survives Terraform destroy; use versioned file paths for updates and remove unused content through Logging Analytics.
+
 # August 24, 2026 Release Notes - 0.2.7
 
 ## Updates

@@ -22,7 +22,7 @@
 #--- 1. oci_sch_service_connector
 #--------------------------------------------------
 resource "oci_sch_service_connector" "these" {
-  for_each = coalesce(var.service_connectors_configuration.service_connectors,{})
+  for_each = coalesce(var.service_connectors_configuration.service_connectors, {})
   lifecycle {
     precondition {
       condition     = contains(local.sources, lower(each.value.source.kind))
@@ -70,7 +70,7 @@ resource "oci_sch_service_connector" "these" {
         log_id         = ls.value.log_id != null ? (length(regexall("^ocid1.*$", ls.value.log_id)) > 0 ? ls.value.log_id : var.logs_dependency[ls.value.log_id].id) : ""
       }
     }
-    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : var.streams_dependency[each.value.source.stream_id].id) : null
+    stream_id = lower(each.value.source.kind) == local.SOURCE_STREAMING ? (length(regexall("^ocid1.*$", each.value.source.stream_id)) > 0 ? each.value.source.stream_id : (contains(keys(coalesce(var.streams_dependency, {})), each.value.source.stream_id) ? var.streams_dependency[each.value.source.stream_id].id : oci_streaming_stream.these[each.value.source.stream_id].id)) : null
     dynamic "monitoring_sources" {
       for_each = lower(each.value.source.kind) == local.SOURCE_MONITORING ? each.value.source.monitoring != null ? toset(each.value.source.monitoring) : [] : []
       iterator = ms
@@ -99,7 +99,7 @@ resource "oci_sch_service_connector" "these" {
   }
   target {
     kind               = lower(each.value.target.kind)
-    compartment_id     = each.value.target.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.target.compartment_id)) > 0 ? each.value.target.compartment_id : var.compartments_dependency[each.value.target.compartment_id].id) : each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id)
+    compartment_id     = lower(each.value.target.kind) == local.TARGET_LOGGING_ANALYTICS ? null : (each.value.target.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.target.compartment_id)) > 0 ? each.value.target.compartment_id : var.compartments_dependency[each.value.target.compartment_id].id) : each.value.compartment_id != null ? (length(regexall("^ocid1.*$", each.value.compartment_id)) > 0 ? each.value.compartment_id : var.compartments_dependency[each.value.compartment_id].id) : (length(regexall("^ocid1.*$", var.service_connectors_configuration.default_compartment_id)) > 0 ? var.service_connectors_configuration.default_compartment_id : var.compartments_dependency[var.service_connectors_configuration.default_compartment_id].id))
     bucket             = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.target.bucket_name != null ? (contains(keys(oci_objectstorage_bucket.these), each.value.target.bucket_name) ? oci_objectstorage_bucket.these[each.value.target.bucket_name].name : each.value.target.bucket_name) : null) : null
     object_name_prefix = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.target.bucket_object_name_prefix != null ? each.value.target.bucket_object_name_prefix : null) : null
     #namespace          = lower(each.value.target.kind) == local.TARGET_OBJECT_STORAGE ? (each.value.object_storage_target_details.bucket_namespace != null ? each.value.object_storage_target_details.bucket_namespace : data.oci_objectstorage_namespace.this.namespace) : null
@@ -110,6 +110,7 @@ resource "oci_sch_service_connector" "these" {
     topic_id                   = lower(each.value.target.kind) == local.TARGET_NOTIFICATIONS ? (each.value.target.topic_id != null ? (length(regexall("^ocid1.*$", each.value.target.topic_id)) > 0 ? each.value.target.topic_id : (contains(keys(oci_ons_notification_topic.these), each.value.target.topic_id) ? oci_ons_notification_topic.these[each.value.target.topic_id].id : var.topics_dependency[each.value.target.topic_id].id)) : null) : null
     function_id                = lower(each.value.target.kind) == local.TARGET_FUNCTIONS ? (each.value.target.function_id != null ? (length(regexall("^ocid1.*$", each.value.target.function_id)) > 0 ? each.value.target.function_id : var.functions_dependency[each.value.target.function_id].id) : null) : null
     log_group_id               = lower(each.value.target.kind) == local.TARGET_LOGGING_ANALYTICS ? (each.value.target.log_group_id != null ? (length(regexall("^ocid1.*$", each.value.target.log_group_id)) > 0 ? each.value.target.log_group_id : var.logs_dependency[each.value.target.log_group_id].id) : null) : null
+    log_source_identifier      = lower(each.value.source.kind) == local.SOURCE_STREAMING && lower(each.value.target.kind) == local.TARGET_LOGGING_ANALYTICS ? each.value.target.log_source_identifier : null
 
     dynamic "dimensions" {
       for_each = lower(each.value.target.kind) == local.TARGET_MONITORING ? each.value.target.dimensions != null ? toset(each.value.target.dimensions) : [] : []

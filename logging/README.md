@@ -151,6 +151,21 @@ To disable Logging Analytics, navigate to the Logging Analytics service page on 
   - **defined_tags**: (Optional) The log defined tags. *default_defined_tags* is used if undefined.
   - **freeform_tags**: (Optional) The log freeform tags. *default_freeform_tags* is used if undefined.
 
+### <a name="logging-analytics-custom-content">Logging Analytics Custom Content</a>
+
+Set *logging_configuration.logging_analytics_custom_content* to import exported source/parser/field ZIP files. Enable *onboard_logging_analytics* or use an onboarded tenancy; paths resolve from Terraform's working directory.
+
+```hcl
+logging_analytics_custom_content = {
+  STREAM_LOGS = {
+    import_custom_content_file = "${path.root}/content/stream-logs-v1.zip"
+    is_overwrite               = false
+  }
+}
+```
+
+The deploying identity needs namespace import permissions. Import before creating connectors that use the source. *is_overwrite* defaults to false; true can replace conflicting namespace content managed elsewhere. The provider neither detects content drift nor deletes imported objects on destroy. Same-path ZIP edits do not reimport: use a versioned path or replace the import resource. Remove unused content through Logging Analytics after checking its consumers.
+
 ### <a name="services">Services Integrated with the Logging Services and their Categories</a>
 
 As of Oct/2023, these are the OCI services that are integrated with the Logging service. Use this as reference to fill in *service* and *category* attributes when creating logs using the *service_log* attribute.
