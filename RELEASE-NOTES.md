@@ -1,3 +1,9 @@
+# Unreleased - 0.3.1
+
+## Fixes
+
+1. [Logging module](./logging/): Fixed an unnecessary validation dependency that could defer flow-log inventory reads and cause `Invalid for_each argument` for existing targets during upstream updates. Discovery now references the validated compartment ID directly. Existing `flow_logs` configuration, outputs, log keys and resource addresses are unchanged; no state migration is required. See [Orchestrator issue #90](https://github.com/oci-landing-zones/terraform-oci-modules-orchestrator/issues/90).
+
 # October 26, 2026 Release Notes - 0.3.0
 
 ## Updates
