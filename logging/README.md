@@ -219,7 +219,7 @@ An optional feature, external dependencies are resources managed elsewhere that 
    ```
    Avoid this error by first checking in your Oracle Cloud Console if Logging Analytics has been enabled. If it has been enabled, set the `onboard_logging_analytics` variable to `false`.
 
-2. *bucket_logs* and *flow_logs* attributes should not be used if this module is used in conjunction with another module that creates the compartments referenced in *target_compartment_ids* attribute of *bucket_logs* and *flow_logs*. Such an attempt makes Terraform plan to fail with the following error:
+2. Discovery through *bucket_logs* and *flow_logs* requires the target inventory to be known during planning. Resources created later in that apply are not part of the plan-time inventory. For new flow-log targets, use *service_logs* with map keys known during planning, or create the targets in an earlier apply. Unknown compartment IDs or deferred inventory reads can make planning fail with errors such as:
     ```
     Error: Invalid for_each argument
 
